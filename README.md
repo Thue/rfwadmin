@@ -1,7 +1,7 @@
 rfwadmin
 ========
 
-A web interface for controlling a MineCraft server, optimized for custom maps
+A web interface for controlling a MineCraft server, optimized for quickly restarting with custom maps such as Race For Wool (RFW).
 
 
 To install:
@@ -10,6 +10,7 @@ To install:
 - Everything below /var/lib/minecraft should be owned by the web server user (www-data:www-data)
 - /etc/init.d/minecraft_default.sh should not be owned by the web server
 - Right now it is set up to run one server - by adding 1) a /etc/init.d/minecraft2.sh file, 2) a copy of the www files (yes, ugly duplication), and 3) a /var/lib/minecraft/servers/2 dir, you can run more than one server
+- Get the apache web server with PHP5 by installing the Ubuntu package libapache2-mod-php5
 - The PHP script uses curl, so you should install php5-curl
 
 There are a few configuration files:
@@ -33,5 +34,15 @@ About quality:
 - The PHP code should be mostly ok (might need to escape some more in the server responses)
 - There is currently no same-origin check of posts, which might be a security hole.
 - I make no claims to be an expert shell programmer
+
+Craftbukkit:
+You might want to install the custom server from bukkit
+if you want to use plugins: http://dl.bukkit.org/ . Place the jar
+somewhere in /var/lib/minecraft.sh, and adjust $FILE_JAR in
+/var/lib/minecraft/servers/default/minecraft.sh .
+
+One useful plugin isNoSpawnChunks (
+http://dev.bukkit.org/server-mods/nospawnchunks/ ), which makes the
+server restart much faster.
 
 Regards, Thue
