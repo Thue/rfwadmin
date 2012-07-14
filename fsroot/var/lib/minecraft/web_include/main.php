@@ -64,7 +64,7 @@ foreach ($maps as $map) {
 <h1>Upload new map</h1>
 
 <p>
-<form action="upload_file.php" method="post" enctype="multipart/form-data" target="_blank">
+<form action="index.php?page=upload_file" method="post" enctype="multipart/form-data" target="_blank">
 <label for="file">Upload zip file with map:</label>
 <input type="file" name="file" id="file" />
 <input type="submit" name="upload_file" value="Upload" />
