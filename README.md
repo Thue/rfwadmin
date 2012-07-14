@@ -9,9 +9,9 @@ To install:
 - The files inside fsroot are in their filesystem locations; move then into the real file system at corresponding locations.
 - Everything below /var/lib/minecraft should be owned by the web server user (www-data:www-data)
 - /etc/init.d/minecraft_default.sh should not be owned by the web server
-- Right now it is set up to run one server - by adding 1) a /etc/init.d/minecraft2.sh file, 2) a copy of the www files (yes, ugly duplication), and 3) a /var/lib/minecraft/servers/2 dir, you can run more than one server
+- Right now it is set up to run one server - to run more than one server, 1) add a /etc/init.d/minecraft2.sh file, 2) add a copy of the /var/www/index.php file, and edit it, and 3) a /var/lib/minecraft/servers/2 dir
 - Get the apache web server with PHP5 by installing the Ubuntu package libapache2-mod-php5
-- The PHP script uses curl, so you should install php5-curl
+- The PHP script uses curl for fetching maps from a link, so you should install php5-curl if you want to use that feature
 
 There are a few configuration files:
 - /etc/init.d/minecraft_default.sh is an extremely simple file set to point to /var/lib/minecraft/servers/default/minecraft.sh . To make it start and stop with the server, run the Ubuntu command "update-rc.d minecraft_1234.sh defaults" (will probably differ for other distributions)
@@ -44,6 +44,6 @@ One useful plugin is NoSpawnChunks (
 http://dev.bukkit.org/server-mods/nospawnchunks/ ), which makes the
 server restart much faster.
 
-Another useful plugin is WorldEdit ( http://www.sk89q.com/projects/worldedit/ ), for the /butcher command.
+Another useful plugin is WorldEdit ( http://www.sk89q.com/projects/worldedit/ ), for the /butcher command which removes all hostile mobs which spawned while you were waiting at the starting gate.
 
 Regards, Thue
