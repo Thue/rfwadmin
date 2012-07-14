@@ -9,11 +9,12 @@ Bugs:
 To install:
 - Only tested on Ubuntu 12.04
 - The files inside fsroot are in their filesystem locations; move then into the real file system at corresponding locations.
-- Everything below /var/lib/minecraft should be owned by the web server user (www-data:www-data)
+- /var/lib/minecraft/maps and /var/lib/minecraft/servers should be owned by the web server user (www-data:www-data in Ubuntu and Debian)
 - /etc/init.d/minecraft_default.sh should not be owned by the web server
 - Right now it is set up to run one server - to run more than one server, 1) add a /etc/init.d/minecraft2.sh file, 2) add a copy of the /var/www/index.php file, and edit it, and 3) a /var/lib/minecraft/servers/2 dir
 - Get the apache web server with PHP5 by installing the Ubuntu package libapache2-mod-php5
 - The PHP script uses curl for fetching maps from a link, so you should install php5-curl if you want to use that feature
+- On a default Ubuntu install, upload_max_filesize in /etc/php5/apache2/php.ini is set too low for the map upload feature to work.
 
 There are a few configuration files:
 - /etc/init.d/minecraft_default.sh is an extremely simple file set to point to /var/lib/minecraft/servers/default/minecraft.sh . To make it start and stop with the server, run the Ubuntu command "update-rc.d minecraft_1234.sh defaults" (will probably differ for other distributions)
