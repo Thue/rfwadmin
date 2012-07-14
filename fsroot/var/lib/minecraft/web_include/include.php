@@ -1,19 +1,8 @@
 <?php
-error_reporting(E_ALL | E_STRICT);
-ini_set("display_errors", 1);
-require_once("ansi_shell_to_html.php");
-
-//POST same origin check
-if ($_POST !== Array()) {
-  $regexp = sprintf('/https?:\\/\\/%s\\/[^@]*/', preg_quote($_SERVER["HTTP_HOST"]));
-  if (!preg_match($regexp, $_SERVER['HTTP_REFERER'])) {
-    echo "Bad referer! Cross-site request forgery?";
-    exit(1);
-  }
-}
+require_once(dirname(__FILE__) . "/ansi_shell_to_html.php");
 
 class minecraft_map {
-  public static $map_dir = "/var/lib/minecraft/maps";
+  public static $map_dir; //set in index.php
   public $name;
   public $path;
 
@@ -100,12 +89,13 @@ class minecraft_map {
 }
 
 class minecraft {
-  public $server_dir = "/var/lib/minecraft/servers/default";
+  public $server_dir; //set in index.php
   public $msh;
   public $map_name_file;
   public $level_dat_location;
 
-  function __construct() {
+  function __construct($server_dir) {
+    $this->server_dir = $server_dir;
     $this->msh = sprintf("%s/minecraft.sh", $this->server_dir);
     $this->map_name_file = sprintf("%s/server/world/map_name.txt", $this->server_dir);
   }
@@ -266,6 +256,4 @@ class minecraft {
   }
 }
 
-
-$mc = new minecraft();
 ?>

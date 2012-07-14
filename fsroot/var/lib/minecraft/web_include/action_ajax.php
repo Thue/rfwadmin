@@ -1,23 +1,5 @@
 <?php
-error_reporting(E_ALL | E_STRICT);
-require_once("include.php");
 
-if (isset($_POST["download_map"])) {
-  $map = new minecraft_map($_POST["map"]);
-  $map->download();
-  exit();
-}
-
-?>
-
-<html>
-<head>
-
-</head>
-
-<body>
-<pre>
-<?php
 if (isset($_POST["start"])) {
   $mc->start();
 } else if (isset($_POST["stop"])) {
@@ -44,8 +26,3 @@ if (isset($_POST["start"])) {
 
 ?>
 
-</pre>
-
-</body>
-
-</html>

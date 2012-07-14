@@ -17,7 +17,7 @@ There are a few configuration files:
 - /etc/init.d/minecraft_default.sh is an extremely simple file set to point to /var/lib/minecraft/servers/default/minecraft.sh . To make it start and stop with the server, run the Ubuntu command "update-rc.d minecraft_1234.sh defaults" (will probably differ for other distributions)
 - /var/lib/minecraft/servers/default/minecraft.sh contains the actual configuration of the script. When upgrading to a new Minecraft version, adjust $FILE_JAR here.
 - The files below /var/lib/minecraft/servers/default/server , such as /var/lib/minecraft/servers/1234/server/server.properties , is the normal minecraft configuration
-- Inside /var/www/include.php there are a single reference to "/var/lib/minecraft/servers/default" and "/etc/init.d/minecraft_default.sh", which you might need to change if you run multiple servers
+- If you are running multiple servers, or don't use the default /var/lib/minecraft location, you need to tweak the settings inside /var/www/index.php
 
 Some directories and files explained:
 - /var/lib/minecraft/maps : The web interface will save uploaded maps here
@@ -31,7 +31,7 @@ About security:
 - There is currently no access controls to the www-interface - set up fx apache's build in auth support
 
 About quality:
-- The PHP code should be mostly ok (might need to escape some more in the server responses)
+- The PHP code should be mostly ok
 - I make no claims to be an expert shell programmer
 
 Craftbukkit:

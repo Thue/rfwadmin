@@ -1,8 +1,3 @@
-<?php
-require_once("include.php");
-
-?>
-
 <html>
 <head>
 
