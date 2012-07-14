@@ -12,7 +12,7 @@ Currently loaded map: <b><?php echo htmlspecialchars($mc->get_current_map(true))
 <?php if (($loaded = $mc->get_map_age(true)) !== null) {echo htmlspecialchars(" (loaded ".$loaded.")");}?>
 </p>
 
-<form method="post" action="action.php" target="_blank">
+<form method="post" action="index.php?page=action" target="_blank">
 <p>
 <input type="submit" name="start" value="Start">
 <input type="submit" name="restart" value="Restart">
