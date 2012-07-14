@@ -32,7 +32,6 @@ About security:
 
 About quality:
 - The PHP code should be mostly ok (might need to escape some more in the server responses)
-- There is currently no same-origin check of posts, which might be a security hole.
 - I make no claims to be an expert shell programmer
 
 Craftbukkit:
