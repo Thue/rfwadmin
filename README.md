@@ -45,4 +45,6 @@ One useful plugin is NoSpawnChunks (
 http://dev.bukkit.org/server-mods/nospawnchunks/ ), which makes the
 server restart much faster.
 
+Another useful plugin is WorldEdit ( http://www.sk89q.com/projects/worldedit/ ), for the /butcher command.
+
 Regards, Thue
