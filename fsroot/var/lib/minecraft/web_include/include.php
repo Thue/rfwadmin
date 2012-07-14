@@ -169,8 +169,15 @@ class minecraft {
     return $is_online;
   }
 
-  //A version of the built-in passthru() without buffering.
-  //This doesn't work in chrome, because of a bug you get it all at one time: http://stackoverflow.com/questions/3880381/xmlhttprequest-responsetext-while-loading-readystate-3-in-chrome
+  /* A version of the built-in passthru() without buffering.
+   * 
+   * Will not work on Chrome because of a bug in Chrome, unless you manually do a 
+   *  header('Content-type: application/octet-stream');
+   *  ob_flush();
+   *  flush();
+   * before calling this function (that is done in action_ajax.php).
+   * See http://code.google.com/p/chromium/issues/detail?id=2016
+   */
   public function my_passthru($cmd) {
     $handle = popen($cmd, "r");
     while (!feof($handle) && ($read = fread($handle, 1000)) !== false) {

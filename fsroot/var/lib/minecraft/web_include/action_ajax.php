@@ -1,5 +1,10 @@
 <?php
 
+//Work around incremential xhr bug in Chrome: http://code.google.com/p/chromium/issues/detail?id=2016
+header('Content-type: application/octet-stream');
+ob_flush();
+flush();
+
 if (isset($_POST["start"])) {
   $mc->start();
 } else if (isset($_POST["stop"])) {
