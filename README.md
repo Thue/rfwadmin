@@ -3,6 +3,8 @@ rfwadmin
 
 A web interface for controlling a MineCraft server, optimized for quickly restarting with custom maps such as Race For Wool (RFW).
 
+Bugs:
+- The save command is a hack, just waiting 10 seconds and hoping it successfully saved, so not 100% reliable. Save multiple times to different names for added chance of success.
 
 To install:
 - Only tested on Ubuntu 12.04
