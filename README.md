@@ -40,8 +40,10 @@ if you want to use plugins: http://dl.bukkit.org/ . Place the jar
 somewhere in /var/lib/minecraft.sh, and adjust $FILE_JAR in
 /var/lib/minecraft/servers/default/minecraft.sh .
 
-One useful plugin isNoSpawnChunks (
+One useful plugin is NoSpawnChunks (
 http://dev.bukkit.org/server-mods/nospawnchunks/ ), which makes the
 server restart much faster.
+
+Another useful plugin is WorldEdit ( http://www.sk89q.com/projects/worldedit/ ), for the /butcher command.
 
 Regards, Thue
