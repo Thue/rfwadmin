@@ -17,7 +17,7 @@ if (isset($_POST["download_map"])) {
 <pre id="pre">
 </pre>
 <p id="loading_msg">
-Loading...
+<b>Processing...</b>
 </p>
 
 <script type="text/javascript">
