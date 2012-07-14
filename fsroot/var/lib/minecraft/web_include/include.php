@@ -256,7 +256,7 @@ class minecraft {
   public function delete_map($map) {
     $full_path = minecraft_map::validate($map);
     $cmd = sprintf("rm -rfv %s 2>&1", escapeshellarg($full_path));
-    echo $cmd;
+    echo $cmd . "\n";
     $this->my_passthru($cmd);
     echo "\nDeleted!\n";
   }
