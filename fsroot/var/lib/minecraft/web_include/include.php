@@ -169,34 +169,46 @@ class minecraft {
     return $is_online;
   }
 
+  //A version of the built-in passthru() without buffering.
+  //This doesn't work in chrome, because of a bug you get it all at one time: http://stackoverflow.com/questions/3880381/xmlhttprequest-responsetext-while-loading-readystate-3-in-chrome
+  public function my_passthru($cmd) {
+    $handle = popen($cmd, "r");
+    while (!feof($handle) && ($read = fread($handle, 1000)) !== false) {
+      echo $read;
+      ob_flush();
+      flush();
+    }
+    pclose($handle);
+  }
+
   public function start() {
     $cmd = $this->cmd(Array("start"));
-    passthru($cmd);
+    $this->my_passthru($cmd);
   }
 
   public function stop() {
     $cmd = $this->cmd(Array("stop"));
-    passthru($cmd);
+    $this->my_passthru($cmd);
   }
 
   public function restart() {
     $cmd = $this->cmd(Array("restart"));
-    passthru($cmd);
+    $this->my_passthru($cmd);
   }
 
   public function kill() {
     $cmd = $this->cmd(Array("kill"));
-    passthru($cmd);
+    $this->my_passthru($cmd);
   }
 
   public function nuke() {
     $cmd = $this->cmd(Array("nuke"));
-    passthru($cmd);
+    $this->my_passthru($cmd);
   }
 
   public function nuke_and_delete() {
     $cmd = $this->cmd(Array("nuke_and_delete"));
-    passthru($cmd);
+    $this->my_passthru($cmd);
   }
 
   public function save($target, $paranoid) {
@@ -209,7 +221,7 @@ class minecraft {
       $this->stop();
     } else if ($is_online) {
       $cmd = $this->cmd(Array("save"));
-      passthru($cmd);      
+      $this->my_passthru($cmd);
     }
 
     echo "Saving... ";
@@ -220,7 +232,7 @@ class minecraft {
 		   escapeshellarg($world_file),
 		   escapeshellarg($target_full_path)
 		   );
-    passthru($cmd);
+    $this->my_passthru($cmd);
     echo "Saved!";
 
     if ($do_stop) {
@@ -231,14 +243,14 @@ class minecraft {
   public function change_map($map) {
     minecraft_map::validate($map);
     $cmd = $this->cmd(Array("changemap", $map));
-    passthru($cmd);
+    $this->my_passthru($cmd);
   }
 
   public function delete_map($map) {
     $full_path = minecraft_map::validate($map);
     $cmd = sprintf("rm -rfv %s 2>&1", escapeshellarg($full_path));
     echo $cmd;
-    passthru($cmd);
+    $this->my_passthru($cmd);
     echo "\nDeleted!\n";
   }
 
@@ -251,7 +263,7 @@ class minecraft {
 		   escapeshellarg($full_path),
 		   escapeshellarg($full_path_target)
 		   );
-    passthru($cmd);
+    $this->my_passthru($cmd);
     echo "Renamed!";
   }
 }
