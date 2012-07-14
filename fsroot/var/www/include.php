@@ -3,6 +3,15 @@ error_reporting(E_ALL | E_STRICT);
 ini_set("display_errors", 1);
 require_once("ansi_shell_to_html.php");
 
+//POST same origin check
+if ($_POST !== Array()) {
+  $regexp = sprintf('/https?:\\/\\/%s\\/[^@]*/', preg_quote($_SERVER["HTTP_HOST"]));
+  if (!preg_match($regexp, $_SERVER['HTTP_REFERER'])) {
+    echo "Bad referer! Cross-site request forgery?";
+    exit(1);
+  }
+}
+
 class minecraft_map {
   public static $map_dir = "/var/lib/minecraft/maps";
   public $name;
