@@ -123,7 +123,7 @@ function unpack_file($path) {
 if (isset($_POST["upload_file"])) {
   $file = $_FILES["file"];
   if ($file["error"] !== 0) {
-    die("error " . $file["error"] . "\n");
+    die("error " . $file["error"] . " ( http://www.php.net/manual/en/features.file-upload.errors.php )\n");
   }
 
   $tmp = unpack_file($file["tmp_name"]);
