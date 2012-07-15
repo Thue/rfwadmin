@@ -31,7 +31,7 @@ Some directories and files explained:
 About security:
 - I *think* it is safe
 - The only possibly fishy thing is the "Or fetch from a direct link to a zip file:" feature, which will happily fetch a file from the internal network (fx 192.168.1.x), thereby bypassing any firewall. Though I don't see how it would benefit them to get this file fetched into the maps folder.
-- There is currently no access controls to the www-interface - set up fx apache's build in auth support
+- There is currently no access controls to the www-interface - set up fx apache's built in auth support
 
 About quality:
 - The PHP code should be mostly ok
@@ -40,12 +40,12 @@ About quality:
 Craftbukkit:
 You might want to install the custom server from bukkit
 if you want to use plugins: http://dl.bukkit.org/ . Place the jar
-somewhere in /var/lib/minecraft.sh, and adjust $FILE_JAR in
+fx somewhere in /var/lib/minecraft/jar, and adjust $FILE_JAR in
 /var/lib/minecraft/servers/default/minecraft.sh .
 
 One useful plugin is NoSpawnChunks (
 http://dev.bukkit.org/server-mods/nospawnchunks/ ), which makes the
-server restart much faster.
+server restart much faster, at the cost of having the first person logging in probably fall into the void.
 
 Another useful plugin is WorldEdit ( http://www.sk89q.com/projects/worldedit/ ), for the /butcher command which removes all hostile mobs which spawned while you were waiting at the starting gate.
 
