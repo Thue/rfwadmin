@@ -43,9 +43,6 @@ $maps = minecraft_map::get_map_list();
 $current = $mc->get_current_map(false);
 foreach ($maps as $map) {
 ?>
-<?php var_dump($map->name)?>
-<?php var_dump($current)?>
-
   <option value="<?php echo htmlspecialchars($map->name); ?>" <?php if ($current === $map->name) {?>selected="selected"<?php } ?>>
     <?php echo htmlspecialchars($map->name); ?>
   </option>
