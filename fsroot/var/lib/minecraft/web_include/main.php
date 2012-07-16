@@ -1,7 +1,9 @@
+<!DOCTYPE html>
 <html>
-<head>
-<title><?php echo htmlspecialchars($mc->html_title); ?></title>
-</head>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title><?php echo htmlspecialchars($mc->html_title); ?></title>
+  </head>
 
 <body>
 <h1>Server</h1>
@@ -60,7 +62,6 @@ foreach ($maps as $map) {
 <hr>
 <h1>Upload new map</h1>
 
-<p>
 <form action="index.php?page=upload_file" method="post" enctype="multipart/form-data" target="_blank">
 <label for="file">Upload zip file with map:</label>
 <input type="file" name="file" id="file" />
@@ -68,7 +69,6 @@ foreach ($maps as $map) {
 <br>
   Or fetch from a direct link to a zip file: <input type="text" name="link" value=""><input type="submit" name="upload_link" value="fetch">
 </form>
-</p>
 
 </body>
 </html>
