@@ -123,7 +123,12 @@ function unpack_file($path) {
 if (isset($_POST["upload_file"])) {
   $file = $_FILES["file"];
   if ($file["error"] !== 0) {
-    die("error " . $file["error"] . " ( http://www.php.net/manual/en/features.file-upload.errors.php )\n");
+    echo "Upload failed!\n";
+    if ($file["error"] === 1) {
+      die("upload_max_filesize in php.ini is too small (php.init probably located at /etc/php5/apache2/php.ini in the filesystem)");
+    } else {
+      die("error " . $file["error"] . " ( http://www.php.net/manual/en/features.file-upload.errors.php )\n");
+    }
   }
 
   $tmp = unpack_file($file["tmp_name"]);
