@@ -9,6 +9,7 @@ $include_base = "/var/lib/minecraft";
 $server_dir = $include_base . "/servers/default";
 require_once($include_base . "/web_include/include.php");
 $mc = new minecraft($include_base . "/servers/default" /* server dir */);
+//$mc->html_title = "Custom title here";
 
 minecraft_map::$map_dir = $include_base . "/maps";
 

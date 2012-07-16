@@ -93,6 +93,7 @@ class minecraft {
   public $msh;
   public $map_name_file;
   public $level_dat_location;
+  public $html_title = "rfwadmin";
 
   function __construct($server_dir) {
     $this->server_dir = $server_dir;

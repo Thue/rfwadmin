@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Thue's EuroPP RFW server</title>
+<title><?php echo $mc->html_title; ?></title>
 </head>
 
 <body>
