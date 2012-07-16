@@ -1,10 +1,12 @@
 <html>
-<head>
+  <head>
+    <title>
+      <?php echo htmlspecialchars($mc->html_title) . " - Uploading map";?>
+    </title>
+  </head>
 
-</head>
-
-<body>
-<pre>
+  <body>
+    <pre>
 <?php
 
 function get_tmp_dir() {

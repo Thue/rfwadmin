@@ -7,20 +7,21 @@ if (isset($_POST["download_map"])) {
 }
 
 ?>
-
 <html>
-<head>
+  <head>
+    <title>
+      <?php echo htmlspecialchars($mc->html_title) . " - Action request";?>
+    </title>
+  </head>
 
-</head>
+  <body>
+    <pre id="pre">
+    </pre>
+    <p id="loading_msg">
+      <b>Processing...</b>
+    </p>
 
-<body>
-<pre id="pre">
-</pre>
-<p id="loading_msg">
-<b>Processing...</b>
-</p>
-
-<script type="text/javascript">
+    <script type="text/javascript">
 <?php
   $qs = "";
   foreach ($_POST as $key => $value) {
@@ -51,8 +52,8 @@ printf("query_string = '%s';", $qs);
   xmlhttp.open("POST","index.php?page=action_ajax",true);
   xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   xmlhttp.send(query_string);
-</script>
+    </script>
 
-</body>
+  </body>
 
 </html>

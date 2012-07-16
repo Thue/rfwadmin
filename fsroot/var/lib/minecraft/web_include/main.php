@@ -1,6 +1,6 @@
 <html>
 <head>
-<title><?php echo $mc->html_title; ?></title>
+<title><?php echo htmlspecialchars($mc->html_title); ?></title>
 </head>
 
 <body>
