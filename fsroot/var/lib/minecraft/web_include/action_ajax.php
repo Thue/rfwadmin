@@ -5,7 +5,9 @@ header('Content-type: application/octet-stream');
 ob_flush();
 flush();
 
-if (isset($_POST["start"])) {
+if (isset($_POST["save_properties"])) {
+  $mc->save_properties();
+} else if (isset($_POST["start"])) {
   $mc->start();
 } else if (isset($_POST["stop"])) {
   $mc->stop();

@@ -1,0 +1,33 @@
+body {
+    font-family:Arial;
+}
+#wrapper {
+    width:100%;
+}
+ul.tabs {
+    width:100%;
+    margin:0;
+    padding:0;
+}
+ul.tabs li {
+    display:block;
+    float:left;
+    padding:0 5px;
+}
+ul.tabs li a {
+    display:block;
+    float:left;
+    padding:5px;
+    font-size:0.8em;
+    background-color:#e0e0e0;
+    color:#666;
+    text-decoration:none;
+}
+.selected {
+    font-weight:bold;
+}
+.tab-content {
+    clear:both;
+    border:1px solid #ddd;
+    padding:10px;
+}
