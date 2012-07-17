@@ -46,7 +46,6 @@ function install_map($parent_dir, $filename_hint) {
 	$name = $filename_hint;
       }
 
-      var_dump($filename_hint);
       if ($name === null) {
 	if ($filename_hint == "") {
 	  die("unable to guess map name!");
