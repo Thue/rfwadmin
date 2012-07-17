@@ -1,5 +1,10 @@
 <?php
 require_once(dirname(__FILE__) . "/ansi_shell_to_html.php");
+require_once(dirname(__FILE__) . "/properties.php");
+
+function e($text) {
+  return htmlspecialchars($text);
+}
 
 class minecraft_map {
   public static $map_dir; //set in index.php
@@ -273,6 +278,27 @@ class minecraft {
 		   );
     $this->my_passthru($cmd);
     echo "Renamed!";
+  }
+
+  public function get_properties_path() {
+    $path = $this->server_dir . "/server/server.properties";
+    if (!file_exists($path)) {
+      echo sprintf("server.properties file %s not found!", $path);
+      exit(1);
+    }
+    return $path;
+  }
+
+  public function get_properties() {
+    $path = $this->get_properties_path();
+    $properties = new properties($path);
+    return $properties;
+  }
+
+  public function save_properties() {
+    $path = $this->get_properties_path();
+    $properties = new properties($path);
+    $properties->save();
   }
 }
 
