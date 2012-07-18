@@ -38,6 +38,7 @@ LOCKFILE="${PATH_SERVER}/minecraft.sh.lock"
 LOCKFILE2="${LOCKFILE}.lock"
 
 SCREEN_LOG="${PATH_SERVER}/screen.log"
+SERVER_LOG="${PATH_RUN}/server.log"
 
 PATH_MINECRAFT_PID="${PATH_SERVER}/minecraft.pid"
 
@@ -114,28 +115,23 @@ function screen_start() {
         return 0
     fi
 
+    #If running as normal user, the user might have a screen config
+    #for normal interactive work. We don't want to use that, so create
+    #a tempoprary empty file to use as screen config instead.
     SCREEN_CONF=`mktemp`
     echo "logfile ${SCREEN_LOG}" >> "$SCREEN_CONF"
 
-    local ITER=1
-    while [ $ITER -le $MAX_ATTEMPTS ]; do
-        echo -n "Starting Screen instance (attempt #${ITER})... "
-
-        screen -c "$SCREEN_CONF" -LdmS $SCREEN
-
-        if get_screen_id; then
-            echo "Success!"
-	    rm "$SCREEN_CONF"
-            return 0
-        else
-            echo "Failed!"
-            let ITER=$ITER+1
-        fi
-    done
-
+    echo -n "Starting Screen session... "
+    screen -c "$SCREEN_CONF" -LdmS $SCREEN
     rm "$SCREEN_CONF"
-    echo "Failed to create the screen after ${MAX_ATTEMPTS} attempts"
-    return 1
+
+    if get_screen_id; then
+        echo "Started!"
+        return 0
+    else
+        echo "Failed!"
+	return 1
+    fi
 }
 function screen_stop() {
     get_screen_id
@@ -150,10 +146,52 @@ function screen_reset() {
 }
 # Send a string to STDIN, for sending commands to the server.
 function screen_cmd() {
+    if [ -z $4 ]; then
+	local LOGFILE="$SERVER_LOG"
+    else
+	local LOGFILE="$4"
+    fi
+
     get_screen_id
+    local START_LINE=`cat "$LOGFILE" |wc -l`
     screen -S $SCREEN_ID -p 0 -X stuff "`printf "$1\r"`"
-    if [ ! -z $2 ]; then
-        sleep $2
+    if [ ! -z "$2" ]; then
+	if [ ! -z "$3" ]; then
+	    SLEPT=0
+	    while  [[ $SLEPT -le $2 ]]; do
+		#renew lock
+		unlock
+		lock
+
+		for SUBSLEEP in { 1 .. 5 }; do
+		    if screen_log_find_regexp "$3" "$LOGFILE" $START_LINE; then
+			return 0
+		    fi
+		    sleep 0.2
+		done
+
+		SLEPT=`expr $SLEPT +  1`
+	    done
+	    echo "Command failed: $1"
+	    return 1
+	else
+	    sleep "$2"
+	fi
+    fi
+
+    return 0
+}
+
+function screen_log_find_regexp() {
+    local OFFSET=`expr "$3" + 1`
+    local FOUND=`tail -n +$OFFSET "$LOGFILE" | grep -P "$1"`
+    #local AAA=`tail -n +$OFFSET "$LOGFILE"|wc -l`
+    #echo "tail length $AAA; FOUND is '$FOUND'"
+
+    if [ -z "$FOUND" ]; then
+	return 1
+    else
+	return 0
     fi
 }
 
@@ -171,34 +209,24 @@ function server_start() {
         return 1
     fi
 
-    local ITER=1
-    while [ $ITER -le $MAX_ATTEMPTS ]; do
-        # If we've attempted once and failed we should reset the screen
-        if [ $ITER -gt 1 ]; then
-            screen_reset
-        fi
+    echo -n "Starting Minecraft server... "
 
-        echo -n "Starting Minecraft server (attempt #${ITER})... "
+    screen_cmd "cd ${PATH_RUN}"
+    #If I don't put the extra Ms on "Minecraft is stopped", then the first "M" goes missing in the output. WTF?
+    screen_cmd "${SERVER} & echo \$! > ${PATH_MINECRAFT_PID} && fg; echo \"MMMMinecraft is stopped\"; exit" 30 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] Done \(\d+.\d+s\)! For help, type "help" or "\?"'
 
-        screen_cmd "cd ${PATH_RUN}"
-        screen_cmd "${SERVER} & echo \$! > ${PATH_MINECRAFT_PID} && fg; exit" 3
-
-        if is_server_online; then
-            echo "Success!"
-            screen_cmd "save-off"
-            return 0
-        else
-            echo "Failed!"
-            let ITER=$ITER+1
-	    #remove hanging java processes
-	    screen_reset
-        fi
-    done
-
-    #remove hanging java processes
-    screen_stop
-    echo "Failed to start server after ${MAX_ATTEMPTS} attempts"
-    return 1
+    if is_server_online; then
+        echo "Started!"
+        screen_cmd "save-off"
+        return 0
+    else
+        echo "Failed!"
+	screen_reset
+        #remove hanging java processes
+	screen_stop
+	echo "Failed to start server after ${MAX_ATTEMPTS} attempts"
+	return 1
+    fi
 }
 function server_stop() {
     if ! is_server_online; then
@@ -206,28 +234,21 @@ function server_stop() {
         return 0
     fi
 
-    screen_cmd "say Server going down in 5 seconds! Saving world..."
+    screen_cmd "say Server going down! Saving world..."
     server_save
 
-    local ITER=1
-    while [ $ITER -le $MAX_ATTEMPTS ]; do
-        echo -n "Stopping Minecraft server (attempt #${ITER})... "
+    echo -n "Stopping Minecraft server ... "
+    screen_cmd "stop" 60 '^M+inecraft is stopped' "$SCREEN_LOG"
 
-        screen_cmd "stop" 5
-
-        if ! is_server_online; then
-            echo "Success!"
-            server_pid_remove
-	    screen_stop
-            return 0
-        else
-            echo "Failed!"
-            let ITER=$ITER+1
-        fi
-    done
-
-    echo "Failed to stop server after ${MAX_ATTEMPTS} attempts"
-    return 1
+    if ! is_server_online; then
+        echo "Stopped!"
+        server_pid_remove
+	screen_stop
+        return 0
+    else
+	echo "Failed to stop server"
+	return 1
+    fi
 }
 function server_stop_nosave() {
     if ! is_server_online; then
@@ -235,25 +256,21 @@ function server_stop_nosave() {
         return 0
     fi
 
-    local ITER=1
-    while [ $ITER -le $MAX_ATTEMPTS ]; do
-        echo -n "Stopping Minecraft server (attempt #${ITER})... "
+    echo -n "Stopping Minecraft server... "
 
-        screen_cmd "stop" 5
+    screen_cmd "stop" 60 '^M+inecraft is stopped' "$SCREEN_LOG"
 
-        if ! is_server_online; then
-            echo "Success!"
-            server_pid_remove
-            get_screen_id
+    if ! is_server_online; then
+        echo "Success!"
+        server_pid_remove
+        if get_screen_id; then
 	    screen -S $SCREEN_ID -X quit
-            return 0
-        else
-            echo "Failed!"
-            let ITER=$ITER+1
-        fi
-    done
+	fi
+        return 0
+    else
+        echo "Failed!"
+    fi
 
-    echo "Failed to stop server after ${MAX_ATTEMPTS} attempts"
     return 1
 }
 
@@ -357,10 +374,14 @@ function change_map() {
     fi
 
     #world_nether and world_the_end are created by bukkit
+    echo -n "Deleting old map... "
     delete_map
+    echo "Deleted!"
+    echo -n "Installing new map... "
     cp -rp "${MAP_DIR}/$1" "${PATH_RUN}/world"
     rm -f "${PATH_RUN}/world/map_name.txt"
     echo -n "$1" > "${PATH_RUN}/world/map_name.txt"
+    echo "Installed!"
 
     if [ $WAS_ONLINE -eq 1 ]; then
        server_start;
@@ -375,10 +396,10 @@ function server_save() {
     fi
 
     echo -n "Saving world... "
-    screen_cmd "save-on" 1
-    screen_cmd "save-all" 15
-    screen_cmd "save-off" 1
-    echo "Complete"
+    screen_cmd "save-on"   10 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] CONSOLE: Enabling level saving..'
+    screen_cmd "save-all" 300 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] CONSOLE: Save complete.'
+    screen_cmd "save-off"  10 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] CONSOLE: Disabling level saving..'
+    echo "Saved!"
 }
 function server_backup() {
     if is_server_online; then
