@@ -139,7 +139,9 @@ function screen_start() {
 }
 function screen_stop() {
     get_screen_id
-    screen -S $SCREEN_ID -X quit
+    if [ "$SCREEN_ID" != "" ]; then  
+       screen -S $SCREEN_ID -X quit
+    fi
 }
 # Reset the screen. Use if a command fails to ensure the screen is clear of cruft
 function screen_reset() {
