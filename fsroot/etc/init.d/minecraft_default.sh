@@ -1,6 +1,6 @@
 #!/bin/sh
 
-CMD="/var/lib/minecraft/servers/default/minecraft.sh \"$1\" \"$2\" \"$3\" \"$4\" \"$5\" \"$6\" \"$7\" \"$8\" \"$9\""
+CMD="/var/lib/minecraft/servers/default/minecraft.sh $@"
 SU_TO_USER="www-data"
 
 if [ ! -z "$SU_TO_USER" ]; then
