@@ -27,6 +27,9 @@ fi
 if [ "$SERVER_ARGS" == "" ]; then
     SERVER_ARGS="-server"
 fi
+if [ "$USE_SAVEOFF" == "" ]; then
+    USE_SAVEOFF=false
+fi
 
 PATH_SERVER="$PATH_BASE/servers/$SERVER_SUBDIR/"
 PATH_RUN="$PATH_BASE/servers/$SERVER_SUBDIR/server"
@@ -216,8 +219,10 @@ function server_start() {
     screen_cmd "${SERVER} & echo \$! > ${PATH_MINECRAFT_PID} && fg; echo \"MMMMinecraft is stopped\"; exit" 30 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] Done \(\d+.\d+s\)! For help, type "help" or "\?"'
 
     if is_server_online; then
-        echo "Started!"
-        screen_cmd "save-off"
+	echo "Started!"
+	if $USE_SAVEOFF; then
+            screen_cmd "save-off"
+	fi
         return 0
     else
         echo "Failed!"
@@ -396,9 +401,13 @@ function server_save() {
     fi
 
     echo -n "Saving world... "
-    screen_cmd "save-on"   10 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] CONSOLE: Enabling level saving..'
+    if $USE_SAVEOFF; then
+	screen_cmd "save-on"   10 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] CONSOLE: Enabling level saving..'
+    fi
     screen_cmd "save-all" 300 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] CONSOLE: Save complete.'
-    screen_cmd "save-off"  10 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] CONSOLE: Disabling level saving..'
+    if $USE_SAVEOFF; then
+	screen_cmd "save-off"  10 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] CONSOLE: Disabling level saving..'
+    fi
     echo "Saved!"
 }
 function server_backup() {
