@@ -316,6 +316,8 @@ function kill_minecraft() {
 	return 1
     fi
 
+    echo "Sending kill signal to first java process... "
+
     local ATTEMPTS=10
     local ITER=1
     while [ $ITER -le $ATTEMPTS ]; do
@@ -323,7 +325,9 @@ function kill_minecraft() {
         sleep 1
 	if ! get_java_pid; then
 	    echo "Minecraft process seems to have been killed!"
-	    screen_stop
+	    if get_screen_id; then
+		screen_stop
+	    fi
 	    return 0;
 	else
             echo "Failed!"
@@ -350,7 +354,9 @@ function nuke() {
         sleep 1
 	if ! get_java_pid; then
 	    echo "Minecraft process seems to have been nuked!"
-	    screen_stop
+	    if get_screen_id; then
+		screen_stop
+	    fi
 	    return 0;
 	else
             echo "Failed!"
@@ -644,9 +650,9 @@ case $1 in
 	if nuke; then
 	    delete_map
 	    echo "Map has been deleted!"
-	    delete_conf
-	    echo "Plugin configuration has been deleted!"
-	    echo "Done killing, nuking, and deleting! "
+	    #delete_conf
+	    #echo "Plugin configuration has been deleted!"
+	    echo "Done nuking, and deleting! "
 	fi
 	;;
     changemap)

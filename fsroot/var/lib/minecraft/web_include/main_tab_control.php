@@ -13,7 +13,7 @@ Currently loaded map: <b><?php echo htmlspecialchars($mc->get_current_map(true))
 <input type="submit" name="stop" value="Stop">
 <input type="submit" name="kill" value="Kill">
 <input type="submit" name="nuke" value="Nuke (kill -9)">
-<input type="submit" name="nuke_and_delete" value="Nuke from orbit (kill -9 and delete map and configuration)">
+<input type="submit" name="nuke_and_delete" value="Nuke from orbit (kill -9 and delete map)">
 </p>
 
 <!--
