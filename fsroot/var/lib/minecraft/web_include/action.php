@@ -38,14 +38,13 @@ printf("query_string = '%s';", $qs);
 
   var xmlhttp = new XMLHttpRequest();
   xmlhttp.onreadystatechange = function() {
-    console.log()
     if (xmlhttp.readyState==4 || xmlhttp.readyState==3) {
       var pre = document.getElementById("pre");
       var text = document.createTextNode(xmlhttp.responseText);
       console.log(text);
       pre.innerHTML = "";
       pre.appendChild(text);
-      }
+    }
     if (xmlhttp.readyState==4) {
       var loading_msg = document.getElementById("loading_msg");
       loading_msg.parentNode.removeChild(loading_msg);
