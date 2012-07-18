@@ -237,7 +237,7 @@ class minecraft {
       $this->my_passthru($cmd);
     }
 
-    echo "Saving... ";
+    echo htmlspecialchars("Copying to '$target'... ");
     $world_file = sprintf("%s/server/world",
 			  $this->server_dir);
     $target_full_path = minecraft_map::validate($target);
@@ -246,7 +246,7 @@ class minecraft {
 		   escapeshellarg($target_full_path)
 		   );
     $this->my_passthru($cmd);
-    echo "Saved!";
+    echo "Copied!";
 
     if ($do_stop) {
       $this->start();
