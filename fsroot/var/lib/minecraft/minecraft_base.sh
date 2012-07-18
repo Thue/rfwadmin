@@ -179,7 +179,7 @@ function server_start() {
         echo -n "Starting Minecraft server (attempt #${ITER})... "
 
         screen_cmd "cd ${PATH_RUN}"
-        screen_cmd "${SERVER} & echo \$! > ${PATH_MINECRAFT_PID} && fg" 3
+        screen_cmd "${SERVER} & echo \$! > ${PATH_MINECRAFT_PID} && fg; exit" 3
 
         if is_server_online; then
             echo "Success!"
