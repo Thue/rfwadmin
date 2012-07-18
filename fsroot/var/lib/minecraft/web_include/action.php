@@ -41,7 +41,6 @@ printf("query_string = '%s';", $qs);
     if (xmlhttp.readyState==4 || xmlhttp.readyState==3) {
       var pre = document.getElementById("pre");
       var text = document.createTextNode(xmlhttp.responseText);
-      console.log(text);
       pre.innerHTML = "";
       pre.appendChild(text);
     }
