@@ -4,9 +4,8 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title><?php echo htmlspecialchars($mc->html_title); ?></title>
 
-    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
     <link rel="stylesheet" type="text/css" href="rfwadmin_files/main.css" />
-    <script type="text/javascript" src="rfwadmin_files/main.js"></script>
+    <script type="text/javascript" src="rfwadmin_files/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="rfwadmin_files/main.js"></script>
 
   </head>
