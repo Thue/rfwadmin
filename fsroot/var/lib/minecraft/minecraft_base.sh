@@ -60,6 +60,25 @@ function send_command() {
     screen_cmd "$1"
 }
 
+function list() {
+    if ! is_server_online; then
+        echo "Server is offline"
+        return 1
+    fi
+
+    local OFFSET=`cat "$SERVER_LOG" |wc -l`
+    local OFFSET=`expr $OFFSET + 1`
+    #local PREG='^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] Connected players: .*.\[m'
+    local PREG='^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] Connected players: '
+    if ! screen_cmd "list" 10 "$PREG" "$SERVER_LOG"; then
+	echo "Failed to find list output!";
+	return 1;
+    fi
+
+    LIST_LINE=`tail -n +$OFFSET "$SERVER_LOG" | grep -P "$PREG" | sed 's/.*: \(.*\).\[m/\1/'| head -n 1`
+    return 0
+}
+
 function is_server_online() {
     if [ -f $PATH_MINECRAFT_PID ]; then
         PID=`cat $PATH_MINECRAFT_PID`
@@ -695,6 +714,11 @@ case $1 in
     send_command)
         send_command "$2"
         ;;
+    list)
+	if list; then
+	    echo $LIST_LINE
+	fi
+	;;
     unlock)
 	force_unlock
 	;;
