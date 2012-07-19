@@ -61,7 +61,7 @@ class textareas {
 	$ipv6_regexp = '/^(((?=(?>.*?(::))(?!.+\3)))\3?|([\dA-F]{1,4}(\3|:(?!$)|$)|\2))(?4){5}((?4){2}|(25[0-5]|(2[0-4]|1\d|[1-9])?\d)(\.(?7)){3})\z/i';
 	if (!preg_match($ipv4_regexp, $item)
 	    && !preg_match($ipv6_regexp, $item)) {
-	  $error = sprintf("invalid ipv4/ipv6 regexp '%s'.", $item);
+	  $error = sprintf("invalid ipv4/ipv6 address '%s'.", $item);
 	  return false;
 	}
       }
