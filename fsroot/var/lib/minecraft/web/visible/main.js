@@ -29,7 +29,7 @@ function switch_tabs(obj) {
 
 function set_cookie(name, value, expire_seconds) {
     var expire_date = new Date();
-    expire_date.setTime(expire_date.getTime() + expire_seconds);
+    expire_date.setTime(expire_date.getTime() + expire_seconds*1000);
     var cookie_string = escape(value) + "; expires="+expire_date.toUTCString();
     document.cookie = name + "=" + cookie_string;
 }
