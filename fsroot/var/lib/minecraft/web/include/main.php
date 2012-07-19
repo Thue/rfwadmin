@@ -4,14 +4,10 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title><?php echo htmlspecialchars($mc->html_title); ?></title>
 
-    <style type="text/css">
-<?php require_once(dirname(__FILE__) . "/main.css"); ?>
-    </style>
-
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-    <script type="text/javascript">
-<?php require_once(dirname(__FILE__) . "/main.js"); ?>
-    </script>
+    <link rel="stylesheet" type="text/css" href="rfwadmin_files/main.css" />
+    <script type="text/javascript" src="rfwadmin_files/main.js"></script>
+    <script type="text/javascript" src="rfwadmin_files/main.js"></script>
 
   </head>
 
