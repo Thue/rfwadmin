@@ -23,14 +23,14 @@ function switch_tabs(obj) {
     $('#'+id).show();
     obj.addClass("selected");
 
-    set_cookie("active_tab", id, 1);
+    set_cookie("active_tab", id, 60*60);
 }
 
-function set_cookie(c_name,value,exdays) {
-    var exdate=new Date();
-    exdate.setDate(exdate.getDate() + exdays);
-    var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
-    document.cookie=c_name + "=" + c_value;
+function set_cookie(name, value, expire_seconds) {
+    var expire_date = new Date();
+    expire_date.setTime(expire_date.getTime() + expire_seconds);
+    var cookie_string = escape(value) + "; expires="+expire_date.toUTCString();
+    document.cookie = name + "=" + cookie_string;
 }
 
 function get_cookie(c_name) {
