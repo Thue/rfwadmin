@@ -163,8 +163,10 @@ function screen_cmd() {
 	    SLEPT=0
 	    while  [[ $SLEPT -le $2 ]]; do
 		#renew lock
-		unlock
-		lock
+		if ! extend_lock; then
+		    echo "Command failed: $1"
+		    return 1
+		fi
 
 		for SUBSLEEP in { 1 .. 5 }; do
 		    if screen_log_find_regexp "$3" "$LOGFILE" $START_LINE; then
@@ -548,6 +550,28 @@ function unlock() {
 
 	unlock2
     fi
+}
+
+function extend_lock() {
+    if lock2; then
+	get_lockfile_pid
+	if [ "$LOCKFILE_PID" == "$$" ]; then
+	    TMP=`mktemp`
+	    echo "$$" >> $TMP
+	    get_cmdline
+	    echo $CMDLINE >> $TMP
+	    chmod go+r "${LOCKFILE}"
+	    mv "$TMP" "${LOCKFILE}"
+	else
+	    echo "lockfile doesn't belong to current process - refusing to delete"
+	    unlock2
+	    return 1
+	fi	
+	unlock2
+	return 0
+    fi
+    echo "Failed to extend lock!"
+    return 1
 }
 
 function get_lockfile_pid() {
