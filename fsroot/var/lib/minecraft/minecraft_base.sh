@@ -243,7 +243,7 @@ function server_stop() {
     server_save
 
     echo -n "Stopping Minecraft server ... "
-    screen_cmd "stop" 60 '^M+inecraft is stopped' "$SCREEN_LOG"
+    screen_cmd "stop" 60 '^(\>\s*)*M+inecraft is stopped' "$SCREEN_LOG"
 
     if ! is_server_online; then
         echo "Stopped!"
@@ -263,7 +263,7 @@ function server_stop_nosave() {
 
     echo -n "Stopping Minecraft server... "
 
-    screen_cmd "stop" 60 '^M+inecraft is stopped' "$SCREEN_LOG"
+    screen_cmd "stop" 60 '^(\>\s*)*M+inecraft is stopped' "$SCREEN_LOG"
 
     if ! is_server_online; then
         echo "Success!"
@@ -635,6 +635,8 @@ case $1 in
             screen_cmd "say Server restarting..."
             if server_stop; then
 		server_start
+	    else
+		echo "Failed to stop server!"
 	    fi
         else
             server_start
