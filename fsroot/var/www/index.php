@@ -7,7 +7,7 @@ ini_set("display_errors", 1);
 
 $include_base = "/var/lib/minecraft";
 $server_dir = $include_base . "/servers/default";
-require_once($include_base . "/web_include/include.php");
+require_once($include_base . "/web/include/include.php");
 $mc = new minecraft($include_base . "/servers/default" /* server dir */);
 //$mc->html_title = "Custom title here";
 
@@ -24,7 +24,7 @@ if ($_POST !== Array()) {
   }
 }
 
-require_once($include_base . "/web_include/dispatcher.php");
+require_once($include_base . "/web/include/dispatcher.php");
 dispatch($mc, isset($_GET["page"]) ? $_GET["page"] : "main");
 
 ?>
