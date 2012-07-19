@@ -7,6 +7,8 @@ flush();
 
 if (isset($_POST["save_properties"])) {
   $mc->save_properties();
+} else if (isset($_POST["save_textareas"])) {
+  $mc->save_textareas();
 } else if (isset($_POST["start"])) {
   $mc->start();
 } else if (isset($_POST["stop"])) {

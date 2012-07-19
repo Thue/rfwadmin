@@ -1,6 +1,7 @@
 <?php
 require_once(dirname(__FILE__) . "/ansi_shell_to_html.php");
 require_once(dirname(__FILE__) . "/properties.php");
+require_once(dirname(__FILE__) . "/textareas.php");
 
 function e($text) {
   return htmlspecialchars($text);
@@ -299,6 +300,18 @@ class minecraft {
     $path = $this->get_properties_path();
     $properties = new properties($path);
     $properties->save();
+  }
+
+  public function get_textareas() {
+    $path = $this->server_dir . "/server";
+    $textareas = new textareas($path);
+    return $textareas;
+  }
+
+  public function save_textareas() {
+    $path = $this->server_dir . "/server";
+    $textareas = new textareas($path);
+    $textareas->save_from_post();
   }
 }
 
