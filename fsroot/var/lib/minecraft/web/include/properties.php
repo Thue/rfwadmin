@@ -86,7 +86,7 @@ class properties {
       $html .= "  " . $html2 . "\n";
     }
 
-    $html .= '  <tr><td>spawn-herobrine</td><td><input type="checkbox" checked="checked"></td></tr>\n';
+    $html .= "  <tr><td>spawn-herobrine</td><td><input type=\"checkbox\" checked=\"checked\"></td></tr>\n";
 
 
     $html .= "</table>";
