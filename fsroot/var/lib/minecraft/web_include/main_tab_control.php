@@ -31,7 +31,7 @@ Logs: <a href="show_log.php?log=screen.log">screen.log</a>, <a href="show_log.ph
 <h1>Maps</h1>
 
 <p>
-<select name="map">
+<select name="map" id="map">
 <?php
 $maps = minecraft_map::get_map_list();
 $current = $mc->get_current_map(false);

@@ -13,6 +13,7 @@ $(document).ready(function() {
     }
 
     switch_tabs(tab);
+    document.random_load_id = Math.random();
 });
 
 function switch_tabs(obj) {

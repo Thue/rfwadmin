@@ -47,6 +47,7 @@ printf("query_string = '%s';", $qs);
     if (xmlhttp.readyState==4) {
       var loading_msg = document.getElementById("loading_msg");
       loading_msg.parentNode.removeChild(loading_msg);
+      self.opener.location.reload();
     }
   }
   xmlhttp.open("POST","index.php?page=action_ajax",true);

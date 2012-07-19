@@ -5,6 +5,7 @@
     <title>
       <?php echo htmlspecialchars($mc->html_title) . " - Uploading map";?>
     </title>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
   </head>
 
   <body>
@@ -67,6 +68,7 @@ function install_map($parent_dir, $filename_hint) {
 			 );
 	  passthru($cmd);
 	  echo "installed!\n";
+	  reload_main($name);
 	}
 	$moved = true;
 	break;
@@ -121,6 +123,25 @@ function unpack_file($path) {
   }
 
   return $tmp;
+}
+
+function reload_main($map) {
+  ?>
+  <script type="text/javascript">
+
+    var old_random = self.opener.document.random_load_id;
+    self.opener.location.reload();
+    function try_set_map(map, time_left) {
+      if (self.opener.document.random_load_id !== undefined
+	  && self.opener.document.random_load_id !== old_random) {
+	self.opener.$("#map").val(map);
+      } else if (time_left > 0) {
+	setTimeout(function() {try_set_map(map, time_left-100)}, 100);	
+      }
+    }
+    setTimeout(function() {try_set_map(<?echo json_encode($map); ?>, 10000)}, 200);
+  </script>
+  <?php
 }
 
 if (isset($_POST["upload_file"])) {
