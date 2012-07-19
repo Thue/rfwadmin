@@ -122,6 +122,44 @@ class minecraft {
     return ansi_shell_to_html::cmdline_to_html(implode("", $output));
   }
 
+  public function get_users_html() {
+    $users = $this->get_connected_users();
+    $html = "";
+    foreach ($users as $user) {
+      if ($html !== "") {
+	$html .= ", ";
+      }
+      $html .= sprintf("<b>%s</b>", e($user));
+    }
+
+    if ($html === "") {
+      $html = "(none)";
+    }
+
+    return $html;
+  }
+
+  public function get_connected_users() {
+    $cmd = $this->cmd(Array("list"));
+    $output = Array();
+    exec($cmd, $output, $res);
+    $users = null;
+    if ($res === 0) {
+      assert(sizeof($output) === 1);
+      $users_string = trim($output[0]);
+      if ($users_string === "") {
+	$users = Array();
+      } else {
+	$users = explode(" ", $users_string);
+	foreach ($users as $i => $user) {
+	  $users[$i] = trim($user);
+	}
+      }
+    }
+
+    return $users;
+  }
+
   public function get_current_map($as_text) {
     $map_name = null;
     if (file_exists($this->map_name_file)) {

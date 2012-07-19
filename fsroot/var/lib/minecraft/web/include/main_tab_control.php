@@ -2,6 +2,7 @@
 
 <p>
 Status: <?php echo $mc->get_status(); ?><br>
+Users online: <?php echo $mc->get_users_html(); ?><br>
 Currently loaded map: <b><?php echo htmlspecialchars($mc->get_current_map(true)); ?></b>
 <?php if (($loaded = $mc->get_map_age(true)) !== null) {echo htmlspecialchars(" (loaded ".$loaded.")");}?>
 </p>
