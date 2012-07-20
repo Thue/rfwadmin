@@ -177,6 +177,22 @@ if (isset($_POST["upload_file"])) {
     $filename_hint = $matches[1];
   }
 
+  if (mime_content_type($path) === "text/html") {
+    echo "Not a zip file!\n";
+
+    echo "</pre>";
+    printf('The link <a href="%1$s">%1$s</a> points to a HTML document suitable for viewing in a '.
+	   "browser, and not to a zip file. Usually this a download site trying to ".
+	   "earn ad money by having an intermediate download page. ".
+	   "One fairly sure way of getting the actual download link is to actually start ".
+	   "the download in the browser <a href=\"http://www.google.com/chrome/\">Google Chrome</a>, then pushing CTRL-j, and then ".
+	   "copying the link displayed below the file name.",
+	   e($_POST["link"])
+	   );
+    exit(1);
+  }
+
+
   $tmp = unpack_file($path);
 
   install_map($tmp, $filename_hint);
