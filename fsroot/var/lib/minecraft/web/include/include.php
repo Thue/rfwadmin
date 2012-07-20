@@ -125,11 +125,15 @@ class minecraft {
   public function get_users_html() {
     $users = $this->get_connected_users();
     $html = "";
-    foreach ($users as $user) {
-      if ($html !== "") {
-	$html .= ", ";
+    if ($users !== null) {
+      foreach ($users as $user) {
+	if ($html !== "") {
+	  $html .= ", ";
+	}
+	$html .= sprintf("<b>%s</b>", e($user));
       }
-      $html .= sprintf("<b>%s</b>", e($user));
+    } else {
+      $html = "(list failed)";
     }
 
     if ($html === "") {

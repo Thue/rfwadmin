@@ -717,6 +717,9 @@ case $1 in
     list)
 	if list; then
 	    echo $LIST_LINE
+	else
+	    unlock
+	    exit 1
 	fi
 	;;
     unlock)
