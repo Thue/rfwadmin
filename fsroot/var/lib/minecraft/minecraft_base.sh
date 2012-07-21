@@ -75,7 +75,7 @@ function list() {
 	return 1;
     fi
 
-    LIST_LINE=`tail -n +$OFFSET "$SERVER_LOG" | grep -P "$PREG" | sed 's/.*: \(.*\)\(.\[m\)\?/\1/'| head -n 1`
+    LIST_LINE=`tail -n +$OFFSET "$SERVER_LOG" | grep -P "$PREG" | sed 's/.*: \([^\[]*\)\(.\[m\)\?/\1/'| head -n 1`
     return 0
 }
 
