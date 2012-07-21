@@ -68,14 +68,14 @@ function list() {
 
     local OFFSET=`cat "$SERVER_LOG" |wc -l`
     local OFFSET=`expr $OFFSET + 1`
-    #local PREG='^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] Connected players: .*.\[m'
+    #local PREG='^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] Connected players: .*(.\[m)?'
     local PREG='^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] Connected players: '
     if ! screen_cmd "list" 10 "$PREG" "$SERVER_LOG"; then
 	echo "Failed to find list output!";
 	return 1;
     fi
 
-    LIST_LINE=`tail -n +$OFFSET "$SERVER_LOG" | grep -P "$PREG" | sed 's/.*: \(.*\).\[m/\1/'| head -n 1`
+    LIST_LINE=`tail -n +$OFFSET "$SERVER_LOG" | grep -P "$PREG" | sed 's/.*: \(.*\)\(.\[m\)\?/\1/'| head -n 1`
     return 0
 }
 
