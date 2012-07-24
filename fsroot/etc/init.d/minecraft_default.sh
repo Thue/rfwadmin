@@ -13,7 +13,6 @@
 CMD="/var/lib/minecraft/servers/default/minecraft.sh"
 for ARG in "$@"; do
   CMD="$CMD \"$ARG\""
-  echo $CMD
 done
 
 SU_TO_USER="www-data"
