@@ -31,7 +31,7 @@ if [ "$USE_SAVEOFF" == "" ]; then
     USE_SAVEOFF=false
 fi
 
-PATH_SERVER="$PATH_BASE/servers/$SERVER_SUBDIR/"
+PATH_SERVER="$PATH_BASE/servers/$SERVER_SUBDIR"
 PATH_RUN="$PATH_BASE/servers/$SERVER_SUBDIR/server"
 PATH_BACKUP="$PATH_BASE/servers/$SERVER_SUBDIR/backups"
 
