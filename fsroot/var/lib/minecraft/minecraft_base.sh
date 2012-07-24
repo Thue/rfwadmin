@@ -303,6 +303,12 @@ function server_stop_nosave() {
     return 1
 }
 
+function server_reload() {
+        if is_server_online; then
+            screen_cmd "reload"
+        fi
+}
+
 function get_java_pid() {
     if ! get_screen_pid; then
 	echo "Couldn't find screen, so java presumably not running.";
@@ -706,10 +712,8 @@ case $1 in
     changemap)
         change_map "$2"
         ;;
-    reload)
-        if is_server_online; then
-            screen_cmd "reload"
-        fi
+    reload|force-reload)
+	server_reload
         ;;
     send_command)
         send_command "$2"
