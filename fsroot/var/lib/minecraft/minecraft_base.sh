@@ -304,9 +304,16 @@ function server_stop_nosave() {
 }
 
 function server_reload() {
-        if is_server_online; then
-            screen_cmd "reload"
+        if ! is_server_online; then
+	    return 1
         fi
+
+        if screen_cmd "reload" 30 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] (.\[32;1m)?Reload complete\.(.\[m)?'; then
+	    return 0
+	else
+	    echo Failed to reload within 30 seconds, got tired of waiting.
+	    return 1
+	fi
 }
 
 function get_java_pid() {
@@ -713,7 +720,10 @@ case $1 in
         change_map "$2"
         ;;
     reload|force-reload)
-	server_reload
+	if ! server_reload; then
+	    unlock
+	    exit 1;
+	fi
         ;;
     send_command)
         send_command "$2"
