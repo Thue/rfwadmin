@@ -234,7 +234,12 @@ class minecraft {
       ob_flush();
       flush();
     }
-    pclose($handle);
+
+    $retval = pclose($handle);
+    if ($retval === -1) {
+      echo "error in pclose";
+    }
+    return $retval;
   }
 
   public function start() {
