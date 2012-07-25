@@ -95,11 +95,10 @@ class minecraft_map {
 }
 
 class minecraft {
-  public $server_dir; //set in index.php
-  public $msh;
-  public $map_name_file;
-  public $level_dat_location;
-  public $html_title = "rfwadmin";
+  public $server_dir; //Set in index.php, fx "/var/lib/minecraft/servers/default"
+  public $msh; //Path to Minecraft.sh
+  public $map_name_file; //Name of the currently loaded map
+  public $html_title = "rfwadmin"; //Shown in title of all HTML pages
 
   function __construct($server_dir) {
     $this->server_dir = $server_dir;
