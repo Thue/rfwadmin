@@ -305,13 +305,14 @@ function server_stop_nosave() {
 
 function server_reload() {
         if ! is_server_online; then
+	    echo "Server is offline, so can't reload."
 	    return 1
         fi
 
         if screen_cmd "reload" 30 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] (.\[32;1m)?Reload complete\.(.\[m)?'; then
 	    return 0
 	else
-	    echo Failed to reload within 30 seconds, got tired of waiting.
+	    echo "Failed to reload within 30 seconds, got tired of waiting."
 	    return 1
 	fi
 }
