@@ -257,6 +257,17 @@ class minecraft {
     $this->my_passthru($cmd);
   }
 
+  public function reload() {
+    echo "Sending reload command to server... ";
+    ob_flush();
+    flush();
+    $cmd = $this->cmd(Array("reload"));
+    $retval = $this->my_passthru($cmd);
+    if ($retval === 0) {
+      echo "successfully reloaded!";
+    }
+  }
+
   public function kill() {
     $cmd = $this->cmd(Array("kill"));
     $this->my_passthru($cmd);

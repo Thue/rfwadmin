@@ -15,6 +15,8 @@ if (isset($_POST["save_properties"])) {
   $mc->stop();
 } else if (isset($_POST["restart"])) {
   $mc->restart();
+} else if (isset($_POST["reload"])) {
+  $mc->reload();
 } else if (isset($_POST["kill"])) {
   $mc->kill();
 } else if (isset($_POST["nuke"])) {
