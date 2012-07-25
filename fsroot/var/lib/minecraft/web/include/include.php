@@ -228,7 +228,12 @@ class minecraft {
    */
   public function my_passthru($cmd) {
     $handle = popen($cmd, "r");
-    while (!feof($handle) && ($read = fread($handle, 1000)) !== false) {
+    /* For some reason this loop stalls, even though there is still data to
+     * read, when streaming log if the second argument to fread is
+     * some values, fx 1000. Probably a PHP bug. 10000 seems to make
+     * the bug less likely, but it is probably still there.
+     */
+    while (!feof($handle) && ($read = fread($handle, 10000)) !== false) {
       echo $read;
       ob_flush();
       flush();
@@ -336,6 +341,52 @@ class minecraft {
 		   );
     $this->my_passthru($cmd);
     echo "Renamed!";
+  }
+
+  public function get_log_path() {
+    $path = sprintf("%s/server/server.log", $this->server_dir);
+    return $path;
+  }
+
+  public function stream_log() {
+    /* Since this is a persistent connection it can in principle keep
+     * working forever. So raise the time limit a bit. Note that
+     * waiting on read in my_passthru doesn't count towards the time
+     * limit, and I haven't actually seen it run out of time yet. */
+    if (ini_get("max_execution_time") < 300) {
+      ini_set("max_execution_time", 300);
+    }
+
+    $path = $this->get_log_path();
+    $lines = file($path);
+
+    //Per default we start with the last 1000 lines
+    $num_lines_skipped = max(0, sizeof($lines)-999);
+
+    //Skip lines older than 24 hours
+    for ($i=1000; $i>0; $i--) {
+      $line = $lines[sizeof($lines) - $i];
+      if (!preg_match("/^(\d\d\d\d)-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d) /", $line, $matches)) {
+	echo "Failed to extract datetime from log line - this shouldn't be possible!\n";
+	break;
+      } else {
+	$timestamp = mktime($matches[4], $matches[5], $matches[6], $matches[2], $matches[3], $matches[1]);
+	if (time() - $timestamp > 24*60*60) {
+	  $num_lines_skipped++;
+	}
+      }
+    }
+
+    if (sizeof($lines) - $num_lines_skipped > 1000) {
+      echo "error: " . $num_lines_skipped;
+      $num_lines_skipped = sizeof($lines) - 1000;
+    }
+
+    $cmd = sprintf("tail -f -n +%d %s",
+		   $num_lines_skipped,
+		   escapeshellarg($path)
+		   );
+    $this->my_passthru($cmd);
   }
 
   public function get_properties_path() {
