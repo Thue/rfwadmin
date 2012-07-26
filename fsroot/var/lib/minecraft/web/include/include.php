@@ -109,8 +109,9 @@ class minecraft {
   function cmd(Array $args) {
     $cmd = $this->msh;
     foreach ($args as $arg) {
-      $cmd .= " " . escapeshellarg($arg) . " 2>&1";
+      $cmd .= " " . escapeshellarg($arg);
     }
+    $cmd .= " 2>&1";
     return $cmd;
   }
 
@@ -436,6 +437,12 @@ class minecraft {
     $path = $this->server_dir . "/server";
     $textareas = new textareas($path);
     $textareas->save_from_post();
+  }
+
+  public function submit_commandline($commandline) {
+    $cmd = $this->cmd(Array("send_command", $commandline));
+    echo $cmd;
+    $this->my_passthru($cmd);
   }
 }
 

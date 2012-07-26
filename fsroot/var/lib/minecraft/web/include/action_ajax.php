@@ -35,6 +35,8 @@ if (isset($_POST["save_properties"])) {
   $mc->stream_server_log();
 } else if (isset($_POST["stream_log"]) && $_POST["stream_log"] === "screen.log") {
   $mc->stream_screen_log();
+} else if (isset($_POST["submit_commandline"])) {
+  $mc->submit_commandline($_POST["commandline"]);
 } else {
   echo "unrecognized command";
 }
