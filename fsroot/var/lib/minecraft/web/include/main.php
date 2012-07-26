@@ -8,6 +8,7 @@
     <script type="text/javascript" src="rfwadmin_files/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="rfwadmin_files/jquery.autosize.js"></script>
     <script type="text/javascript" src="rfwadmin_files/main.js"></script>
+    <script type="text/javascript" src="rfwadmin_files/log.js"></script>
   </head>
 
 <body>

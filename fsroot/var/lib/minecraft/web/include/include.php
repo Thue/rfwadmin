@@ -343,12 +343,27 @@ class minecraft {
     echo "Renamed!";
   }
 
-  public function get_log_path() {
+  public function get_server_log_path() {
     $path = sprintf("%s/server/server.log", $this->server_dir);
     return $path;
   }
 
-  public function stream_log() {
+  public function get_screen_log_path() {
+    $path = sprintf("%s/screen.log", $this->server_dir);
+    return $path;
+  }
+
+  public function stream_screen_log() {
+    $path = $this->get_screen_log_path();
+    $this->stream_log($path, false);;
+  }
+
+  public function stream_server_log() {
+    $path = $this->get_server_log_path();
+    $this->stream_log($path, true);
+  }
+
+  public function stream_log($path, $do_time_limit) {
     /* Since this is a persistent connection it can in principle keep
      * working forever. So raise the time limit a bit. Note that
      * waiting on read in my_passthru doesn't count towards the time
@@ -357,22 +372,23 @@ class minecraft {
       ini_set("max_execution_time", 300);
     }
 
-    $path = $this->get_log_path();
     $lines = file($path);
 
     //Per default we start with the last 1000 lines
     $num_lines_skipped = max(0, sizeof($lines)-999);
 
-    //Skip lines older than 24 hours
-    for ($i=1000; $i>0; $i--) {
-      $line = $lines[sizeof($lines) - $i];
-      if (!preg_match("/^(\d\d\d\d)-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d) /", $line, $matches)) {
-	echo "Failed to extract datetime from log line - this shouldn't be possible!\n";
-	break;
-      } else {
-	$timestamp = mktime($matches[4], $matches[5], $matches[6], $matches[2], $matches[3], $matches[1]);
-	if (time() - $timestamp > 24*60*60) {
-	  $num_lines_skipped++;
+    if ($do_time_limit) {
+      //Skip lines older than 24 hours
+      for ($i=1000; $i>0; $i--) {
+	$line = $lines[sizeof($lines) - $i];
+	if (!preg_match("/^(\d\d\d\d)-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d) /", $line, $matches)) {
+	  echo "Failed to extract datetime from log line - this shouldn't be possible!\n";
+	  break;
+	} else {
+	  $timestamp = mktime($matches[4], $matches[5], $matches[6], $matches[2], $matches[3], $matches[1]);
+	  if (time() - $timestamp > 24*60*60) {
+	    $num_lines_skipped++;
+	  }
 	}
       }
     }

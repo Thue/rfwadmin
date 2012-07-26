@@ -31,8 +31,10 @@ if (isset($_POST["save_properties"])) {
   $mc->rename_map($_POST["map"], $_POST["rename_to"]);
 } else if (isset($_POST["delete_map"])) {
   $mc->delete_map($_POST["map"]);
-} else if (isset($_POST["stream_log"])) {
-  $mc->stream_log();
+} else if (isset($_POST["stream_log"]) && $_POST["stream_log"] === "server.log") {
+  $mc->stream_server_log();
+} else if (isset($_POST["stream_log"]) && $_POST["stream_log"] === "screen.log") {
+  $mc->stream_screen_log();
 } else {
   echo "unrecognized command";
 }
