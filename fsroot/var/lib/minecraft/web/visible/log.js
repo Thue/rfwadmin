@@ -27,6 +27,7 @@ function log(tab_id, prefix, logfile) {
     this.inited = false;
     this.visible = $("a[rel="+tab_id+"].selected").length > 0;
     this.at_bottom_state = true; //scrolled to the bottom
+    this.scrollTop = null;
 
     /* Number of characters already displayed in the log, to know
      * where to continue when receiving more. */
@@ -52,6 +53,8 @@ log.prototype.afterShow = function() {
 	this.resize_log();
 	if (this.at_bottom_state) {
 	    this.scroll_to_bottom();
+	} else if (this.scrollTop !== null){
+	    this.div.scrollTop = this.scrollTop;
 	}
     }
 }
@@ -59,6 +62,7 @@ log.prototype.afterShow = function() {
 log.prototype.beforeHide = function() {
     this.visible = false;
     this.at_bottom_state = this.at_bottom();
+    this.scrollTop = this.div.scrollTop;
 }
 
 //are we scrolled to bottom?
