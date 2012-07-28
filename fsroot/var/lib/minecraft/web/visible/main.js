@@ -17,12 +17,26 @@ $(document).ready(function() {
 });
 
 function switch_tabs(obj) {
+    //call tab onhide function - while still visible
+    var old_id = $("a.selected").attr("rel");
+    var fname = old_id + "_beforeHide";
+    if (typeof(window[fname]) == "function") {
+	window[fname]();
+    }
+
+
     $('.tab-content').hide();
     $('.tabs a').removeClass("selected");
     var id = obj.attr("rel");
 
     $('#'+id).show();
     obj.addClass("selected");
+
+    //call tab onshow function
+    var fname = id + "_afterShow";
+    if (typeof(window[fname]) == "function") {
+	window[fname]();
+    }
 
     set_cookie("active_tab", id, 60*60);
 }

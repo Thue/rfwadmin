@@ -1,6 +1,6 @@
 <div id="screenlog_container"></div>
 <script type="text/javascript">
-   $(document).ready(function() {document.screenlog = new log("screenlog", "screen.log");});
+   $(document).ready(function() {document.screenlog = new log("commandline", "screenlog", "screen.log");});
 </script>
 
 <form method="post" action="index.php?page=action" target="_blank">

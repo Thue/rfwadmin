@@ -1,4 +1,4 @@
-function log(prefix, logfile) {
+function log(tab_id, prefix, logfile) {
     this.prefix = prefix;
     this.container = $("#"+prefix+"_container").get(0);
 
@@ -25,10 +25,15 @@ function log(prefix, logfile) {
 
     /* Set to true after the first chunk of the log has been received. */
     this.inited = false;
+    this.visible = $("a[rel="+tab_id+"].selected").length > 0;
+    this.at_bottom_state = true; //scrolled to the bottom
 
     /* Number of characters already displayed in the log, to know
      * where to continue when receiving more. */
     this.log_fetched_length = 0;
+
+    window[tab_id + "_afterShow"] = function() {tthis.afterShow();};
+    window[tab_id + "_beforeHide"] = function() {tthis.beforeHide();};
 
     var tthis = this;
     $(document).ready(function() {tthis.resize_log();});
@@ -41,6 +46,30 @@ function log(prefix, logfile) {
     this.xmlhttp.send("stream_log="+logfile);
 }
 
+log.prototype.afterShow = function() {
+    if (!this.visible) {
+	this.visible = true;
+	this.resize_log();
+	if (this.at_bottom_state) {
+	    this.scroll_to_bottom();
+	}
+    }
+}
+
+log.prototype.beforeHide = function() {
+    this.visible = false;
+    this.at_bottom_state = this.at_bottom();
+}
+
+//are we scrolled to bottom?
+log.prototype.at_bottom = function() {
+    var elem = $(this.div);
+    var inner = $(this.pre);
+
+    var at_bottom = Math.abs(inner.offset().top) + elem.height() + elem.offset().top >= this.pre.scrollHeight;
+    return at_bottom;
+}
+
 log.prototype.onreadystatechange = function() {
     if (this.xmlhttp.readyState==4 || this.xmlhttp.readyState==3) {
 	if (!this.log_inited) {
@@ -48,20 +77,15 @@ log.prototype.onreadystatechange = function() {
 	    this.log_inited = true;
 	}
 
-	//are we scrolled to bottom?
-	var elem = $(this.div);
-	var inner = $(this.pre);
-	var at_bottom = Math.abs(inner.offset().top) + elem.height() + elem.offset().top >= this.pre.scrollHeight;
+	var at_bottom_state = this.at_bottom();
 
 	var num_new = this.xmlhttp.responseText.length - this.log_fetched_length;
 	var text = document.createTextNode(this.xmlhttp.responseText.substring(this.log_fetched_length));
 	this.pre.appendChild(text);
 	this.log_fetched_length = this.xmlhttp.responseText.length
 
-	if (at_bottom) {
-	    //If I don't do it with the timeout, it doesn't work in Chrome!
-	    var tthis = this;
-	    setTimeout(function() {tthis.scroll_to_bottom()}, 2);
+	if (at_bottom_state) {
+	    this.scroll_to_bottom();
 	}
     }
     if (this.xmlhttp.readyState==4) {
@@ -74,6 +98,8 @@ log.prototype.scroll_to_bottom = function() {
 };
 
 log.prototype.resize_log = function() {
-    var try_set_height = $(window).height() - ($(document.body).outerHeight(true) - $(this.pre).height());
-    this.pre.style.height = try_set_height + "px";
+    if (this.visible) {
+	var try_set_height = $(window).height() - ($(document.body).outerHeight(true) - $(this.pre).height());
+	this.pre.style.height = try_set_height + "px";
+    }
 };
