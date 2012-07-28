@@ -74,6 +74,6 @@ log.prototype.scroll_to_bottom = function() {
 };
 
 log.prototype.resize_log = function() {
-    var try_set_height = $(window).height() - $("ul.tabs > li").height()-100;
+    var try_set_height = $(window).height() - ($(document.body).outerHeight(true) - $(this.pre).height());
     this.pre.style.height = try_set_height + "px";
 };
