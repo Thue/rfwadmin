@@ -1,6 +1,7 @@
 <?php
 require_once(dirname(__FILE__) . "/ansi_shell_to_html.php");
 require_once(dirname(__FILE__) . "/properties.php");
+require_once(dirname(__FILE__) . "/plugins.php");
 require_once(dirname(__FILE__) . "/textareas.php");
 
 function e($text) {
@@ -425,6 +426,15 @@ class minecraft {
     $path = $this->get_properties_path();
     $properties = new properties($path);
     $properties->save();
+  }
+
+  public $plugins = null;
+  public function get_plugins() {
+    if ($this->plugins === null) {
+      $this->plugins = new plugins($this);
+    }
+
+    return $this->plugins;
   }
 
   public function get_textareas() {

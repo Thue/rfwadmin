@@ -12,6 +12,7 @@ $mc = new minecraft($include_base . "/servers/default" /* server dir */);
 //$mc->html_title = "Custom title here";
 
 minecraft_map::$map_dir = $include_base . "/maps";
+plugins::$plugins_dir = $include_base . "/jars/plugins";
 
 /*** Changable settings end here ***/
 
