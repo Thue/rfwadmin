@@ -1,5 +1,3 @@
-<h1>Plugins</h1>
-
 <?php
 
 $plugins = $mc->get_plugins();

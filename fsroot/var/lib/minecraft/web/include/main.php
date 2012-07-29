@@ -20,7 +20,7 @@
     <li><a href="#" rel="accesslists">Access lists</a></li>
     <li><a href="#" rel="commandline">Command line</a></li>
     <li><a href="#" rel="log">Server log</a></li>
-    <li><a href="#" rel="jars">Jars and plugins</a></li>
+    <li><a href="#" rel="plugins">Bukkit plugins</a></li>
   </ul>
  
   <div class="tab-content" id="control"><?php require(dirname(__FILE__) . "/main_tab_control.php");?></div>
@@ -28,7 +28,7 @@
   <div class="tab-content" id="accesslists"><?php require(dirname(__FILE__) . "/main_tab_accesslists.php");?></div>
   <div class="tab-content" id="commandline"><?php require(dirname(__FILE__) . "/main_tab_commandline.php");?></div>
   <div class="tab-content" id="log"><?php require(dirname(__FILE__) . "/main_tab_log.php");?></div>
-  <div class="tab-content" id="jars"><?php require(dirname(__FILE__) . "/main_tab_jars.php");?></div>
+  <div class="tab-content" id="plugins"><?php require(dirname(__FILE__) . "/main_tab_plugins.php");?></div>
 </div>
 </body>
 </html>
