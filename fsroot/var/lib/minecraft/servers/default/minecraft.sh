@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#these two following lines (PATH_BASE and FILE_JAR) are regexp matched from serverjar.php
+#these two following lines (PATH_BASE and FILE_JAR) are regexp matched from serverjar.php . So don't make then too irregular.
 PATH_BASE="/var/lib/minecraft"
 FILE_JAR="$PATH_BASE/jars/serverjars/minecraft_server_1.2.5.jar"
 
