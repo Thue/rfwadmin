@@ -1,3 +1,19 @@
-About the plugins directory structure.
+The "plugins" tab of the web interface can enable/disable bukkit
+plugins from this subdirectory. The plugins are enabled by symlinking
+from the server plugin dir to the jars files here.
 
-write me...
+For for example an UltraHardcore mod, the directory structure must
+look like this:
+
+Ultrahardcore/
+UltraHardcore/configuration
+UltraHardcore/v0.3.5/
+UltraHardcore/v0.3.5/UltraHardcore.jar
+UltraHardcore/v0.4.9/
+UltraHardcore/v0.4.9/UltraHardcore.jar
+
+The "v0.4.9" is a version number; several different versions of a
+plugin can be available. The actual jar can be named anything ending
+in ".jar", but there can only be one file in a version directory. The
+"configuration" dir is planned to be an installable configuration of
+the plugin, but there isn't any interface to install it yet.

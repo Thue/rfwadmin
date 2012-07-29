@@ -21,7 +21,7 @@ There are a few configuration files:
 
 Some directories and files explained:
 - /var/lib/minecraft/maps : The web interface will save uploaded maps here
-- /var/lib/minecraft/jars : The server doesn't really know about this, but I use it to manually upload and save jars
+- /var/lib/minecraft/jars : server and bukkit plugins jars.
 - /var/lib/minecraft/minecraft_base.sh : The shell backend, used by init.d and the web interface
 - /var/lib/minecraft/servers/default/server : A normal minecraft server dir for the server I called "default" (The name "default" is not displayed to end-users).
 
@@ -34,11 +34,12 @@ About quality:
 - The PHP code should be mostly ok.
 - I make no claims to be an expert shell programmer.
 
-Craftbukkit:
-You might want to install the custom server from bukkit
-if you want to use plugins: http://dl.bukkit.org/ . Place the jar
-fx somewhere in /var/lib/minecraft/jar, and adjust $FILE_JAR in
-/var/lib/minecraft/servers/default/minecraft.sh .
+Craftbukkit: You might want to install the custom server from bukkit
+if you want to use plugins: http://dl.bukkit.org/ . Place the jar fx
+somewhere in /var/lib/minecraft/jar, and adjust $FILE_JAR in
+/var/lib/minecraft/servers/default/minecraft.sh . The web interface
+has a simple enable/disable plugin functionality, if the plugins are
+placed in the correct subdirectory of /var/lib/minecraft/jars/plugins/
 
 One useful plugin is NoSpawnChunks (
 http://dev.bukkit.org/server-mods/nospawnchunks/ ), which makes the
