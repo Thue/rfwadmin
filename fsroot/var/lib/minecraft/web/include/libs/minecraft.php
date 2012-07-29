@@ -4,6 +4,7 @@ require_once(dirname(__FILE__) . "/properties.php");
 require_once(dirname(__FILE__) . "/plugins.php");
 require_once(dirname(__FILE__) . "/textareas.php");
 require_once(dirname(__FILE__) . "/map.php");
+require_once(dirname(__FILE__) . "/serverjar.php");
 
 function e($text) {
   return htmlspecialchars($text);
@@ -367,6 +368,15 @@ class minecraft {
     $cmd = $this->cmd(Array("send_command", $commandline));
     echo $cmd;
     $this->my_passthru($cmd);
+  }
+
+  public $serverjar = null;
+  public function get_serverjar() {
+    if ($this->serverjar === null) {
+      $this->serverjar = new serverjar($this);
+    }
+
+    return $this->serverjar;
   }
 }
 

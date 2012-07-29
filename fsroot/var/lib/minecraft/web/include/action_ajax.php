@@ -43,6 +43,9 @@ if (isset($_POST["save_properties"])) {
 } else if (isset($_POST["uninstall_plugin"])) {
   $plugins = $mc->get_plugins();
   $plugins->uninstall_plugin($_POST["name"], $_POST["version"]);
+} else if (isset($_POST["install_serverjar"])) {
+  $serverjar = $mc->get_serverjar();
+  $serverjar->install($_POST["jar"]);
 } else {
   echo "unrecognized command";
 }

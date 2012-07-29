@@ -1,9 +1,8 @@
 #!/bin/bash
 
+#these two following lines (PATH_BASE and FILE_JAR) are regexp matched from serverjar.php
 PATH_BASE="/var/lib/minecraft"
-
-
-FILE_JAR="$PATH_BASE/jars/1.2.5/minecraft_server.jar"
+FILE_JAR="$PATH_BASE/jars/serverjars/minecraft_server_1.2.5.jar"
 
 #If running multiple servers, $SCREEN and $SERVER_SUBDIR should be unique
 #The SCREEN=... is inserted into a regexp, so may only contain [a-zA-Z0-9]
