@@ -23,12 +23,12 @@
     <li><a href="#" rel="plugins">Bukkit plugins</a></li>
   </ul>
  
-  <div class="tab-content" id="control"><?php require(dirname(__FILE__) . "/main_tab_control.php");?></div>
-  <div class="tab-content" id="configuration"><?php require(dirname(__FILE__) . "/main_tab_configuration.php");?></div>
-  <div class="tab-content" id="accesslists"><?php require(dirname(__FILE__) . "/main_tab_accesslists.php");?></div>
-  <div class="tab-content" id="commandline"><?php require(dirname(__FILE__) . "/main_tab_commandline.php");?></div>
-  <div class="tab-content" id="log"><?php require(dirname(__FILE__) . "/main_tab_log.php");?></div>
-  <div class="tab-content" id="plugins"><?php require(dirname(__FILE__) . "/main_tab_plugins.php");?></div>
+  <div class="tab-content" id="control"><?php require(dirname(__FILE__) . "/tabs/control.php");?></div>
+  <div class="tab-content" id="configuration"><?php require(dirname(__FILE__) . "/tabs/configuration.php");?></div>
+  <div class="tab-content" id="accesslists"><?php require(dirname(__FILE__) . "/tabs/accesslists.php");?></div>
+  <div class="tab-content" id="commandline"><?php require(dirname(__FILE__) . "/tabs/commandline.php");?></div>
+  <div class="tab-content" id="log"><?php require(dirname(__FILE__) . "/tabs/log.php");?></div>
+  <div class="tab-content" id="plugins"><?php require(dirname(__FILE__) . "/tabs/plugins.php");?></div>
 </div>
 </body>
 </html>
