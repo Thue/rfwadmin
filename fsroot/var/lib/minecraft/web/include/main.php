@@ -20,6 +20,7 @@
     <li><a href="#" rel="accesslists">Access lists</a></li>
     <li><a href="#" rel="commandline">Command line</a></li>
     <li><a href="#" rel="log">Server log</a></li>
+    <li><a href="#" rel="serverjar">Server version</a></li>
     <li><a href="#" rel="plugins">Bukkit plugins</a></li>
   </ul>
  
@@ -28,6 +29,7 @@
   <div class="tab-content" id="accesslists"><?php require(dirname(__FILE__) . "/tabs/accesslists.php");?></div>
   <div class="tab-content" id="commandline"><?php require(dirname(__FILE__) . "/tabs/commandline.php");?></div>
   <div class="tab-content" id="log"><?php require(dirname(__FILE__) . "/tabs/log.php");?></div>
+  <div class="tab-content" id="serverjar"><?php require(dirname(__FILE__) . "/tabs/serverjar.php");?></div>
   <div class="tab-content" id="plugins"><?php require(dirname(__FILE__) . "/tabs/plugins.php");?></div>
 </div>
 </body>

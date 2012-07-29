@@ -7,7 +7,7 @@ ini_set("display_errors", 1);
 
 $include_base = "/var/lib/minecraft";
 $server_dir = $include_base . "/servers/default";
-require_once($include_base . "/web/include/include.php");
+require_once($include_base . "/web/include/libs/minecraft.php");
 $mc = new minecraft($include_base . "/servers/default" /* server dir */);
 //$mc->html_title = "Custom title here";
 
