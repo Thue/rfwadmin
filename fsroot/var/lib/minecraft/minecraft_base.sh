@@ -69,13 +69,36 @@ function list() {
     local OFFSET=`cat "$SERVER_LOG" |wc -l`
     local OFFSET=`expr $OFFSET + 1`
     #local PREG='^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] Connected players: .*(.\[m)?'
-    local PREG='^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] Connected players: '
-    if ! screen_cmd "list" 10 "$PREG" "$SERVER_LOG"; then
+    local PREG='^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] (Connected players: |There are \d+/\d+ players online:)'
+    local PREG_13='^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] There are \d+/\d+ players online:'
+    if ! screen_cmd "list" 1 "$PREG" "$SERVER_LOG"; then
 	echo "Failed to find list output!";
 	return 1;
     fi
 
     LIST_LINE=`tail -n +$OFFSET "$SERVER_LOG" | grep -P "$PREG" | sed 's/.*: \([^\[]*\)\(.\[m\)\?/\1/'| head -n 1`
+
+    if [ "`echo "$LIST_LINE"|grep -P "$PREG_13"`" != "" ]; then
+        #Horrible 1.3 format 2-line format
+	local FIRST_LINE_FOUND="searching"
+	local LINES=`tail -n +$OFFSET "$SERVER_LOG"`
+	 while read -r line; do
+	    if [ "$FIRST_LINE_FOUND" == "done" ]; then
+	        true #nothing
+	    elif [ "$FIRST_LINE_FOUND" == "next" ]; then
+		LIST_LINE=`echo "$line" | sed 's/.*\] \(.*\)/\1/'`
+		FIRST_LINE_FOUND="done"	    
+	    elif [ "`echo $line|grep -P \"$PREG_13\"`" != "" ]; then
+		FIRST_LINE_FOUND="next"
+	    fi
+	done <<< "$LINES"
+
+	if [ "$LIST_LINE" == "" ]; then
+	    echo "Failed to find list output. This should not be possible";
+	    return 1;
+	fi
+    fi
+
     return 0
 }
 
