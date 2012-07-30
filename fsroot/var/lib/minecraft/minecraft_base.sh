@@ -86,14 +86,14 @@ function list() {
 	    if [ "$FIRST_LINE_FOUND" == "done" ]; then
 	        true #nothing
 	    elif [ "$FIRST_LINE_FOUND" == "next" ]; then
-		LIST_LINE=`echo "$line" | sed 's/.*\] \(.*\)/\1/'`
+		LIST_LINE=`echo "$line" | sed 's/.*] \?\(.*\)/\1/'`
 		FIRST_LINE_FOUND="done"	    
 	    elif [ "`echo $line|grep -P \"$PREG_13\"`" != "" ]; then
 		FIRST_LINE_FOUND="next"
 	    fi
 	done <<< "$LINES"
 
-	if [ "$LIST_LINE" == "" ]; then
+	if [ "$FIRST_LINE_FOUND" != "done" ]; then
 	    echo "Failed to find list output. This should not be possible";
 	    return 1;
 	fi
