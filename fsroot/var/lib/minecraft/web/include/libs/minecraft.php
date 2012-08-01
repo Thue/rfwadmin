@@ -145,12 +145,25 @@ class minecraft {
    */
   public function my_passthru($cmd) {
     $stream = popen($cmd, "r");
+    $stream_array = Array($stream);
+    $dummy_array = Array();
     /* The documentation for fread lines (PHP bug #51056), it will not
      * return for each packet, but is blocking. So we need to
      * explicitly set it non-blocking
      */
     stream_set_blocking($stream, 0);
-    while (!feof($stream) && ($read = fread($stream, 10000)) !== false) {
+    while (!feof($stream)) {
+      $read = fread($stream, 10000);
+      if ($read === false) {
+	break;
+      }
+      if ($read === "") {
+	if (!stream_select($stream_array, $dummy_array, $dummy_array, 100) /*blocking*/) {
+	  echo "error in stream_select";
+	  exit(1);
+	}
+	continue;
+      }
       echo $read;
       ob_flush();
       flush();
