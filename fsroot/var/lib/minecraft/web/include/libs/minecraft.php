@@ -145,11 +145,11 @@ class minecraft {
    */
   public function my_passthru($cmd) {
     $handle = popen($cmd, "r");
-    /* For some reason this loop stalls, even though there is still data to
-     * read, when streaming log if the second argument to fread is
-     * some values, fx 1000. Probably a PHP bug. 10000 seems to make
-     * the bug less likely, but it is probably still there.
+    /* The documentation for fread lines (PHP bug #51056), it will not
+     * return for each packet, but is blocking. So we need to
+     * explicitly set it non-blocking
      */
+    stream_set_blocking($handle, 0);
     while (!feof($handle) && ($read = fread($handle, 10000)) !== false) {
       echo $read;
       ob_flush();
