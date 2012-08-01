@@ -145,22 +145,34 @@ class minecraft {
    */
   public function my_passthru($cmd) {
     $stream = popen($cmd, "r");
-    $stream_array = Array($stream);
-    $dummy_array = Array();
+    $dummy_array1 = Array();
+    $dummy_array2 = Array();
+    $start_time = time();
     /* The documentation for fread lines (PHP bug #51056), it will not
      * return for each packet, but is blocking. So we need to
      * explicitly set it non-blocking
      */
     stream_set_blocking($stream, 0);
     while (!feof($stream)) {
+      if (time() - $start_time > 100
+	  && connection_aborted()) {
+	echo "The client seems to have disconnected";
+	break;
+      }
+
       $read = fread($stream, 10000);
       if ($read === false) {
 	break;
       }
       if ($read === "") {
-	if (!stream_select($stream_array, $dummy_array, $dummy_array, 100) /*blocking*/) {
-	  echo "error in stream_select";
-	  exit(1);
+	$stream_array = Array($stream);
+	/* There is a race here, if the stream changed between fread
+	 * and stream_select. In that case we have to wait for the 1
+	 * second timeout, whereafter fread will be called again. So
+	 * it is important that the timeout is not much higher than 1
+	 * second. */
+	if (!stream_select($stream_array, $dummy_array1, $dummy_array2, 1) /*blocking*/) {
+	  //seems to happen sometimes, so do nothing special
 	}
 	continue;
       }
