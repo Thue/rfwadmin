@@ -147,17 +147,25 @@ class minecraft {
     $stream = popen($cmd, "r");
     $dummy_array1 = Array();
     $dummy_array2 = Array();
-    $start_time = time();
+    $time_of_last_output = time();
+
     /* The documentation for fread lines (PHP bug #51056), it will not
      * return for each packet, but is blocking. So we need to
      * explicitly set it non-blocking
      */
     stream_set_blocking($stream, 0);
     while (!feof($stream)) {
-      if (time() - $start_time > 100
-	  && connection_aborted()) {
-	echo "The client seems to have disconnected";
-	break;
+      if (time() - $time_of_last_output > 10) {
+	$time_of_last_output = time();
+	/* Send a nul-character to the browser (which is not
+	 * displayed), to discover if the browser is still there.
+	 *
+	 * PHP will automatically abort when the output stream is
+	 * gone.
+	 */
+	echo chr(0);
+	ob_flush();
+	flush();
       }
 
       $read = fread($stream, 10000);
@@ -176,6 +184,7 @@ class minecraft {
 	}
 	continue;
       }
+      $time_of_last_output = time();
       echo $read;
       ob_flush();
       flush();
