@@ -144,19 +144,19 @@ class minecraft {
    * See http://code.google.com/p/chromium/issues/detail?id=2016
    */
   public function my_passthru($cmd) {
-    $handle = popen($cmd, "r");
+    $stream = popen($cmd, "r");
     /* The documentation for fread lines (PHP bug #51056), it will not
      * return for each packet, but is blocking. So we need to
      * explicitly set it non-blocking
      */
-    stream_set_blocking($handle, 0);
-    while (!feof($handle) && ($read = fread($handle, 10000)) !== false) {
+    stream_set_blocking($stream, 0);
+    while (!feof($stream) && ($read = fread($stream, 10000)) !== false) {
       echo $read;
       ob_flush();
       flush();
     }
 
-    $retval = pclose($handle);
+    $retval = pclose($stream);
     if ($retval === -1) {
       echo "error in pclose";
     }
