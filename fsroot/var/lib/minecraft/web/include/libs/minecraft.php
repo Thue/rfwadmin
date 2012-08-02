@@ -145,8 +145,7 @@ class minecraft {
    */
   public function my_passthru($cmd) {
     $stream = popen($cmd, "r");
-    $dummy_array1 = Array();
-    $dummy_array2 = Array();
+    $dummy_array = null;
     $time_of_last_output = time();
 
     /* The documentation for fread lines (PHP bug #51056), it will not
@@ -155,6 +154,15 @@ class minecraft {
      */
     stream_set_blocking($stream, 0);
     while (!feof($stream)) {
+      /* stream_select will return when $stream contains output
+       * (unlike what the PHP manual currently say, "when the stream
+       * changes status") */
+      $stream_array = Array($stream);
+      $res = stream_select($stream_array, $dummy_array, $dummy_array, 30);
+      if ($res === false) {
+	//seems to happen sometimes, so do nothing special
+      }
+
       if (time() - $time_of_last_output > 10) {
 	$time_of_last_output = time();
 	/* Send a nul-character to the browser (which is not
@@ -168,20 +176,11 @@ class minecraft {
 	flush();
       }
 
-      $read = fread($stream, 10000);
+      $read = stream_get_contents($stream);
       if ($read === false) {
 	break;
       }
       if ($read === "") {
-	$stream_array = Array($stream);
-	/* There is a race here, if the stream changed between fread
-	 * and stream_select. In that case we have to wait for the 1
-	 * second timeout, whereafter fread will be called again. So
-	 * it is important that the timeout is not much higher than 1
-	 * second. */
-	if (!stream_select($stream_array, $dummy_array1, $dummy_array2, 1) /*blocking*/) {
-	  //seems to happen sometimes, so do nothing special
-	}
 	continue;
       }
       $time_of_last_output = time();
