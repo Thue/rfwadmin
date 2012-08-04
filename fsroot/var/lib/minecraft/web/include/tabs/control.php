@@ -11,7 +11,7 @@ Currently loaded map: <b><?php echo htmlspecialchars($mc->get_current_map(true))
 <p>
 <input type="submit" name="start" value="Start">
 <input type="submit" name="restart" value="Restart">
-<input type="submit" name="reload" value="Reload">
+<input type="submit" name="reload" value="Reload (bukkit)">
 <input type="submit" name="stop" value="Stop">
 <input type="submit" name="kill" value="Kill">
 <input type="submit" name="nuke" value="Nuke (kill -9)">
