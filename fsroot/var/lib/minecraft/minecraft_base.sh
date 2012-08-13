@@ -99,6 +99,8 @@ function list() {
 	    echo "Failed to find list output. This should not be possible";
 	    return 1;
 	fi
+    else
+	LIST_LINE=`echo "$LIST_LINE" | sed 's/,//g'`
     fi
 
     return 0
