@@ -171,11 +171,25 @@ function screen_start() {
     echo "logfile ${SCREEN_LOG}" >> "$SCREEN_CONF"
 
     echo -n "Starting Screen session... "
-    screen -c "$SCREEN_CONF" -LdmS $SCREEN
+    #sometimes screen fails to start in the first try. Haven't checked why. Just be lazy and retry
+    for ATTEMPT in {1..5}; do
+	if [ $ATTEMPT -gt 1 ]; then
+	    extend_lock
+	    sleep 1
+	fi
+	screen -c "$SCREEN_CONF" -LdmS $SCREEN
+	if get_screen_id; then
+	    break
+	fi
+    done
     rm "$SCREEN_CONF"
 
     if get_screen_id; then
-        echo "Started!"
+	if [ $ATTEMPT -gt 1 ]; then
+	    echo "Started! (in " $ATTEMPT "tries)"
+	else 
+            echo "Started!"
+	fi
         return 0
     else
         echo "Failed!"
@@ -214,7 +228,7 @@ function screen_cmd() {
 		    return 1
 		fi
 
-		for SUBSLEEP in { 1 .. 5 }; do
+		for SUBSLEEP in {1..5}; do
 		    if screen_log_find_regexp "$3" "$LOGFILE" $START_LINE; then
 			return 0
 		    fi
