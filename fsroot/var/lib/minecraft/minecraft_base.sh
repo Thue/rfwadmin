@@ -88,8 +88,8 @@ function list() {
 	    elif [ "$FIRST_LINE_FOUND" == "next" ]; then
 		LIST_LINE=`echo "$line" | sed 's/.*] \?\(.*\)/\1/'`
 		LIST_LINE=`echo "$LIST_LINE" | sed 's/,//g'`
-		LIST_LINE=`echo "$LIST_LINE" | sed 's/\[m//g'` #craftbukkit add this one
-		FIRST_LINE_FOUND="done"	    
+		LIST_LINE=`echo "$LIST_LINE" | sed 's/\x1B\[m//g'` #craftbukkit add this one
+		FIRST_LINE_FOUND="done"
 	    elif [ "`echo $line|grep -P \"$PREG_13\"`" != "" ]; then
 		FIRST_LINE_FOUND="next"
 	    fi
