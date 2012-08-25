@@ -270,7 +270,29 @@ function server_start() {
         echo -e "Minecraft server is already \033[1;32monline\033[0m"
         return 0
     fi
+    if get_screen_id; then
+	#There is no such thing as a valid leftover shell session,
+	#since the main command end with ...;exit
+	screen_stop
+    fi
+
+    #Until we have stuffed the "...;exit" into the screen session,
+    #there is a teoretical race security hole, where the screen
+    #session is a full-featured shell. If someone can inject the
+    #correct command via fx a minecraft talk command in that small
+    #time window, they can execute shell commands.
+    #
+    #Hence we give the uninitialized screen session a special name
+    #until it is initialized and made safe with the "...; exit"
+    #command
+    SCREEN_ID_ORIG="$SCREEN_ID"
+    SCREEN_ID="${SCREEN_ID}_uninitialized"
+    if get_screen_id; then
+	#remove any leftover ..._uninitialized session
+	screen_stop
+    fi
     if ! screen_start; then
+	SCREEN_ID="$SCREEN_ID_ORIG"
         return 1
     fi
 
@@ -279,6 +301,10 @@ function server_start() {
     screen_cmd "cd ${PATH_RUN}"
     #If I don't put the extra Ms on "Minecraft is stopped", then the first "M" goes missing in the output. WTF?
     screen_cmd "${SERVER} & echo \$! > ${PATH_MINECRAFT_PID} && fg; echo \"MMMMinecraft is stopped\"; exit" 30 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] Done \(\d+.\d+s\)! For help, type "help" or "\?"'
+
+    #Screen now securely initialized! Rename to real name
+    screen -S $SCREEN_ID -X sessionname $SCREEN_ID_ORIG
+    SCREEN_ID="$SCREEN_ID_ORIG"
 
     if is_server_online; then
 	echo "Started!"
