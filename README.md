@@ -15,7 +15,7 @@ To install:
 
 There are a few configuration files:
 - /etc/init.d/minecraft_default.sh is an extremely simple file set to point to /var/lib/minecraft/servers/default/minecraft.sh . To make it start and stop with the Ubuntu server on boot, run the Ubuntu command "update-rc.d minecraft_default.sh defaults" (will probably differ for other distributions).
-- /var/lib/minecraft/servers/default/minecraft.sh contains the actual configuration of the script. When upgrading to a new Minecraft server version, adjust $FILE_JAR here.
+- /var/lib/minecraft/servers/default/minecraft.sh contains the actual configuration of the script. When upgrading to a new Minecraft server version, adjust $FILE_JAR here (Or use the "server version" tab in the web interface).
 - The files below /var/lib/minecraft/servers/default/server , such as /var/lib/minecraft/servers/default/server/server.properties , is the normal minecraft configuration for a single Minecraft server.
 - If you are running multiple servers, or don't use the default /var/lib/minecraft location, you need to tweak the settings inside /var/www/index.php
 
@@ -24,6 +24,9 @@ Some directories and files explained:
 - /var/lib/minecraft/jars : server and bukkit plugins jars.
 - /var/lib/minecraft/minecraft_base.sh : The shell backend, used by init.d and the web interface
 - /var/lib/minecraft/servers/default/server : A normal minecraft server dir for the server I called "default" (The name "default" is not displayed to end-users).
+
+Using command line interface:
+You can use rfwadmin as a command line interface by doing "sudo /etc/init.d/minecraft_default.sh start". Commands include "start", "stop", "restart", "list", "send_command save-all", "send_command op thuejk"; look it the bottom of /var/lib/minecraft/minecraft_base.sh for a list. The command line interface is a heavily modified version of mc-manager, much improved; I recommend always using the rfwadmin version over mc-manager, even if you don't need the web interface. To only use the command line interface without installing the rfwadmin web interface, simply don't install /var/www/index.php .
 
 About security:
 - I *think* it is safe.
@@ -34,7 +37,8 @@ About quality:
 - The PHP code should be mostly ok.
 - I make no claims to be an expert shell programmer.
 
-Craftbukkit: You might want to install the custom server from bukkit
+Craftbukkit:
+ You might want to install the custom server from bukkit
 if you want to use plugins: http://dl.bukkit.org/ . Place the jar fx
 somewhere in /var/lib/minecraft/jar, and adjust $FILE_JAR in
 /var/lib/minecraft/servers/default/minecraft.sh . The web interface
