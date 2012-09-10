@@ -55,7 +55,7 @@ foreach ($ps as $p) {
 	 $version_lines[0]
 	 );
   for ($i=1; $i<sizeof($version_lines); $i++) {
-    $printf("<tr>%s</tr>\n", $version_lines[$i]);
+    printf("<tr>%s</tr>\n", $version_lines[$i]);
   }
 }
 echo "</table>\n";
