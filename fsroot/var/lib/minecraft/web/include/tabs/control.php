@@ -18,12 +18,6 @@ Currently loaded map: <b><?php echo htmlspecialchars($mc->get_current_map(true))
 <input type="submit" name="nuke_and_delete" value="Nuke from orbit (kill -9 and delete map)">
 </p>
 
-<!--
-<p>
-Logs: <a href="show_log.php?log=screen.log">screen.log</a>, <a href="show_log.php?log=screen.log">server.log</a>
-</p>
--->
-
 <p>
   <input type="submit" name="save" value="Save"> current active map state as <input type="text" name="save_as" value=""> 
   <!--<input type="checkbox" name="paranoid_save"> Stop server while saving map, which I assume is more safe.-->
