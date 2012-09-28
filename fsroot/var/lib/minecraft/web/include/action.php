@@ -26,16 +26,17 @@ if (isset($_POST["download_map"])) {
     <script type="text/javascript">
 <?php
   $qs = "";
-  foreach ($_POST as $key => $value) {
+  $args = $_POST;
+  $args["time_limit"] = time() + 30;
+  foreach ($args as $key => $value) {
     if ($qs !== "") {
       $qs .= "&";
     }
     $qs .= sprintf("%s=%s", urlencode($key), urlencode($value));
-}
-printf("query_string = '%s';", $qs);
+  }
+  printf("query_string = '%s';", $qs);
 
 ?>
-
   var xmlhttp = new XMLHttpRequest();
   xmlhttp.onreadystatechange = function() {
     if (xmlhttp.readyState==4 || xmlhttp.readyState==3) {

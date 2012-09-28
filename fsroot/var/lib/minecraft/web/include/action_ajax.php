@@ -5,6 +5,11 @@ header('Content-type: application/octet-stream');
 ob_flush();
 flush();
 
+if (isset($_POST["time_limit"]) && $_POST["time_limit"] < time()) {
+  echo "Time for starting action exceeded.";
+  exit();
+}
+
 if (isset($_POST["save_properties"])) {
   $mc->save_properties();
 } else if (isset($_POST["save_textareas"])) {
