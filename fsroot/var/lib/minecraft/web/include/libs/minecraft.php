@@ -16,6 +16,12 @@ class minecraft {
   public $map_name_file; //Name of the currently loaded map
   public $html_title = "rfwadmin"; //Shown in title of all HTML pages
 
+  /* ARMoRy is the collection of Race for Wool (rfw) maps which
+   * Authorblues keeps up to date for the autoref plugin. If enabled,
+   * rfwadmin will automatically download all maps on the list, and
+   * redownload when new versions are made available. */
+  public $armory_enabled = false;
+
   function __construct($server_dir) {
     $this->server_dir = $server_dir;
     $this->msh = sprintf("%s/minecraft.sh", $this->server_dir);
@@ -259,6 +265,10 @@ class minecraft {
 		   escapeshellarg($target_full_path)
 		   );
     $this->my_passthru($cmd);
+    $cmd = sprintf("rm -fv %s/rfwadmin_map_*",
+		   escapeshellarg($target_full_path)
+		   );
+    $this->my_passthru($cmd);
     echo "Copied!";
 
     if ($do_stop) {
@@ -272,25 +282,10 @@ class minecraft {
     $this->my_passthru($cmd);
   }
 
-  public function delete_map($map) {
-    $full_path = minecraft_map::validate($map);
-    $cmd = sprintf("rm -rfv %s 2>&1", escapeshellarg($full_path));
-    echo $cmd . "\n";
-    $this->my_passthru($cmd);
-    echo "\nDeleted!\n";
-  }
-
-  public function rename_map($map, $target) {
-    $full_path = minecraft_map::validate($map);
-    $full_path_target = minecraft_map::validate($target);
-    minecraft_map::assert_map_nonexistence($target);
-    echo "Renaming...\n";
-    $cmd = sprintf("mv %s %s", 
-		   escapeshellarg($full_path),
-		   escapeshellarg($full_path_target)
-		   );
-    $this->my_passthru($cmd);
-    echo "Renamed!";
+  public function delete_map($map_name) {
+    $full_path = minecraft_map::validate($map_name);
+    $map = new minecraft_map($map_name);
+    $map->delete(true);
   }
 
   public function get_server_log_path() {
@@ -410,6 +405,26 @@ class minecraft {
     }
 
     return $this->serverjar;
+  }
+
+  public function sync_armory_now() {
+    $file = minecraft_map::get_sync_file();
+    $sync = true;
+    if (file_exists($file)) {
+      $last_synced = file_get_contents($file); // a timestamp
+      if (!is_numeric($last_synced)) {
+	unlink($file);
+      } else {
+	$last_synced = (int) $last_synced;
+	if ($last_synced > time()) {
+	  unlink($last_synced);
+	} else if (time() - $last_synced < 60*60) {
+	  $sync = false;
+	}
+      }
+    }
+
+    return $sync;
   }
 }
 

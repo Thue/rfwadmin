@@ -23,6 +23,8 @@ Currently loaded map: <b><?php echo htmlspecialchars($mc->get_current_map(true))
   <!--<input type="checkbox" name="paranoid_save"> Stop server while saving map, which I assume is more safe.-->
 </p>
 
+   HERE: <form method="post" target="_blank"><input type="submit" name="sync_armory" value="1"></form>
+
 <hr>
 <h1>Maps</h1>
 
@@ -44,6 +46,25 @@ foreach ($maps as $map) {
 <br><input type="submit" name="rename_map" value="Rename"> selected map to <input type="text" name="rename_to" value="">
 <br><input type="submit" name="delete_map" value="Delete"> selected map.
 <br><input type="submit" name="download_map" value="Download"> selected map.
+<br>
+<?php
+  if ($mc->armory_enabled) {
+    if ($mc->sync_armory_now()) {
+?>
+<div id="armory_header">(Syncing ARMoRy maps in the background...)</div>
+<span id="armory_span"></span>
+<script type="text/javascript">$(document).ready(function() {document.my_sync_armory = new sync_armory();});</script>
+<?php
+    } else {
+?>
+<div id="armory_header" style="display:none">(Syncing ARMoRy maps in the background...)</div>
+<span id="armory_span"></span>
+<input type="submit" name="sync_with_armory" value="Fetch updated list of maps from ARMoRy" onclick="$('#armory_header')[0].style.display='';this.style.display='none';document.my_sync_armory = new sync_armory()">
+<?php
+    }
+  }
+?>
+
 </p>
 </form>
 

@@ -33,7 +33,8 @@ if (isset($_POST["save_properties"])) {
 } else if (isset($_POST["change_map"])) {
   $mc->change_map($_POST["map"]);
 } else if (isset($_POST["rename_map"])) {
-  $mc->rename_map($_POST["map"], $_POST["rename_to"]);
+  $map = new map($_POST["map"]);
+  $map->rename($_POST["rename_to"]);
 } else if (isset($_POST["delete_map"])) {
   $mc->delete_map($_POST["map"]);
 } else if (isset($_POST["stream_log"]) && $_POST["stream_log"] === "server.log") {
@@ -51,6 +52,8 @@ if (isset($_POST["save_properties"])) {
 } else if (isset($_POST["install_serverjar"])) {
   $serverjar = $mc->get_serverjar();
   $serverjar->install($_POST["jar"]);
+} else if (isset($_POST["sync_armory"])) {
+  minecraft_map::armory_sync();
 } else {
   echo "unrecognized command";
 }
