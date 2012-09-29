@@ -43,7 +43,10 @@ foreach ($ps as $p) {
 				 $fe
 				);      
     } else {
-      $version_lines[] = '<td colspan="2">(Other version already installed)</td>';
+      $version_lines[] = sprintf('<td colspan="2">'.
+				 '<input type="submit" name="install_plugin" value="install version %s" disabled>'.
+				 '(Other version already installed)</td>',
+				 e($version));
     }
 
   }
