@@ -23,8 +23,6 @@ Currently loaded map: <b><?php echo htmlspecialchars($mc->get_current_map(true))
   <!--<input type="checkbox" name="paranoid_save"> Stop server while saving map, which I assume is more safe.-->
 </p>
 
-   HERE: <form method="post" target="_blank"><input type="submit" name="sync_armory" value="1"></form>
-
 <hr>
 <h1>Maps</h1>
 
