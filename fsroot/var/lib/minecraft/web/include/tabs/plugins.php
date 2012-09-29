@@ -8,9 +8,11 @@ $ps = $plugins->get_all($unexpected);
 $fs = "<form method=\"post\" action=\"index.php?page=action\" target=\"_blank\">\n";
 $fe = "</form>";
 
-echo "<table>\n";
+echo "<table class='plugins'>\n";
+$color = "color2";
 foreach ($ps as $p) {
-  echo "<tr>\n";
+  $color = $color === "color2" ? "color1" : "color2";
+  echo "<tr class='$color'>\n";
   $version_lines = Array();
   $installed_version = $p->get_installed_version();
   foreach ($p->versions as $version => $path) {
@@ -54,7 +56,7 @@ foreach ($ps as $p) {
 	 $version_lines[0]
 	 );
   for ($i=1; $i<sizeof($version_lines); $i++) {
-    printf("<tr>%s</tr>\n", $version_lines[$i]);
+    printf("<tr class='$color'>%s</tr>\n", $version_lines[$i]);
   }
 }
 echo "</table>\n";

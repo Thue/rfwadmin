@@ -31,3 +31,15 @@ ul.tabs li a {
     border:1px solid #ddd;
     padding:10px;
 }
+
+table.plugins {
+    border-collapse: collapse;
+}
+
+.color1 {
+    background-color: white;
+}
+
+.color2 {
+    background-color: #EEEEEE;
+}
