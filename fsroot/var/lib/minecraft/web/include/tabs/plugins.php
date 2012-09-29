@@ -46,8 +46,7 @@ foreach ($ps as $p) {
 
   }
 
-  printf("<tr>\n".
-	 "<td rowspan=\"%d\">%s</td>\n".
+  printf("<td rowspan=\"%d\">%s</td>\n".
 	 "%s\n".
 	 "</tr>\n",
 	 sizeof($p->versions),
