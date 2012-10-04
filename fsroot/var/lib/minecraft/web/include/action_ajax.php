@@ -33,8 +33,8 @@ if (isset($_POST["save_properties"])) {
 } else if (isset($_POST["change_map"])) {
   $mc->change_map($_POST["map"]);
 } else if (isset($_POST["rename_map"])) {
-  $map = new map($_POST["map"]);
-  $map->rename($_POST["rename_to"]);
+  $map = new minecraft_map($_POST["map"]);
+  $map->rename($_POST["rename_to"], true);
 } else if (isset($_POST["delete_map"])) {
   $mc->delete_map($_POST["map"]);
 } else if (isset($_POST["stream_log"]) && $_POST["stream_log"] === "server.log") {
