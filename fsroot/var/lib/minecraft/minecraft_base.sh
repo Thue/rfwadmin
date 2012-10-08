@@ -357,7 +357,7 @@ function server_stop_nosave() {
     screen_cmd "stop" 60 '^(\>\s*)*M+inecraft is stopped' "$SCREEN_LOG"
 
     if ! is_server_online; then
-        echo "Success!"
+        echo "Stopped!"
         server_pid_remove
         if get_screen_id; then
 	    screen -S $SCREEN_ID -X quit
