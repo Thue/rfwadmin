@@ -770,7 +770,13 @@ case $1 in
         fi
         ;;
     kill)
-	kill_minecraft
+	if kill_minecraft; then
+	    unlock
+	    exit 0
+	else
+	    unlock
+	    exit 1
+	fi
 	;;
     nuke)
 	nuke
