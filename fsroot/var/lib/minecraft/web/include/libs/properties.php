@@ -8,6 +8,9 @@ class properties {
 		       "gamemode" => "property_select",
 		       "level-seed" => "property_string",
 		       "level-type" => "property_select",
+		       "generator-settings" => "property_string",
+		       "spawn-protection" => "property_int",
+		       "enable-command-block" => "property_bool",
 
 		       "server-port" => "property_int",
 		       "online-mode" => "property_bool",
@@ -15,6 +18,7 @@ class properties {
 		       "max-players" => "property_int",
 		       "view-distance" => "property_int",
 		       "white-list" => "property_bool",
+		       "texture-pack" => "property_string",
 
 		       "allow-flight" => "property_bool",
 		       "pvp" => "property_bool",
