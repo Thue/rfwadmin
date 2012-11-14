@@ -85,7 +85,7 @@ class properties {
       if ($property_line instanceof property_changeable) {
 	$html2 = sprintf('<tr><td>%s</td><td>%s</td></tr>', e($key), $property_line->get_value_html());
       } else {
-	$html2 = sprintf('<tr><td colspan="2">Failed to find and/or parse setting "%s" in server.properties.</td></tr>', e($var));
+	$html2 = sprintf('<tr><td colspan="2">Failed to find and/or parse setting "%s" in server.properties.</td></tr>', e($key));
       }
       $html .= "  " . $html2 . "\n";
     }
