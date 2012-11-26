@@ -328,7 +328,10 @@ function server_stop() {
     fi
 
     screen_cmd "say Server going down! Saving world..."
-    server_save
+    if ! server_save; then
+	echo "Save failed, so refusing to stop server"
+	return 1
+    fi
 
     echo -n "Stopping Minecraft server ... "
     if ! screen_cmd "stop" 60 '^(\>\s*)*M+inecraft is stopped' "$SCREEN_LOG"; then
@@ -515,13 +518,24 @@ function server_save() {
     if $USE_SAVEOFF; then
 	screen_cmd "save-on"   10 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] CONSOLE: Enabling level saving..'
     fi
-    screen_cmd "save-all" 300 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] (CONSOLE: Save complete.|Saved the world)'
-    echo -n "(Sleeping 30 seconds because of Minecraft bug MC-2527)... "
-    sleep 30
+
+    if ! screen_cmd "save-all" 30 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] (CONSOLE: Save complete.|Saved the world)'; then
+	echo "Save failed!";
+	return 1
+    fi
+
+    echo -n "(Running save-all 2 more times and sleeping 10 seconds because of Minecraft bug MC-2527)... "
+    sleep 3
+    screen_cmd "save-all" 30 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] (CONSOLE: Save complete.|Saved the world)'
+    sleep 3
+    screen_cmd "save-all" 30 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] (CONSOLE: Save complete.|Saved the world)'
+    sleep 4
+
     if $USE_SAVEOFF; then
 	screen_cmd "save-off"  10 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] CONSOLE: Disabling level saving..'
     fi
     echo "Saved!"
+    return 0;
 }
 function server_backup() {
     if is_server_online; then
