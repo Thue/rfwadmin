@@ -57,7 +57,7 @@ foreach ($maps as $map) {
 ?>
 <div id="armory_header" style="display:none">(Syncing ARMoRy maps in the background...)</div>
 <span id="armory_span"></span>
-<input type="submit" name="sync_with_armory" value="Fetch updated list of maps from ARMoRy" onclick="$('#armory_header')[0].style.display='';this.style.display='none';document.my_sync_armory = new sync_armory()">
+<input type="submit" name="sync_with_armory" value="Fetch updated list of maps from ARMoRy" onclick="$('#armory_header')[0].style.display='';this.style.display='none';document.my_sync_armory = new sync_armory();return false">
 <?php
     }
   }
