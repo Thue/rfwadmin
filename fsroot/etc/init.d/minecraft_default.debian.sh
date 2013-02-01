@@ -19,7 +19,7 @@ SU_TO_USER="www-data"
 
 if [ ! -z "$SU_TO_USER" ]; then
     if [ `whoami` != "$SU_TO_USER" ]; then
-	su - www-data -c "$CMD"
+	su - $SU_TO_USER -c "$CMD"
     else
 	$CMD
     fi
