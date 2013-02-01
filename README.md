@@ -6,10 +6,10 @@ A web and/or command line interface for controlling a MineCraft server, optimize
 To install
 ----------
 
-- Only tested on Ubuntu 12.04
+- Only tested on Ubuntu 12.04 and CentOS
 - The files inside fsroot are in their filesystem locations; move then into the real file system at corresponding locations.
-- /var/lib/minecraft/maps and /var/lib/minecraft/servers should be owned by the web server user (www-data:www-data in Ubuntu and Debian).
-- /etc/init.d/minecraft_default.sh should not be owned by the web server, since it is run by root during boot.
+- /var/lib/minecraft/maps and /var/lib/minecraft/servers should be owned by the web server user (www-data:www-data in Ubuntu and Debian, httpd in redhat, RHEL, Centos).
+- /etc/init.d/minecraft_default.debian.sh or /etc/init.d/minecraft_default.redhat.sh should not be owned by the web server, since it is run by root during boot.
 - On Ubuntu, get the apache web server with PHP5 by installing the Ubuntu package libapache2-mod-php5 .
 - On fx a default Ubuntu or CentOS install, upload_max_filesize in /etc/php5/apache2/php.ini is set too low for the map upload feature to work.
 - The PHP script uses curl for fetching maps from a link, so you should install the ubuntu package php5-curl if you want to use that feature.
@@ -18,7 +18,7 @@ To install
 Configuration files
 -------------------
 
-- /etc/init.d/minecraft_default.sh is an extremely simple file set to point to /var/lib/minecraft/servers/default/minecraft.sh . To make it start and stop with the Ubuntu server on boot, run the Ubuntu command "update-rc.d minecraft_default.sh defaults" (will probably differ for other distributions).
+- /etc/init.d/minecraft_default.debian.sh and /etc/init.d/minecraft_default.redhat.sh is an extremely simple file set to point to /var/lib/minecraft/servers/default/minecraft.sh . To make it start and stop with the Ubuntu server on boot, run the Ubuntu command "update-rc.d minecraft_default.debian.sh defaults". For redhat based distributions, do "chkconfig --add minecraft_default.redhat.sh".
 - /var/lib/minecraft/servers/default/minecraft.sh contains the actual configuration of the script. When upgrading to a new Minecraft server version, adjust $FILE_JAR here (Or use the "server version" tab in the web interface).
 - The files below /var/lib/minecraft/servers/default/server , such as /var/lib/minecraft/servers/default/server/server.properties , is the normal minecraft configuration for a single Minecraft server.
 - If you are running multiple servers, or don't use the default /var/lib/minecraft location, you need to tweak the settings inside /var/www/index.php
@@ -27,7 +27,7 @@ Some directories and files explained
 ------------------------------------
 
 - /var/lib/minecraft/maps : The web interface will save uploaded maps here
-- /var/lib/minecraft/jars : server and bukkit plugins jars.
+- /var/lib/minecraft/jars : server jars and bukkit plugins jars.
 - /var/lib/minecraft/minecraft_base.sh : The shell backend, used by init.d and the web interface
 - /var/lib/minecraft/servers/default/server : A normal minecraft server dir for the server I called "default" (The name "default" is not displayed to end-users).
 
