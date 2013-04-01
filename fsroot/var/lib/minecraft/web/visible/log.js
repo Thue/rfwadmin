@@ -44,7 +44,7 @@ function log(tab_id, prefix, logfile) {
     this.xmlhttp.onreadystatechange = function() {tthis.onreadystatechange();};
     this.xmlhttp.open("POST","index.php?page=action_ajax", true);
     this.xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    this.xmlhttp.send("stream_log="+logfile);
+    this.xmlhttp.send("stream_log="+logfile+"&input_complete=1");
 }
 
 log.prototype.afterShow = function() {
