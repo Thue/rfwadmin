@@ -10,5 +10,6 @@ $html = $properties->to_html();
 echo $html;
 ?>
 
-<input type="submit" name="save_properties" value="save" >
+  <input type="submit" name="save_properties" value="save" >
+  <input type="hidden" name="input_complete" value="1" />
 </form>

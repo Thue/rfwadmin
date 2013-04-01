@@ -64,6 +64,7 @@ foreach ($maps as $map) {
 ?>
 
 </p>
+  <input type="hidden" name="input_complete" value="1" />
 </form>
 
 <hr>
@@ -77,5 +78,6 @@ foreach ($maps as $map) {
 <br>
 <form action="index.php?page=upload_file" method="post" enctype="multipart/form-data" target="_blank">
   Or fetch from a direct link to a zip file: <input type="text" name="link" value=""><input type="submit" name="upload_link" value="fetch">
+  <input type="hidden" name="input_complete" value="1" />
 </form>
 

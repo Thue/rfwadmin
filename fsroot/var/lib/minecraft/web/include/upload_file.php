@@ -46,6 +46,8 @@ if (isset($_POST["upload_file"])) {
   minecraft_map::install_map($tmp, $file["name"], true);
 } else if (isset($_POST["upload_link"])) {
   minecraft_map::fetch_and_install($_POST["link"], true);
+} else if (!isset($_POST["input_complete"])) {
+  echo "Input seems to be incomplete. If you are trying to upload a big save file, then try increasing post_max_size in the http server php.ini file (usually /etc/php5/apache2/php.ini).";
 } else {
   echo "unknown command!";
 }

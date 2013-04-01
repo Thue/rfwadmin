@@ -11,6 +11,7 @@ foreach ($jars as $jar) {
 	 '      <form method="POST" target="_blank" action="index.php?page=action">'.
 	 '        <input type="submit" name="install_serverjar" value="%s" %s>'.
 	 '        <input type="hidden" name="jar" value="%s">'.
+         '        <input type="hidden" name="input_complete" value="1" />'.
 	 '      </form>'.
 	 "    </td>\n".
 	 "  </tr>\n",
@@ -22,5 +23,3 @@ foreach ($jars as $jar) {
 }
 ?>
 </table>
-
-</form>

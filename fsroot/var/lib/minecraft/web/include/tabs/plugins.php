@@ -6,7 +6,7 @@ $unexpected = Array();
 $ps = $plugins->get_all($unexpected);
 
 $fs = "<form method=\"post\" action=\"index.php?page=action\" target=\"_blank\">\n";
-$fe = "</form>";
+$fe = "<input type=\"hidden\" name=\"input_complete\" value=\"1\" /></form>";
 
 echo "<table class='plugins'>\n";
 $color = "color2";

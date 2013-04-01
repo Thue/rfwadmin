@@ -10,6 +10,11 @@ if (isset($_POST["time_limit"]) && $_POST["time_limit"] < time()) {
   exit();
 }
 
+if (!isset($_POST["input_complete"])) {
+  echo "Input seems to be incomplete. If you are trying to upload a big save file, then try increasing post_max_size in the http server php.ini file (usually /etc/php5/apache2/php.ini).";
+  exit();
+}
+
 if (isset($_POST["save_properties"])) {
   $mc->save_properties();
 } else if (isset($_POST["save_textareas"])) {
