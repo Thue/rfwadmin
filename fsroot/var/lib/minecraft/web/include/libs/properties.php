@@ -6,14 +6,20 @@ class properties {
 		       "difficulty" => "property_select",
 
 		       "gamemode" => "property_select",
+		       "hardcore" => "property_bool",
 		       "level-seed" => "property_string",
 		       "level-type" => "property_select",
 		       "generator-settings" => "property_string",
+		       "generate-structures" => "property_bool",
+		       "max-build-height" => "property_int",
 		       "spawn-protection" => "property_int",
 		       "enable-command-block" => "property_bool",
+		       "texture-pack" => "property_string",
 
 		       "server-port" => "property_int",
 		       "online-mode" => "property_bool",
+		       "snooper-enabled" => "property_bool",
+		       "enable-query" => "property_bool",
 
 		       "max-players" => "property_int",
 		       "view-distance" => "property_int",
@@ -22,7 +28,6 @@ class properties {
 
 		       "allow-flight" => "property_bool",
 		       "pvp" => "property_bool",
-		       "generate-structures" => "property_bool",
 		       "spawn-animals" => "property_bool",
 		       "spawn-monsters" => "property_bool",
 		       "spawn-npcs" => "property_bool",
