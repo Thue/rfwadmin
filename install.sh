@@ -61,12 +61,12 @@ fi
 #Configure a default server if no previous configuration exists
 if  [ $CONFIGURE_SERVER == "1" ]; then
   #I would like to name the file after the version, but Mojang doesn't give me a way to determine the version number of the download
-  LATEST_SERVER_BINARY="/minecraft_server_downloaded_`date +%Y-%m-%d`.jar"
+  LATEST_SERVER_BINARY="minecraft_server_downloaded_`date +%Y-%m-%d`.jar"
   LATEST_SERVER="\$PATH_BASE/jars/serverjars/$LATEST_SERVER_BINARY"
   #If we are re-running the install script on the same day, no need to re-download the server
   if [ ! -f "fsroot/var/lib/minecraft/$LATEST_SERVER_BINARY" ]; then
     echo "Downloading latest minecraft server jar from Mojang."
-    wget -O "fsroot/var/lib/minecraft/$LATEST_SERVER_BINARY" "https://s3.amazonaws.com/MinecraftDownload/launcher/minecraft_server.jar" || error_exit "Failed to download minecraft server"
+    wget -O "fsroot/var/lib/minecraft/jars/serverjars/$LATEST_SERVER_BINARY" "https://s3.amazonaws.com/MinecraftDownload/launcher/minecraft_server.jar" || error_exit "Failed to download minecraft server"
   fi
   cat fsroot/var/lib/minecraft/servers/default/minecraft.sh | sed "s|^FILE_JAR=.*\$|FILE_JAR=\"$LATEST_SERVER\"|" | sed "s|^PATH_BASE=.*\$|PATH_BASE=\"$PATH_BASE\"|" > fsroot/var/lib/minecraft/servers/default/minecraft.sh.customized
 fi
