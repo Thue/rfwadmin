@@ -108,8 +108,8 @@ fi
 if  [ $CONFIGURE_SERVER == "1" ]; then
   cp -r fsroot/var/lib/minecraft/servers/default $PATH_BASE/servers
   mkdir $PATH_BASE/servers/default/backups
-  chmod +x $PATH_BASE/servers/default/minecraft.sh
   mv $PATH_BASE/servers/default/minecraft.sh.customized $PATH_BASE/servers/default/minecraft.sh
+  chmod +x $PATH_BASE/servers/default/minecraft.sh
   cp fsroot/var/lib/minecraft/jars/serverjars/* $PATH_BASE/jars/serverjars
 
   #Install init script
