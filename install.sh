@@ -1,9 +1,6 @@
 #!/bin/bash
 #If a previous installation exists, this script installs a new code version while preserverving configuration and data
 
-echo "This script should work, but has not been tested. Edit this file to remove the 'exit' below to run it anyway"
-exit
-
 ### Settings ###
 
 #You can also use WEBINTERFACE_DIR=/var/www/ to put the web interface in the www root
