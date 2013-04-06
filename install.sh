@@ -97,6 +97,7 @@ mkdir -p $PATH_BASE/servers
 
 cp fsroot/var/lib/minecraft/jars/plugins/README $PATH_BASE/jars/plugins
 cp fsroot/var/lib/minecraft/minecraft_base.sh $PATH_BASE
+chmod +x $PATH_BASE/minecraft_base.sh
 cp -r fsroot/var/lib/minecraft/web $PATH_BASE
 if [ -f  fsroot/var/lib/minecraft/jars/converter/AnvilConverter.jar ]; then
   #If downloaded for installation above, then install it
@@ -107,11 +108,13 @@ fi
 if  [ $CONFIGURE_SERVER == "1" ]; then
   cp -r fsroot/var/lib/minecraft/servers/default $PATH_BASE/servers
   mkdir $PATH_BASE/servers/default/backups
+  chmod +x $PATH_BASE/servers/default/minecraft.sh
   mv $PATH_BASE/servers/default/minecraft.sh.customized $PATH_BASE/servers/default/minecraft.sh
   cp fsroot/var/lib/minecraft/jars/serverjars/* $PATH_BASE/jars/serverjars
 
   #Install init script
   cp fsroot/etc/init.d/minecraft_default.sh.customized /etc/init.d/minecraft_default.sh
+  chmod +x /etc/init.d/minecraft_default.sh
   ##Set to stop in ( http://refspecs.linuxbase.org/LSB_3.0.0/LSB-Core-generic/LSB-Core-generic/runlevels.html ):
   #halt
   ln -s /etc/init.d/minecraft_default.sh /etc/rc0.d/K01minecraft_default.sh
