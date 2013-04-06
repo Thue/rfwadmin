@@ -38,7 +38,7 @@ if [ -z "$WEBSERVER_USER" ]; then
     error_exit "Failed to guess web server user. Edit install.sh to manually specify \$WEBSERVER_USER"
   fi
 
-  WEBSERVER_USER=`ps --pid $WEB_PID -o euser |tail -n 1`
+  WEBSERVER_USER=`ps --pid $WEB_PID -o user |tail -n 1`
   echo "Using '$WEBSERVER_USER' as the HTTP server user, which will also run the Minecraft server."
 fi
 if ! [[ "$WEBSERVER_USER" =~ ^[a-zA-Z_-]+$ ]] ; then
