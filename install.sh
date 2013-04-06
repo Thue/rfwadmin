@@ -32,13 +32,7 @@ fi
 
 #determine web server user by looking at who is using port 80
 if [ -z "$WEBSERVER_USER" ]; then
-  #which process is listening to port 80?
-  WEB_PID=`netstat -tulpn |grep ":80[^0-9]"|head -n1|sed 's/.*\s\([0-9]\+\)\/\w\+\s*/\1/'`
-  if [[ ! "$WEB_PID" =~ ^[0-9]+ ]]; then
-    error_exit "Failed to guess web server user. Edit install.sh to manually specify \$WEBSERVER_USER"
-  fi
-
-  WEBSERVER_USER=`ps --pid $WEB_PID -o user |tail -n 1`
+  WEBSERVER_USER=$(ps axho user,comm|grep -E "httpd|apache"|uniq|grep -v "root"|awk 'END {if ($1) print $1}')
   echo "Using '$WEBSERVER_USER' as the HTTP server user, which will also run the Minecraft server."
 fi
 if ! [[ "$WEBSERVER_USER" =~ ^[a-zA-Z_-]+$ ]] ; then
