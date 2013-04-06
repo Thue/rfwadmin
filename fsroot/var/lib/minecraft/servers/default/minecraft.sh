@@ -1,6 +1,7 @@
 #!/bin/bash
 
 #these two following lines (PATH_BASE and FILE_JAR) are regexp matched from serverjar.php . So don't make then too irregular.
+#On initial installation, when running the install.sh script, the below 2 lines are adjusted
 PATH_BASE="/var/lib/minecraft"
 FILE_JAR="$PATH_BASE/jars/serverjars/craftbukkit-beta_1.3.2-R0.1.jar"
 

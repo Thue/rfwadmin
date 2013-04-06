@@ -6,22 +6,28 @@ A web and/or command line interface for controlling a MineCraft server, optimize
 To install
 ----------
 
-- Only tested on Ubuntu 12.04 and CentOS
-- The files inside fsroot are in their filesystem locations; move then into the real file system at corresponding locations.
-- /var/lib/minecraft/maps and /var/lib/minecraft/servers should be owned by the web server user (www-data:www-data in Ubuntu and Debian, httpd in redhat, RHEL, Centos).
-- /etc/init.d/minecraft_default.debian.sh or /etc/init.d/minecraft_default.redhat.sh should not be owned by the web server, since it is run by root during boot.
-- On Ubuntu, get the apache web server with PHP5 by installing the Ubuntu package libapache2-mod-php5 .
+Essential steps:
+
+- Install Java ( HOWTO: http://www.planetminecraft.com/blog/how-to-install-java-linux-29927/ ).
+- Install get the apache web server and PHP5 support (and optionally curl). On Debian/Ubuntu you can get this by doing "sudo apt-get install libapache2-mod-php5 php5-curl" . On Redhat/RHEL/CentOS I am guessing that the command should be "sudo yum -y install php httpd php-curl" (untested).
+- Run ./install.sh from inside the unpacked rfwadmin directory.
+
+Optional steps:
+
 - On fx a default Ubuntu or CentOS install, upload_max_filesize in /etc/php5/apache2/php.ini is set too low for the map upload feature to work.
 - The PHP script uses curl for fetching maps from a link, so you should install the ubuntu package php5-curl if you want to use that feature.
-- Running multiple servers: Right now fsroot is set up to run one server - to run more than one server, 1) add a /etc/init.d/minecraft2.sh file, 2) add a copy of the /var/www/index.php file, and edit it, and 3) a /var/lib/minecraft/servers/2 dir.
+- Running multiple servers: Right now fsroot is set up to run one server - to run more than one server, 1) add a /etc/init.d/minecraft2.sh file, 2) add a copy of the /var/www/index.php file, and edit it, and 3) a /var/lib/minecraft/servers/2 dir. To make it start and stop with an Ubuntu server on boot, run the Ubuntu command "update-rc.d minecraft_default.debian.sh defaults". For redhat based distributions, do "chkconfig --add minecraft_default.redhat.sh".
 
 Configuration files
 -------------------
 
-- /etc/init.d/minecraft_default.debian.sh and /etc/init.d/minecraft_default.redhat.sh is an extremely simple file set to point to /var/lib/minecraft/servers/default/minecraft.sh . To make it start and stop with the Ubuntu server on boot, run the Ubuntu command "update-rc.d minecraft_default.debian.sh defaults". For redhat based distributions, do "chkconfig --add minecraft_default.redhat.sh".
+Most users should not need to adjust any settings from the default.
+
+- You can tweak where the files are installed at the top of install.sh .
 - /var/lib/minecraft/servers/default/minecraft.sh contains the actual configuration of the script. When upgrading to a new Minecraft server version, adjust $FILE_JAR here (Or use the "server version" tab in the web interface).
 - The files below /var/lib/minecraft/servers/default/server , such as /var/lib/minecraft/servers/default/server/server.properties , is the normal minecraft configuration for a single Minecraft server.
-- If you are running multiple servers, or don't use the default /var/lib/minecraft location, you need to tweak the settings inside /var/www/index.php
+- If you are running multiple servers, or don't use the default /var/lib/minecraft location, you need to tweak the settings inside /var/www/rfwadmin/index.php
+- /var/www/rfwadmin/index.php also contains a few other settings.
 
 Some directories and files explained
 ------------------------------------
@@ -34,7 +40,7 @@ Some directories and files explained
 Using command line interface
 ----------------------------
 
-You can use rfwadmin as a command line interface by doing "sudo /etc/init.d/minecraft_default.sh start". Commands include "start", "stop", "restart", "list", "send_command save-all", "send_command op thuejk"; look it the bottom of /var/lib/minecraft/minecraft_base.sh for a list. The command line interface is a heavily modified version of mc-manager, much improved; I recommend always using the rfwadmin version over mc-manager, even if you don't need the web interface. To only use the command line interface without installing the rfwadmin web interface, simply don't install /var/www/index.php .
+You can use rfwadmin as a command line interface by doing commands such as "sudo /etc/init.d/minecraft_default.sh start". Commands include "start", "stop", "restart", "list", "send_command save-all", "send_command op thuejk"; look it the bottom of /var/lib/minecraft/minecraft_base.sh for a list. The command line interface is a heavily modified version of mc-manager, much improved; I recommend always using the rfwadmin version over mc-manager, even if you don't need the web interface. To only use the command line interface without installing the rfwadmin web interface, simply don't install /var/www/index.php .
 
 About security
 --------------

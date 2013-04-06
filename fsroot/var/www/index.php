@@ -5,7 +5,7 @@
 error_reporting(E_ALL | E_STRICT);
 ini_set("display_errors", 1);
 
-$include_base = "/var/lib/minecraft";
+$include_base = "/var/lib/minecraft"; //grepped from install.sh
 $server_dir = $include_base . "/servers/default";
 require_once($include_base . "/web/include/libs/minecraft.php");
 $mc = new minecraft($include_base . "/servers/default" /* server dir */);
