@@ -8,8 +8,9 @@ To install
 
 Essential steps:
 
-- Install Java ( HOWTO: http://www.planetminecraft.com/blog/how-to-install-java-linux-29927/ ).
-- Install get the apache web server and PHP5 support (and optionally curl). On Debian/Ubuntu you can get this by doing "sudo apt-get install libapache2-mod-php5 php5-curl" . On Redhat/RHEL/CentOS I am guessing that the command should be "sudo yum -y install php httpd php-curl" (untested).
+- Install supporting programs (java, apache, php).
+-- On Ubuntu/Debian/Mint: "sudo apt-get install openjdk-7-jre libapache2-mod-php5 php5-curl" .
+-- On Redhat/RHEL/CentOS I am guessing that the command should be "sudo yum -y install openjdk-7-jre php httpd php-curl" (untested).
 - Run ./install.sh from inside the unpacked rfwadmin directory.
 
 Optional steps:

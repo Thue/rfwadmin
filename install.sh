@@ -66,7 +66,7 @@ if  [ $CONFIGURE_SERVER == "1" ]; then
   #If we are re-running the install script on the same day, no need to re-download the server
   if [ ! -f "fsroot/var/lib/minecraft/$LATEST_SERVER_BINARY" ]; then
     echo "Downloading latest minecraft server jar from Mojang."
-    wget -O "fsroot/var/lib/minecraft/$LATEST_SERVER_BINARY" "https://s3.amazonaws.com/MinecraftDownload/launcher/minecraft_server.jar" && error_exit "Failed to download minecraft server"
+    wget -O "fsroot/var/lib/minecraft/$LATEST_SERVER_BINARY" "https://s3.amazonaws.com/MinecraftDownload/launcher/minecraft_server.jar" || error_exit "Failed to download minecraft server"
   fi
   cat fsroot/var/lib/minecraft/servers/default/minecraft.sh | sed "s|^FILE_JAR=.*\$|FILE_JAR=\"$LATEST_SERVER\"|" | sed "s|^PATH_BASE=.*\$|PATH_BASE=\"$PATH_BASE\"|" > fsroot/var/lib/minecraft/servers/default/minecraft.sh.customized
 fi
@@ -106,6 +106,7 @@ fi
 #If no server config exists from previous install, then configure a server
 if  [ $CONFIGURE_SERVER == "1" ]; then
   cp -r fsroot/var/lib/minecraft/servers/default $PATH_BASE/servers
+  mkdir $PATH_BASE/servers/default/backups
   mv $PATH_BASE/servers/default/minecraft.sh.customized $PATH_BASE/servers/default/minecraft.sh
   cp fsroot/var/lib/minecraft/jars/serverjars/* $PATH_BASE/jars/serverjars
 
@@ -142,3 +143,5 @@ fi
 if [ ! -e "$WEBINTERFACE_DIR"/rfwadmin_files ]; then
   ln -s /var/lib/minecraft/web/visible "$WEBINTERFACE_DIR"/rfwadmin_files
 fi
+
+/etc/init.d/minecraft_default.sh start
