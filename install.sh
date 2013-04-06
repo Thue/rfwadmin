@@ -74,7 +74,7 @@ fi
 if [ ! -f fsroot/var/lib/minecraft/jars/converter/AnvilConverter.jar -a ! -f $PATH_BASE/jars/converter/AnvilConverter.jar ]; then
   echo "Downloading Anvil converter used to convert old maps."
   wget -O "fsroot/var/lib/minecraft/jars/converter/Minecraft.AnvilConverter.zip" "http://assets.minecraft.net/12w07a/Minecraft.AnvilConverter.zip"
-  unzip -d "fsroot/var/lib/minecraft/jars/converter" "fsroot/var/lib/minecraft/jars/converter/Minecraft.AnvilConverter.zip" || echo "Failed to extract anvil converter because 'unzip' is not installed. You probably don't need that anyway."
+  unzip -q -d "fsroot/var/lib/minecraft/jars/converter" "fsroot/var/lib/minecraft/jars/converter/Minecraft.AnvilConverter.zip" || echo "Failed to extract anvil converter because 'unzip' is not installed. You probably don't need that anyway."
 fi
 
 #configure index.php to use correct PATH_BASE
