@@ -2,6 +2,15 @@
 $include_root = dirname(__FILE__);
 
 function dispatch(minecraft $mc, $page) {
+  //POST same origin check
+  if ($_POST !== Array()) {
+    $regexp = sprintf('/https?:\\/\\/%s\\/[^@]*/', preg_quote($_SERVER["HTTP_HOST"]));
+    if (!preg_match($regexp, $_SERVER['HTTP_REFERER'])) {
+      echo "Bad referer! Cross-site request forgery?";
+      exit(1);
+    }
+  }
+
   switch ($page) {
   case "main":
     require_once("main.php");

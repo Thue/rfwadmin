@@ -17,15 +17,6 @@ plugins::$plugins_dir = $include_base . "/jars/plugins";
 
 /*** Changable settings end here ***/
 
-//POST same origin check
-if ($_POST !== Array()) {
-  $regexp = sprintf('/https?:\\/\\/%s\\/[^@]*/', preg_quote($_SERVER["HTTP_HOST"]));
-  if (!preg_match($regexp, $_SERVER['HTTP_REFERER'])) {
-    echo "Bad referer! Cross-site request forgery?";
-    exit(1);
-  }
-}
-
 require_once($include_base . "/web/include/dispatcher.php");
 dispatch($mc, isset($_GET["page"]) ? $_GET["page"] : "main");
 
