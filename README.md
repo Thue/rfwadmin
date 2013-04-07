@@ -9,8 +9,8 @@ To install
 Essential steps:
 
 - Install supporting programs (java, apache, php).
--- On Ubuntu/Debian/Mint: "sudo apt-get install openjdk-7-jre libapache2-mod-php5 php5-curl" .
--- On Redhat/RHEL/CentOS I am guessing that the command should be "sudo yum -y install openjdk-7-jre php httpd php-curl" (untested).
+-- On Ubuntu/Debian/Mint: "sudo apt-get install openjdk-7-jre libapache2-mod-php5 php5-curl wget" .
+-- On Redhat/RHEL/CentOS I am guessing that the command should be "sudo yum -y install openjdk-7-jre php httpd php-curl wget" (untested).
 - Run ./install.sh from inside the unpacked rfwadmin directory.
 
 Optional steps:
