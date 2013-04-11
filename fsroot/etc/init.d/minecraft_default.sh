@@ -10,7 +10,7 @@
 # Description:       rfwadmin runs any number of configured Minecraft servers on boot, which can then be controlled by the web interface and/or calling this init script command line.
 ### END INIT INFO
 
-PATH_BASE="/var/lib/minecraft2"
+PATH_BASE="/var/lib/minecraft"
 CMD="$PATH_BASE/servers/default/minecraft.sh"
 for ARG in "$@"; do
   CMD="$CMD \"$ARG\""
