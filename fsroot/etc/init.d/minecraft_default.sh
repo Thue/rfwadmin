@@ -21,7 +21,7 @@ SU_TO_USER="www-data"
 
 if [ ! -z "$SU_TO_USER" ]; then
     if [ `whoami` != "$SU_TO_USER" ]; then
-	su - $SU_TO_USER -c "$CMD"
+	su -s /bin/bash - $SU_TO_USER -c "$CMD"
     else
 	$CMD
     fi
