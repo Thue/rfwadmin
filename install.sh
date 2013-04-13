@@ -4,7 +4,13 @@
 ### Settings ###
 
 #You can also use WEBINTERFACE_DIR=/var/www/ to put the web interface in the www root
-WEBINTERFACE_DIR="/var/www/rfwadmin"
+if [ -d /var/www/html ]; then
+  #centos has webroot /var/www/html
+  WEBINTERFACE_DIR="/var/www/html/rfwadmin"
+else
+  #Ubuntu has webroot /var/www
+  WEBINTERFACE_DIR="/var/www/rfwadmin"
+fi
 
 #rfwadmin runs as the web server user. If $WEBSERVER_USER is empty, this script will try to guess the web server user from the owner of the process currently using port 80
 WEBSERVER_USER=
