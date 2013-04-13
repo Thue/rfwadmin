@@ -10,7 +10,7 @@ Essential steps:
 
 - Install supporting programs (screen, java, apache, php, zip).
 -- On Ubuntu/Debian/Mint: "sudo apt-get install screen openjdk-6-jre libapache2-mod-php5 php5-curl wget zip unzip" .
--- On Redhat/RHEL/CentOS I am guessing that the command should be "sudo yum -y install screen openjdk-7-jre php httpd php-curl wget zip unzip" (untested).
+-- On Redhat/RHEL/CentOS I am guessing that the command should be "sudo yum -y install screen java-1.7.0-openjdk php httpd php-curl wget zip unzip" .
 - Run ./install.sh from inside the unpacked rfwadmin directory.
 
 Optional steps:
