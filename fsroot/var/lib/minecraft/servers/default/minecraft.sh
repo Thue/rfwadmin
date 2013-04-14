@@ -5,7 +5,7 @@
 PATH_BASE="/var/lib/minecraft"
 FILE_JAR="$PATH_BASE/jars/serverjars/craftbukkit-beta_1.3.2-R0.1.jar"
 
-#If running multiple servers, $SCREEN and $SERVER_SUBDIR should be unique
+#If running multiple servers, $SCREEN and $SERVER_SUBDIR must be unique
 #The SCREEN=... is inserted into a regexp, so may only contain [a-zA-Z0-9]
 SCREEN=mcsrv
 SERVER_SUBDIR="default"
