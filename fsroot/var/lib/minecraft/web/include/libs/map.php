@@ -54,7 +54,7 @@ class minecraft_map {
   }
 
   public static function validate($map) {
-    preg_match('/\A[a-zA-Z0-9][a-zA-Z0-9#_\-"\'\s.\[\]\(\)]*\Z/', $map) || die("bad characters in map name '$map'!");
+    preg_match('/\A[a-zA-Z0-9_][a-zA-Z0-9#_\-"\'\s.\[\]\(\)]*\Z/', $map) || die("bad characters in map name '$map'!");
     $full_path = self::$map_dir . "/" . $map;
     return $full_path;
   }
