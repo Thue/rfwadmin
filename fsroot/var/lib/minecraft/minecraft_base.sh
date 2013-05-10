@@ -773,6 +773,17 @@ case $1 in
             echo -e "Minecraft server is already \033[1;31moffline\033[0m"
         fi
         ;;
+    stop_nosave)
+        if is_server_online; then
+            screen_cmd "say Server shutting down..."
+            if ! server_stop_nosave; then
+		unlock
+                exit 1
+            fi
+        else
+            echo -e "Minecraft server is already \033[1;31moffline\033[0m"
+        fi
+	;;
     restart)
         if is_server_online; then
             screen_cmd "say Server restarting..."
@@ -796,6 +807,15 @@ case $1 in
 	;;
     nuke)
 	nuke
+	;;
+    delete_map)
+        if is_server_online; then
+            if ! server_stop; then
+		echo "Failed to stop server!";
+		exit 1;
+	    fi
+	fi
+	delete_map
 	;;
     nuke_and_delete)
 	if nuke; then
