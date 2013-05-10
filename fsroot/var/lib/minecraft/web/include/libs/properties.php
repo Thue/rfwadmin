@@ -122,6 +122,12 @@ class properties {
     $line->set($value);
   }
 
+  public function get_one($key) {
+    $line = $this->var_get_property_line($key);
+    assert($line !== null);
+    return $line->get();
+  }
+
   public function save_to_file($recommend_restart) {
     $text = "";
     foreach ($this->property_lines as $line) {
@@ -152,6 +158,10 @@ abstract class property_changeable extends property_line {
 
   public function set($value) {
     $this->value = $value;
+  }
+
+  public function get() {
+    return $this->value;
   }
 
   abstract public function get_value_html();

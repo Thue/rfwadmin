@@ -94,7 +94,12 @@ class minecraft {
     }
 
     if ($as_text) {
-      $text = $map_name === null ? "(Randomly generated map)" : $map_name;
+      if ($map_name === null) {
+	$properties = $this->get_properties();
+	$text = sprintf("(Randomly generated map with seed '%s')", $properties->get_one("level-seed"));
+      } else {
+	$text = $map_name;
+      }
       return $text;
     } else {
       return $map_name;
