@@ -19,6 +19,10 @@ Currently loaded map: <b><?php echo htmlspecialchars($mc->get_current_map(true))
 </p>
 
 <p>
+  <input type="submit" name="new_blank" value="Discard"> current active map state and start a new blank map with seed <input type="text" name="new_seed" value=""> 
+</p>
+
+<p>
   <input type="submit" name="save" value="Save"> current active map state as <input type="text" name="save_as" value=""> 
   <!--<input type="checkbox" name="paranoid_save"> Stop server while saving map, which I assume is more safe.-->
 </p>

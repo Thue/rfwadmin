@@ -105,7 +105,7 @@ class properties {
 
   public function save() {
     $this->set_from_post();
-    $this->save_to_file();
+    $this->save_to_file(true);
   }
 
   private function set_from_post() {
@@ -116,18 +116,28 @@ class properties {
     }
   }
 
-  private function save_to_file() {
+  public function set_one($key, $value) {
+    $line = $this->var_get_property_line($key);
+    assert($line !== null);
+    $line->set($value);
+  }
+
+  public function save_to_file($recommend_restart) {
     $text = "";
     foreach ($this->property_lines as $line) {
       $text .= $line->get_line() . "\n";
     }
 
     if (!file_put_contents($this->path, $text)) {
-      echo "Failed to save server.properties. The web server user probably doesn't have permission to write that file.";
+      echo "Failed to save server.properties. The web server user probably doesn't have permission to write that file.\n";
       exit(1);
     }
 
-    echo sprintf("Settings saved to file %s. Restart the server to make the new settings take effect.", e($this->path));
+    echo sprintf("Settings saved to file %s.", e($this->path));
+    if ($recommend_restart) {
+      echo " Restart the server to make the new settings take effect.\n";
+    }
+    echo "\n";
   }
 
 }

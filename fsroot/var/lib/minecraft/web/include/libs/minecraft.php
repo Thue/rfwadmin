@@ -5,6 +5,7 @@ require_once(dirname(__FILE__) . "/plugins.php");
 require_once(dirname(__FILE__) . "/textareas.php");
 require_once(dirname(__FILE__) . "/map.php");
 require_once(dirname(__FILE__) . "/serverjar.php");
+require_once(dirname(__FILE__) . "/stdlib.php");
 
 function e($text) {
   return htmlspecialchars($text);
@@ -215,6 +216,31 @@ class minecraft {
   public function restart() {
     $cmd = $this->cmd(Array("restart"));
     $this->my_passthru($cmd);
+  }
+
+  public function new_blank($new_seed = null) {
+    if ($this->is_online()) {
+      $cmd = $this->cmd(Array("stop_nosave"));
+      $retval = $this->my_passthru($cmd);
+      if ($retval !== 0) {
+	exit($retval);
+      }
+    }
+
+    //Delete old map state
+    $cmd = $this->cmd(Array("delete_map"));
+    $this->my_passthru($cmd);
+
+    //Set map seed
+    if ($new_seed === null) {
+      $new_seed = stdlib::get_random_string(10);
+    }
+    $properties = $this->get_properties();
+    $properties->set_one("level-seed", $new_seed);
+    $properties->save_to_file(false);
+
+    //Start server
+    $this->start();
   }
 
   public function reload() {

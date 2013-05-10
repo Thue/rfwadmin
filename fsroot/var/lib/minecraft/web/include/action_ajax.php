@@ -35,6 +35,12 @@ if (isset($_POST["save_properties"])) {
   $mc->nuke_and_delete();
 } else if (isset($_POST["save"])) {
   $mc->save($_POST["save_as"], isset($_POST["paranoid_save"]));
+} else if (isset($_POST["new_blank"])) {
+  $new_seed = trim($_POST["new_seed"]);
+  if ($new_seed === "") {
+    $new_seed = null;
+  }
+  $mc->new_blank($new_seed);
 } else if (isset($_POST["change_map"])) {
   $mc->change_map($_POST["map"]);
 } else if (isset($_POST["rename_map"])) {
