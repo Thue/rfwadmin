@@ -500,6 +500,17 @@ function change_map() {
     cp -rp "${MAP_DIR}/$1" "${PATH_RUN}/world"
     rm -f "${PATH_RUN}/world/map_name.txt"
     echo -n "$1" > "${PATH_RUN}/world/map_name.txt"
+
+    #set level seed if possible
+    if [ -f "${MAP_DIR}/$1/rfwadmin_map_level-seed" ]; then
+	LEVEL_SEED=`cat "${MAP_DIR}/$1/rfwadmin_map_level-seed"|head -n 1`
+	echo $PATH_RUN;
+	cat "${PATH_RUN}/server.properties" |grep -v "^level-seed=" > "${PATH_RUN}/server.properties.tmp"
+	echo -e "\\n" >> "${PATH_RUN}/server.properties.tmp"
+	echo "level-seed=$LEVEL_SEED" >> "${PATH_RUN}/server.properties.tmp"
+	mv -f "${PATH_RUN}/server.properties.tmp" "${PATH_RUN}/server.properties"
+    fi
+
     echo "Installed!"
 
     if [ $WAS_ONLINE -eq 1 ]; then

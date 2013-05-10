@@ -300,6 +300,13 @@ class minecraft {
 		   escapeshellarg($target_full_path)
 		   );
     $this->my_passthru($cmd);
+
+    //Save level seed
+    $properties = $this->get_properties();
+    file_put_contents($target_full_path . "/rfwadmin_map_level-seed",
+		      $properties->get_one("level-seed"))
+      !== false || exit(1);
+
     echo "Copied!";
 
     if ($do_stop) {
