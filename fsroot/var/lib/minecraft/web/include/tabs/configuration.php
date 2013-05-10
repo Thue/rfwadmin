@@ -5,8 +5,7 @@ See the Minecraft Wiki's <a href="http://www.minecraftwiki.net/wiki/Server.prope
 
 <form method="post" action="index.php?page=action" target="_blank">
 <?php
-$properties = $mc->get_properties();
-$html = $properties->to_html();
+$html = $mc->properties->to_html();
 echo $html;
 ?>
 

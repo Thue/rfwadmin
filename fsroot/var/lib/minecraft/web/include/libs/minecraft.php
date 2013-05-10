@@ -23,10 +23,14 @@ class minecraft {
    * redownload when new versions are made available. */
   public $armory_enabled = false;
 
+  public $properties; //set in construct
+
   function __construct($server_dir) {
     $this->server_dir = $server_dir;
     $this->msh = sprintf("%s/minecraft.sh", $this->server_dir);
     $this->map_name_file = sprintf("%s/server/world/map_name.txt", $this->server_dir);
+
+    $this->properties = $this->get_properties();
   }
 
   function cmd(Array $args) {
@@ -42,7 +46,9 @@ class minecraft {
     $cmd = $this->cmd(Array("status"));
     $output = Array();
     exec($cmd, $output, $res);
-    return ansi_shell_to_html::cmdline_to_html(implode("", $output));
+    $html = ansi_shell_to_html::cmdline_to_html(implode("", $output));
+    $html = preg_replace('/(\<span style="[^"]+"\>(?:online|offline)\<\/span\>)/', '<b>\1</b>', $html);
+    return $html;
   }
 
   public function get_users_html() {
@@ -64,6 +70,42 @@ class minecraft {
     }
 
     return $html;
+  }
+
+  public function get_difficulty_html() {
+    return strtolower($this->properties->get_one("difficulty"));
+  }
+
+  public function get_server_html() {
+    $serverjar = $this->get_serverjar();
+    $path = $serverjar->get_installed_path();
+    $jar = preg_replace('/^.*\/([^\/]+)$/', '\1', $path);
+    $jar = "<b>" . htmlentities($jar) . "</b>";
+
+    $plugins = $this->get_plugins();
+    $ps = $plugins->get_all();
+    $list = Array();
+    foreach ($ps as $p) {
+      if ($v = $p->get_installed_version()) {
+	$list[] = "<b>".htmlentities($p->name) . "</b>-" . htmlentities($p->get_installed_version());
+      }
+    }
+
+    if ($list === Array()) {
+      $jar .= " with no plugins";
+    } else {
+      $jar .= " with plugins: ";
+      $first = true;
+      foreach ($list as $jar_text) {
+	if (!$first) {
+	  $jar .= ", ";
+	}
+	$first = false;
+	$jar .= $jar_text;
+      }
+    }
+
+    return $jar;
   }
 
   public function get_connected_users() {
@@ -95,8 +137,7 @@ class minecraft {
 
     if ($as_text) {
       if ($map_name === null) {
-	$properties = $this->get_properties();
-	$text = sprintf("(Randomly generated map with seed '%s')", $properties->get_one("level-seed"));
+	$text = sprintf("(Randomly generated map with seed '%s')", $this->properties->get_one("level-seed"));
       } else {
 	$text = $map_name;
       }
@@ -240,9 +281,8 @@ class minecraft {
     if ($new_seed === null) {
       $new_seed = stdlib::get_random_string(10);
     }
-    $properties = $this->get_properties();
-    $properties->set_one("level-seed", $new_seed);
-    $properties->save_to_file(false);
+    $this->properties->set_one("level-seed", $new_seed);
+    $this->properties->save_to_file(false);
 
     //Start server
     $this->start();
@@ -302,9 +342,8 @@ class minecraft {
     $this->my_passthru($cmd);
 
     //Save level seed
-    $properties = $this->get_properties();
     file_put_contents($target_full_path . "/rfwadmin_map_level-seed",
-		      $properties->get_one("level-seed"))
+		      $this->properties->get_one("level-seed"))
       !== false || exit(1);
 
     echo "Copied!";

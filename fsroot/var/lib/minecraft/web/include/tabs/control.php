@@ -1,10 +1,12 @@
 <h1>Status</h1>
 
 <p>
-Status: <?php echo $mc->get_status(); ?><br>
+Server: <b><?php echo htmlentities($mc->properties->get_one("motd"));?></b>, using port <?php $server_port = $mc->properties->get_one("server-port"); echo htmlentities($mc->properties->get_one("server-port")); if ($server_port === 25565) {echo " (standard)";}?><br>
+Status: <?php echo $mc->get_status() . " on <b>" . $mc->get_difficulty_html() . "</b> difficulty" ?><br>
 Users online: <?php echo $mc->get_users_html(); ?><br>
 Currently loaded map: <b><?php echo htmlspecialchars($mc->get_current_map(true)); ?></b>
-<?php if (($loaded = $mc->get_map_age(true)) !== null) {echo htmlspecialchars(" (loaded ".$loaded.")");}?>
+<?php if (($loaded = $mc->get_map_age(true)) !== null) {echo htmlspecialchars(" (loaded ".$loaded.")");}?><br>
+Server version: <?php echo $mc->get_server_html() ?>
 </p>
 
 <form method="post" action="index.php?page=action" target="_blank">
