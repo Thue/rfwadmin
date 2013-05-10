@@ -60,9 +60,15 @@ if (isset($_POST["save_properties"])) {
 } else if (isset($_POST["uninstall_plugin"])) {
   $plugins = $mc->get_plugins();
   $plugins->uninstall_plugin($_POST["name"], $_POST["version"]);
+} else if (isset($_POST["delete_plugin"])) {
+  $plugins = $mc->get_plugins();
+  $plugins->delete_plugin($_POST["name"], $_POST["version"]);
 } else if (isset($_POST["install_serverjar"])) {
   $serverjar = $mc->get_serverjar();
   $serverjar->install($_POST["jar"]);
+} else if (isset($_POST["delete_serverjar"])) {
+  $serverjar = $mc->get_serverjar();
+  $serverjar->delete($_POST["jar"]);
 } else if (isset($_POST["sync_armory"])) {
   minecraft_map::armory_sync();
 } else {

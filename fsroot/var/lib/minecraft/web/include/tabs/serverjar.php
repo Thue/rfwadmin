@@ -14,9 +14,18 @@ foreach ($jars as $jar) {
          '        <input type="hidden" name="input_complete" value="1" />'.
 	 '      </form>'.
 	 "    </td>\n".
+	 "    <td>\n".
+	 '      <form method="POST" target="_blank" action="index.php?page=action">'.
+	 '        <input type="submit" name="delete_serverjar" value="Delete" %s>'.
+	 '        <input type="hidden" name="jar" value="%s">'.
+         '        <input type="hidden" name="input_complete" value="1" />'.
+	 '      </form>'.
+	 '    </td>'.
 	 "  </tr>\n",
 	 e($jar),
 	 $installed ? "Installed" : "Install",
+	 $installed ? 'disabled="disabled"' : "",
+	 e($jar),
 	 $installed ? 'disabled="disabled"' : "",
 	 e($jar)
 	 );

@@ -65,8 +65,7 @@ class serverjar {
     return $path;
   }
 
-  public function install($path) {
-    //check that $path is valid
+  public function path_ok($path) {
     $all_jars = $this->get_jars();
     $found = false;
     foreach ($all_jars as $one_jar) {
@@ -79,6 +78,11 @@ class serverjar {
       echo e($path) . " is not on the list of available server jars!";
       exit(1);
     }
+  }
+
+  public function install($path) {
+    //check that $path is valid
+    $this->path_ok($path);
 
     $minecraft_sh = $this->get_minecraft_sh();
     $lines = file($minecraft_sh);
@@ -97,6 +101,19 @@ class serverjar {
 
     echo "Failed to find FILE_JAR line!";
     exit(1);
+  }
+
+  public function delete($path) {
+    //check that $path is valid
+    $this->path_ok($path);
+
+    if ($path === $this->get_installed_path()) {
+      echo "Can't delete active server binary!";
+      exit(1);
+    }
+
+    echo "Deleting $path";
+    unlink($path);
   }
 }
 

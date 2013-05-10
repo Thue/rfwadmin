@@ -81,6 +81,39 @@ class plugin {
 
     printf("Plugin '%s' has been uninstalled.", e($this->name));
   }
+
+  public function delete($version) {
+    if (!isset($this->versions[$version])) {
+      printf("The plugin '%s' has no version %s.", e($this->name), e($version));
+      exit(1);
+    }
+
+    if ($this->get_installed_version() === $version) {
+      printf("Can't delete currently installed version.");
+      exit(1);
+    }
+
+    //Delete jar itself
+    unlink($this->versions[$version]) || exit(1);
+    echo sprintf("Plugin %s version %s deleted\n", $this->name, $version);
+
+    $plugins_dir = realpath(plugins::$plugins_dir);
+
+    //The jar should have been the only file inside a version name dir. Delete that.
+    $version_dir = dirname($this->versions[$version]);
+    if (realpath($version_dir . "/../..") !== $plugins_dir) {
+      echo "confused about directories";
+      exit(1);
+    }
+    $plugin_dir = realpath($version_dir . "/..");
+    rmdir($version_dir) || exit(1);
+
+    //If this was the only version of the plugin, then delete the plugin's dir.
+    if (count(scandir($plugin_dir)) === 2) {
+      rmdir($plugin_dir) || exit(1);
+    }
+
+  }
 }
 
 class plugins {
@@ -143,6 +176,16 @@ class plugins {
       exit(1);
     } else {
       $plugin->uninstall($version);
+    }
+  }
+
+  public function delete_plugin($name, $version) {
+    $plugin = $this->get_from_name($name);
+    if ($plugin === null) {
+      printf("There is no plugin with the name '%s'.", e($name));
+      exit(1);
+    } else {
+      $plugin->delete($version);
     }
   }
 
