@@ -18,7 +18,7 @@ Optional steps:
 
 - On fx a default Ubuntu or CentOS install, upload_max_filesize in /etc/php5/apache2/php.ini is set too low for the map upload feature to work.
 - The PHP script uses curl for fetching maps from a link, so you should install the ubuntu package php5-curl if you want to use that feature.
-- Running multiple servers: Right now fsroot is set up to run one server - to run more than one server, 1) add a /etc/init.d/minecraft2.sh file, 2) add a copy of the /var/www/index.php file, and edit it, and 3) a /var/lib/minecraft/servers/2 dir. To make it start and stop with an Ubuntu server on boot, run the Ubuntu command "update-rc.d minecraft2.sh defaults". For Redhat based distributions, do "chkconfig --add minecraft2.sh".
+- Running multiple servers: Right now fsroot is set up to run one server - to run more than one server, 1) add a /etc/init.d/minecraft2.sh file, 2) add a copy of the /var/www/rfwadmin/index.php file, and edit it, and 3) a /var/lib/minecraft/servers/2 dir. To make it start and stop with an Ubuntu server on boot, run the Ubuntu command "update-rc.d minecraft2.sh defaults". For Redhat based distributions, do "chkconfig --add minecraft2.sh".
 
 Configuration files
 -------------------
@@ -42,7 +42,7 @@ Some directories and files explained
 Using command line interface
 ----------------------------
 
-You can use rfwadmin as a command line interface by doing commands such as "sudo /etc/init.d/minecraft_default.sh start". Commands include "start", "stop", "restart", "list", "send_command save-all", "send_command op thuejk"; look it the bottom of /var/lib/minecraft/minecraft_base.sh for a list. The command line interface is a heavily modified version of mc-manager, much improved; I recommend always using the rfwadmin version over mc-manager, even if you don't need the web interface. To only use the command line interface without installing the rfwadmin web interface, simply don't install /var/www/index.php .
+You can use rfwadmin as a command line interface by doing commands such as "sudo /etc/init.d/minecraft_default.sh start". Commands include "start", "stop", "restart", "list", "send_command save-all", "send_command op thuejk"; look it the bottom of /var/lib/minecraft/minecraft_base.sh for a list. The command line interface is a heavily modified version of mc-manager, much improved; I recommend always using the rfwadmin version over mc-manager, even if you don't need the web interface. To only use the command line interface without installing the rfwadmin web interface, simply don't install /var/www/rfwadmin/index.php .
 
 About security
 --------------
@@ -60,9 +60,9 @@ About quality
 Craftbukkit
 -----------
 
-You might want to install the custom server from bukkit
-if you want to use plugins: http://dl.bukkit.org/ . Place the jar fx
-somewhere in /var/lib/minecraft/jar, and adjust $FILE_JAR in
+You might want to install the custom server from bukkit if you want to
+use plugins: http://dl.bukkit.org/ . Place the jar in
+/var/lib/minecraft/jars/serverjars, and adjust $FILE_JAR in
 /var/lib/minecraft/servers/default/minecraft.sh . The web interface
 has a simple enable/disable plugin functionality, if the plugins are
 placed in the correct subdirectory of /var/lib/minecraft/jars/plugins/
