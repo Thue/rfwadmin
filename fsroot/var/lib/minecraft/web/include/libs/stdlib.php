@@ -14,6 +14,19 @@ class stdlib {
     return $s;
   }
 
+  //sizeof array must be > 0                                                                   
+  public static function array_first_key($array) {
+    if (sizeof($array) == 0){
+      kwarn();
+      return null;
+    }
+
+    $keys = array_keys($array);
+    $first_key = $keys[0];
+
+    return $first_key;
+  }
+
 }
 
 ?>
