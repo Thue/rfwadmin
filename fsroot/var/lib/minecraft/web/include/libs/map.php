@@ -312,43 +312,61 @@ class minecraft_map {
 	  $name = null;
 	}
 
-	if ($entryName === "world"
-	    && $filename_hint != "") {
-	  $name = $filename_hint;
+        if (!self::is_map_dir($full_path)) {
+	  continue;
 	}
 
-	if ($name === null) {
+	if (realpath($parent_dir) !== realpath($full_path)) {
+	  /* If there are more than one map dir, then don't use the
+	     name of the first map dir we find as the map name. */
+	  $dir2 = opendir($full_path . "/..");
+	  $num_worlddirs = 0;
+	  while ($entryName2 = readdir($dir2)) {
+	    if (!in_array($entryName2, Array(".", ".."))) {
+	      if (self::is_map_dir($full_path . "/../".$entryName2)) {
+		$num_worlddirs++;
+	      }
+	    }
+	  }
+	  assert($num_worlddirs > 0);
+	  if ($num_worlddirs > 1) {
+	    $prefer_filename_hint = 1;
+	  }
+	}	
+
+	if ($prefer_filename_hint) {
+	  $name = $filename_hint;
+	} else if (($entryName === "world"
+		    || $entryName === "world_the_end"
+		    || $entryName === "world_nether")
+		   && $filename_hint != "") {
+	  $name = $filename_hint;
+	} else if ($name === null) {
 	  if ($filename_hint == "") {
 	    die("unable to guess map name!");
 	  }
 	  $name = $filename_hint;
 	}
 
-	if ($prefer_filename_hint) {
-	  $name = $filename_hint;
-	}
-
 	$name = preg_replace('/[^ a-zA-Z0-9_\-#\'"\(\)\.]/', '_', $name);
 
-        if (self::is_map_dir($full_path)) {
-	  $target = minecraft_map::$map_dir . "/" . $name;
-	  if ($in_window) echo "found minecraft save '" . $name . "'\n";
-	  if (file_exists($target)) {
-	    echo "failed to install map - a map with that name already existed\n";
-	  } else {
-	    self::copy_siplings($parent_dir, $full_path, $target);
-	    foreach ($rfwadmin_vars as $key => $value) {
-	      file_put_contents($target . "/rfwadmin_map_" . $key, $value);
-	    }
-
-	    if ($in_window) {
-	      echo "installed!\n";
-	      reload_main($name);
-	    }
+	$target = minecraft_map::$map_dir . "/" . $name;
+	if ($in_window) echo "found minecraft save '" . $name . "'\n";
+	if (file_exists($target)) {
+	  echo "failed to install map - a map with that name already existed\n";
+	} else {
+	  self::copy_siplings($parent_dir, $full_path, $target);
+	  foreach ($rfwadmin_vars as $key => $value) {
+	    file_put_contents($target . "/rfwadmin_map_" . $key, $value);
 	  }
-	  $moved = true;
-	  break;
+
+	  if ($in_window) {
+	    echo "installed!\n";
+	    reload_main($name);
+	  }
 	}
+	$moved = true;
+	break;
       }
     }
     if (!$moved) {
@@ -366,10 +384,12 @@ class minecraft_map {
       $parent_dir = realpath($full_path . "/..");
       $open_parent_dir = opendir($parent_dir);
       while ($entryName = readdir($open_parent_dir)) {
-        $testdir = $parent_dir . "/" . $entryName;
-        if (self::is_map_dir($testdir)) {
-	  $dirs[$testdir] = $entryName;
-        }
+	if (!in_array($entryName, Array(".", ".."))) {
+	  $testdir = $parent_dir . "/" . $entryName;
+	  if (self::is_map_dir($testdir)) {
+	    $dirs[$testdir] = $entryName;
+	  }
+	}
       }
       closedir($open_parent_dir);
 
