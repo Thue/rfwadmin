@@ -333,13 +333,15 @@ class minecraft {
     
     $open_server_dir = opendir($this->server_dir . "/server");
     while ($entryName = readdir($open_server_dir)) {
-      $testdir = $this->server_dir . "/server/" . $entryName;
-      if (minecraft_map::is_map_dir($testdir)) {
-        $cmd = sprintf("cp -rp %s %s",
-                       escapeshellarg($testdir),
-		       escapeshellarg($target_full_path)
-		      );
-        $this->my_passthru($cmd);
+      if (!in_array($entryName, Array(".", ".."))) {
+	$testdir = $this->server_dir . "/server/" . $entryName;
+	if (minecraft_map::is_map_dir($testdir)) {
+	  $cmd = sprintf("cp -rp %s %s",
+			 escapeshellarg($testdir),
+			 escapeshellarg($target_full_path)
+			 );
+	  $this->my_passthru($cmd);
+	}
       }
     }
     closedir($open_server_dir);
