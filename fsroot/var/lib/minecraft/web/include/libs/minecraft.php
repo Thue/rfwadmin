@@ -328,14 +328,22 @@ class minecraft {
     }
 
     echo htmlspecialchars("Copying to '$target'... ");
-    $world_file = sprintf("%s/server/world",
-			  $this->server_dir);
     $target_full_path = minecraft_map::validate($target);
-    $cmd = sprintf("cp -rp %s %s",
-		   escapeshellarg($world_file),
-		   escapeshellarg($target_full_path)
-		   );
-    $this->my_passthru($cmd);
+    mkdir($target_full_path);
+    
+    $open_server_dir = opendir($this->server_dir . "/server");
+    while ($entryName = readdir($open_server_dir)) {
+      $testdir = $this->server_dir . "/server/" . $entryName;
+      if (minecraft_map::is_map_dir($testdir)) {
+        $cmd = sprintf("cp -rp %s %s",
+                       escapeshellarg($testdir),
+		       escapeshellarg($target_full_path)
+		      );
+        $this->my_passthru($cmd);
+      }
+    }
+    closedir($open_server_dir);
+
     $cmd = sprintf("rm -fv %s/rfwadmin_map_*",
 		   escapeshellarg($target_full_path)
 		   );

@@ -76,6 +76,13 @@ class minecraft_map {
     return $dir_array;
   }
 
+  public static function is_map_dir($dir) {
+    return is_dir($dir . "/data")
+      && is_dir($dir . "/players")
+      && is_file($dir . "/uid.dat")
+      && is_file($dir . "/level.dat");
+  }
+
   public static function map_exists($name) {
     $path = self::validate($name);
     return file_exists($path);
@@ -298,9 +305,9 @@ class minecraft_map {
       if (!in_array($entryName, Array(".", ".."))
 	  && is_dir ($full_path)) {
 	$name = $entryName;
-	if (is_dir($full_path . "/world/region")) {
+        if (self::is_map_dir($full_path . "/world")) {
 	  $full_path .= "/world";
-	} else if ($entryName === "region") {
+	} else if (self::is_map_dir($parent_dir)) {
 	  $full_path = $parent_dir;
 	  $name = null;
 	}
@@ -323,17 +330,13 @@ class minecraft_map {
 
 	$name = preg_replace('/[^ a-zA-Z0-9_\-#\'"\(\)\.]/', '_', $name);
 
-	if (is_dir($full_path . "/region")) {
+        if (self::is_map_dir($full_path)) {
 	  $target = minecraft_map::$map_dir . "/" . $name;
 	  if ($in_window) echo "found minecraft save '" . $name . "'\n";
 	  if (file_exists($target)) {
 	    echo "failed to install map - a map with that name already existed\n";
 	  } else {
-	    $cmd = sprintf("mv %s %s",
-			   escapeshellarg($full_path),
-			   escapeshellarg($target)
-			   );
-	    passthru($cmd);
+	    self::copy_siplings($parent_dir, $full_path, $target);
 	    foreach ($rfwadmin_vars as $key => $value) {
 	      file_put_contents($target . "/rfwadmin_map_" . $key, $value);
 	    }
@@ -353,6 +356,36 @@ class minecraft_map {
     }
     // close directory
     closedir($myDirectory);
+  }
+
+  private static function copy_siplings($top, $full_path, $target) {
+    $dirs = Array(); //path => name
+    if (realpath($top) === realpath($full_path)) {
+      $dirs[$full_path] = "world";
+    } else {
+      $parent_dir = realpath($full_path . "/..");
+      $open_parent_dir = opendir($parent_dir);
+      while ($entryName = readdir($open_parent_dir)) {
+        $testdir = $parent_dir . "/" . $entryName;
+        if (self::is_map_dir($testdir)) {
+	  $dirs[$testdir] = $entryName;
+        }
+      }
+      closedir($open_parent_dir);
+
+      if (sizeof($dirs) === 1) {
+        $dirs[stdlib::array_first_key($dirs)] = "world";
+      }
+    }
+
+    mkdir($target);
+    foreach ($dirs as $dir => $worldname) {
+      $cmd = sprintf("mv %s %s",
+                     escapeshellarg($dir),
+		     escapeshellarg($target."/".$worldname)
+		    );
+      passthru($cmd);
+    }
   }
 
   private static function get_tmp_dir() {
