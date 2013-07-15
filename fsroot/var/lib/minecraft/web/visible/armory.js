@@ -12,7 +12,7 @@ function sync_armory() {
     this.xmlhttp.onreadystatechange = function() {tthis.onreadystatechange();};
     this.xmlhttp.open("POST","index.php?page=action_ajax", true);
     this.xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    this.xmlhttp.send("sync_armory=1");
+    this.xmlhttp.send("sync_armory=1&input_complete=1");
 }
 
 sync_armory.prototype.onreadystatechange = function() {
