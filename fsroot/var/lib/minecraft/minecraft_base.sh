@@ -476,8 +476,21 @@ function nuke() {
     return 1
 }
 
+function is_map_dir() {
+   if [ -d "$1/data" -a -d "$1/players" -a -f "$1/uid.dat" -a -f "$1/level.dat" ]; then
+      return 0;
+   else
+      return 1;
+   fi
+}
+
 function delete_map() {
-    rm -rf "${PATH_RUN}/world" "${PATH_RUN}/world_nether" "${PATH_RUN}/world_the_end"
+    rm -f "${PATH_RUN}/map_name.txt"
+    for file in ${PATH_RUN}/*; do
+      if is_map_dir "$file"; then
+	rm -rf "$file"
+      fi
+    done
 }
 
 function delete_conf() {
@@ -497,9 +510,12 @@ function change_map() {
     delete_map
     echo "Deleted!"
     echo -n "Installing new map... "
-    cp -rp "${MAP_DIR}/$1" "${PATH_RUN}/world"
-    rm -f "${PATH_RUN}/world/map_name.txt"
-    echo -n "$1" > "${PATH_RUN}/world/map_name.txt"
+    if is_map_dir "${MAP_DIR}/$1"; then
+      cp -rp "${MAP_DIR}"/"$1" "${PATH_RUN}/world"
+    else
+      cp -rp "${MAP_DIR}"/"$1"/* "${PATH_RUN}"
+    fi
+    echo -n "$1" > "${PATH_RUN}/map_name.txt"
 
     #set level seed if possible
     if [ -f "${MAP_DIR}/$1/rfwadmin_map_level-seed" ]; then
