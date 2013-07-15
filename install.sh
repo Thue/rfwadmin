@@ -57,15 +57,21 @@ fi
 
 #Configure a default server if no previous configuration exists
 if  [ $CONFIGURE_SERVER == "1" ]; then
-  #I would like to name the file after the version, but Mojang doesn't give me a way to determine the version number of the download
-  LATEST_SERVER_BINARY="minecraft_server_downloaded_`date +%Y-%m-%d`.jar"
-  LATEST_SERVER="\$PATH_BASE/jars/serverjars/$LATEST_SERVER_BINARY"
-  #If we are re-running the install script on the same day, no need to re-download the server
-  if [ ! -f "fsroot/var/lib/minecraft/$LATEST_SERVER_BINARY" ]; then
-    echo "Downloading latest minecraft server jar from Mojang."
-    wget -O "fsroot/var/lib/minecraft/jars/serverjars/$LATEST_SERVER_BINARY" "https://s3.amazonaws.com/MinecraftDownload/launcher/minecraft_server.jar" || error_exit "Failed to download minecraft server"
+  LATEST_SERVER_VERSION=`wget --quiet -O - https://s3.amazonaws.com/Minecraft.Download/versions/versions.json |grep '"release": ' |sed  's/^ \+"release": "\(.\+\)"$/\1/'`
+  PATTERN='^[0-9.]+$'
+  if [[ ! $LATEST_SERVER_VERSION =~ $PATTERN ]] ; then
+     exit_error "Failed to parse latest Minecraft server version from https://s3.amazonaws.com/Minecraft.Download/versions/versions.json"
   fi
-  cat fsroot/var/lib/minecraft/servers/default/minecraft.sh | sed "s|^FILE_JAR=.*\$|FILE_JAR=\"$LATEST_SERVER\"|" | sed "s|^PATH_BASE=.*\$|PATH_BASE=\"$PATH_BASE\"|" > fsroot/var/lib/minecraft/servers/default/minecraft.sh.customized
+  LATEST_SERVER_BINARY=minecraft_server.${LATEST_SERVER_VERSION}.jar
+  DOWNLOAD_URL="https://s3.amazonaws.com/Minecraft.Download/versions/${LATEST_SERVER_VERSION}/minecraft_server.${LATEST_SERVER_VERSION}.jar"
+  echo $DOWNLOAD_URL
+  #If we are re-running the install script on the same day, no need to re-download the server
+  if [ ! -f "fsroot/var/lib/minecraft/jars/serverjars/$LATEST_SERVER_BINARY" ]; then
+    echo "Downloading latest minecraft server jar from Mojang."
+    wget -O "fsroot/var/lib/minecraft/jars/serverjars/${LATEST_SERVER_BINARY}.tmp"  $DOWNLOAD_URL || error_exit "Failed to download minecraft server"
+    mv "fsroot/var/lib/minecraft/jars/serverjars/${LATEST_SERVER_BINARY}.tmp" "fsroot/var/lib/minecraft/jars/serverjars/${LATEST_SERVER_BINARY}"
+  fi
+  cat fsroot/var/lib/minecraft/servers/default/minecraft.sh | sed "s|^FILE_JAR=.*\$|FILE_JAR=\"$PATH_BASE/jars/serverjars/$LATEST_SERVER_BINARY\"|" | sed "s|^PATH_BASE=.*\$|PATH_BASE=\"$PATH_BASE\"|" > fsroot/var/lib/minecraft/servers/default/minecraft.sh.customized
 fi
 
 if [ ! -f fsroot/var/lib/minecraft/jars/converter/AnvilConverter.jar -a ! -f $PATH_BASE/jars/converter/AnvilConverter.jar ]; then
