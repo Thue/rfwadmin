@@ -42,8 +42,14 @@ if (isset($_POST["upload_file"])) {
     }
   }
 
+  if (preg_match('/(.*)\.(zip|rar)\z/', $file["name"], $matches)) {
+    $filename_hint = $matches[1];
+  } else {
+    $filename_hint = $file["name"];
+  }
+
   $tmp = minecraft_map::unpack_file($file["tmp_name"], true);
-  minecraft_map::install_map($tmp, $file["name"], true);
+  minecraft_map::install_map($tmp, $filename_hint, true);
 } else if (isset($_POST["upload_link"])) {
   minecraft_map::fetch_and_install($_POST["link"], true);
 } else if (!isset($_POST["input_complete"])) {
