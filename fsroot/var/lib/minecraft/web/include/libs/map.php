@@ -77,10 +77,7 @@ class minecraft_map {
   }
 
   public static function is_map_dir($dir) {
-    return is_dir($dir . "/data")
-      && is_dir($dir . "/players")
-      && is_file($dir . "/uid.dat")
-      && is_file($dir . "/level.dat");
+    return is_file($dir . "/level.dat");
   }
 
   public static function map_exists($name) {

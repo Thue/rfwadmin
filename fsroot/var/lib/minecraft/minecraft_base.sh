@@ -477,7 +477,7 @@ function nuke() {
 }
 
 function is_map_dir() {
-   if [ -d "$1/data" -a -d "$1/players" -a -f "$1/uid.dat" -a -f "$1/level.dat" ]; then
+   if [ -f "$1/level.dat" ]; then
       return 0;
    else
       return 1;
