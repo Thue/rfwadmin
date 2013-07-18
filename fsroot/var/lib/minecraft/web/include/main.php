@@ -5,6 +5,7 @@
     <title><?php echo htmlspecialchars($mc->html_title); ?></title>
 
     <link rel="stylesheet" type="text/css" href="rfwadmin_files/main.css" />
+    <link rel="shortcut icon" href="rfwadmin_files/favicon.ico">
     <script type="text/javascript" src="rfwadmin_files/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="rfwadmin_files/jquery.autosize.js"></script>
     <script type="text/javascript" src="rfwadmin_files/main.js"></script>
