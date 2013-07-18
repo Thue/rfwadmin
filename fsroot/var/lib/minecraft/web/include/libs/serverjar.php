@@ -80,7 +80,7 @@ class serverjar {
     }
   }
 
-  public function install($path) {
+  public function activate($path) {
     //check that $path is valid
     $this->path_ok($path);
 
@@ -101,6 +101,30 @@ class serverjar {
 
     echo "Failed to find FILE_JAR line!";
     exit(1);
+  }
+
+  public function install($type, $id) {
+    echo "Checking... ";
+    $list = serverjar_list::get_type($type);
+    $version = $list->get_from_id($id);
+    if ($version === null) {
+      die("did not find binary with id ".$id);
+    }
+    if (file_exists($this->get_dir() . "/" . $version["filename"])) {
+      die("There already exists a file with the name ".$version["filename"]);
+    }
+    echo "checked!\n";
+    echo "Downloading... ";
+    $data = file_get_contents($version["url"]);
+    if ($data === null  || $data === false) {
+      die("Failed to download ".$version["url"]);
+    }
+    echo "downloaded!\n";
+    $res = file_put_contents($this->get_dir()."/".$version["filename"], $data);
+    if ($res === false) {
+      die("Failed to write file to disk");
+    }
+    echo "successfully installed new serverjar ".$version["filename"];
   }
 
   public function delete($path) {

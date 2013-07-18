@@ -63,14 +63,22 @@ if (isset($_POST["save_properties"])) {
 } else if (isset($_POST["delete_plugin"])) {
   $plugins = $mc->get_plugins();
   $plugins->delete_plugin($_POST["name"], $_POST["version"]);
-} else if (isset($_POST["install_serverjar"])) {
+} else if (isset($_POST["activate_serverjar"])) {
   $serverjar = $mc->get_serverjar();
-  $serverjar->install($_POST["jar"]);
+  $serverjar->activate($_POST["jar"]);
 } else if (isset($_POST["delete_serverjar"])) {
   $serverjar = $mc->get_serverjar();
   $serverjar->delete($_POST["jar"]);
 } else if (isset($_POST["sync_armory"])) {
   minecraft_map::armory_sync();
+} else if (isset($_POST["get_serverjars"])) {
+  $class = serverjar_list::get_type($_POST["get_serverjars"]);
+  echo $class->get_json();
+} else if (isset($_POST["download_serverjar"])) {
+  $type = stdlib::array_first_key($_POST["download_serverjar"]);
+  $id = $_POST["serverjar_list_".$type];
+  $serverjar = $mc->get_serverjar();
+  $serverjar->install($type, $id);
 } else {
   echo "unrecognized command";
 }

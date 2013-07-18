@@ -5,6 +5,7 @@ require_once(dirname(__FILE__) . "/plugins.php");
 require_once(dirname(__FILE__) . "/textareas.php");
 require_once(dirname(__FILE__) . "/map.php");
 require_once(dirname(__FILE__) . "/serverjar.php");
+require_once(dirname(__FILE__) . "/serverjar_list.php");
 require_once(dirname(__FILE__) . "/stdlib.php");
 
 function e($text) {
