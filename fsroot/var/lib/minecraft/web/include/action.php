@@ -32,7 +32,13 @@ if (isset($_POST["download_map"])) {
     if ($qs !== "") {
       $qs .= "&";
     }
-    $qs .= sprintf("%s=%s", urlencode($key), urlencode($value));
+    if (is_array($value)) {
+      foreach ($value as $key2 => $value2) {
+	$qs .= sprintf("%s[%s]=%s", urlencode($key), urlencode($key2), urlencode($value2));
+      }
+    } else {
+      $qs .= sprintf("%s=%s", urlencode($key), urlencode($value));
+    }
   }
   printf("query_string = '%s';", $qs);
 
