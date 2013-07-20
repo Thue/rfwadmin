@@ -159,7 +159,7 @@ abstract class access_list_table extends access_list {
 	     '<td><input type="submit" onclick="$(this.parentNode.parentNode).remove();return false" value="Delete" /></td>'."\n".
 	     '</tr>'."\n",
 	     e($table_id),
-	     1,
+	     $i,
 	     e($victim_name),
 	     e(date("Y-m-d H:i", $ban_date)),
 	     e($banned_by),
