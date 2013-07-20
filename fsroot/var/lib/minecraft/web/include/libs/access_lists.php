@@ -189,7 +189,7 @@ abstract class access_list_table extends access_list {
 	  continue;
 	}
 	$banned_by = trim($row["banned_by"]);
-	if (!preg_match('/^[a-zA-Z0-9_ \\-]+$/', $banned_by)) {
+	if (!preg_match('/^[a-zA-Z0-9_ \\-\\(\\)]+$/', $banned_by)) {
 	  printf("banned_by name is invalid: %s\n", e($banned_by));
 	  continue;	  
 	}
