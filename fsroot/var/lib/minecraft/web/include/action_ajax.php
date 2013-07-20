@@ -18,7 +18,7 @@ if (!isset($_POST["input_complete"])) {
 if (isset($_POST["save_properties"])) {
   $mc->save_properties();
 } else if (isset($_POST["save_textareas"])) {
-  $mc->save_textareas();
+  access_list::save_all_from_post();
 } else if (isset($_POST["start"])) {
   $mc->start();
 } else if (isset($_POST["stop"])) {

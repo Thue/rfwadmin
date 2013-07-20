@@ -30,7 +30,7 @@
  
   <div class="tab-content" id="control"><?php require(dirname(__FILE__) . "/tabs/control.php");?></div>
   <div class="tab-content" id="configuration"><?php require(dirname(__FILE__) . "/tabs/configuration.php");?></div>
-  <div class="tab-content" id="accesslists"><?php require(dirname(__FILE__) . "/tabs/accesslists.php");?></div>
+  <div class="tab-content" id="accesslists"><?php require(dirname(__FILE__) . "/tabs/access_lists.php");?></div>
   <div class="tab-content" id="commandline"><?php require(dirname(__FILE__) . "/tabs/commandline.php");?></div>
   <div class="tab-content" id="log"><?php require(dirname(__FILE__) . "/tabs/log.php");?></div>
   <div class="tab-content" id="serverjar"><?php require(dirname(__FILE__) . "/tabs/serverjar.php");?></div>

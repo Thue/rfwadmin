@@ -2,7 +2,7 @@
 require_once(dirname(__FILE__) . "/ansi_shell_to_html.php");
 require_once(dirname(__FILE__) . "/properties.php");
 require_once(dirname(__FILE__) . "/plugins.php");
-require_once(dirname(__FILE__) . "/textareas.php");
+require_once(dirname(__FILE__) . "/access_lists.php");
 require_once(dirname(__FILE__) . "/map.php");
 require_once(dirname(__FILE__) . "/serverjar.php");
 require_once(dirname(__FILE__) . "/serverjar_list.php");
