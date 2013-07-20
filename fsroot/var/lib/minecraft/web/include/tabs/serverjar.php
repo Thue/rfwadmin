@@ -82,7 +82,6 @@ foreach ($jars as $jar) {
        'input_complete': 1},
 	   function(type_) {
              return function(data) {
-	       console.log(data);
 	       var versions = eval(data);
 	       $.each(versions, function(key, value) {
 		   var text = value.id + " (" + value.releaseTime + ")";
