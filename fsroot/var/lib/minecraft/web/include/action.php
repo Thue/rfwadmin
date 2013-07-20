@@ -25,6 +25,23 @@ if (isset($_POST["download_map"])) {
 
     <script type="text/javascript">
 <?php
+  function value_to_str($key, $value) {
+    if (is_array($value)) {
+      $out = "";
+      foreach ($value as $key2 => $value2) {
+        $key3 = sprintf("%s[%s]", $key, $key2);
+        if ($out !== "") {
+          $out .= "&";
+        }
+        $out .= value_to_str($key3, $value2);
+      }
+    } else {
+      $out = sprintf("%s=%s", urlencode($key), urlencode($value));
+    }
+
+    return $out;
+  }
+
   $qs = "";
   $args = $_POST;
   $args["time_limit"] = time() + 30;
@@ -32,13 +49,7 @@ if (isset($_POST["download_map"])) {
     if ($qs !== "") {
       $qs .= "&";
     }
-    if (is_array($value)) {
-      foreach ($value as $key2 => $value2) {
-	$qs .= sprintf("%s[%s]=%s", urlencode($key), urlencode($key2), urlencode($value2));
-      }
-    } else {
-      $qs .= sprintf("%s=%s", urlencode($key), urlencode($value));
-    }
+    $qs .= value_to_str($key, $value);
   }
   printf("query_string = '%s';", $qs);
 
