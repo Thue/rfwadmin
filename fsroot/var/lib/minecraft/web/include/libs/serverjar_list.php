@@ -67,7 +67,7 @@ abstract class serverjar_list_vanilla extends serverjar_list {
       if ($version->type === $type) {
 	$url = sprintf("https://s3.amazonaws.com/Minecraft.Download/versions/%s/minecraft_server.%s.jar", $version->id, $version->id);
 	$versions_filtered[] = Array("id" => $version->id,
-				     "releaseTime" => @date("Y-m-d", strtotime($version->releaseTime)),
+				     "releaseTime" => date("Y-m-d", strtotime($version->releaseTime)),
 				     "url" => $url,
 				     "filename" => "minecraft_server.".$version->id.".jar",
 				     );
@@ -97,7 +97,7 @@ abstract class serverjar_list_bukkit extends serverjar_list {
     $versions = Array();
     foreach ($json->results as $result) {
       $versions[] = Array("id" => $result->version,
-			  "releaseTime" => @date("Y-m-d", strtotime($result->created)),
+			  "releaseTime" => date("Y-m-d", strtotime($result->created)),
 			  "url" => "https://dl.bukkit.org/".$result->file->url,
 			  "filename" => "craftbukkit_".$result->version.".jar",
 			  );

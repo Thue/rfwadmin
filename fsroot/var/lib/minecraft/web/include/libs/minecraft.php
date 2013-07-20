@@ -12,6 +12,19 @@ function e($text) {
   return htmlspecialchars($text);
 }
 
+//Work around PHP's ridiculous(?) refusal to use the system timezone
+ob_start();
+date_default_timezone_get();
+$maybe_error = ob_get_contents();
+ob_end_clean();
+if ($maybe_error != "") {
+  $tz = exec('date +"%Z"');
+  if (!@date_default_timezone_set($tz)) {
+    $tz = timezone_name_from_abbr($tz);
+    date_default_timezone_set($tz);
+  }
+}
+
 class minecraft {
   public $server_dir; //Set in index.php, fx "/var/lib/minecraft/servers/default"
   public $msh; //Path to Minecraft.sh
@@ -466,18 +479,6 @@ class minecraft {
     }
 
     return $this->plugins;
-  }
-
-  public function get_textareas() {
-    $path = $this->server_dir . "/server";
-    $textareas = new textareas($path);
-    return $textareas;
-  }
-
-  public function save_textareas() {
-    $path = $this->server_dir . "/server";
-    $textareas = new textareas($path);
-    $textareas->save_from_post();
   }
 
   public function submit_commandline($commandline) {
