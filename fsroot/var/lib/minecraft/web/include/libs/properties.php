@@ -183,8 +183,8 @@ class property_bool extends property_changeable {
   }
 
   public function get_value_html() {
-    $html = sprintf('<input type="hidden" name="%1$s_checkbox_in_post" value="1">'."\n".
-		    '<input type="checkbox" name="%1$s"%2$s>',
+    $html = sprintf('<input type="hidden" name="%1$s_checkbox_in_post" value="1" />'."\n".
+		    '<input type="checkbox" name="%1$s"%2$s autocomplete="off" />',
 		    e($this->key),
 		    $this->value ? 'checked="checked"' : ''
 		    );
@@ -224,7 +224,7 @@ class property_int extends property_changeable {
   }
 
   public function get_value_html() {
-    $html = sprintf('<input type="text" name="%s" value="%d">',
+    $html = sprintf('<input type="text" name="%s" value="%d" autocomplete="off" />',
 		    e($this->key),
 		    $this->value
 		    );
@@ -262,7 +262,7 @@ class property_string extends property_changeable {
   }
 
   public function get_value_html() {
-    $html = sprintf('<input type="text" name="%s" value="%s">',
+    $html = sprintf('<input type="text" name="%s" value="%s" autocomplete="off" />',
 		    e($this->key),
 		    e($this->value)
 		    );
@@ -339,7 +339,7 @@ class property_select extends property_changeable {
 			       $this->value === $name ? ' selected="selected"' : '');
     }
 
-    $html = sprintf('<select name="%s">'."\n".'%s</select>'."\n", e($this->key), $options_html);
+    $html = sprintf('<select name="%s" autocomplete="off" />'."\n".'%s</select>'."\n", e($this->key), $options_html);
     return $html;
   }
 
