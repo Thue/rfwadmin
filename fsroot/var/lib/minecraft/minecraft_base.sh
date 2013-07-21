@@ -521,7 +521,6 @@ function change_map() {
     #set level seed if possible
     if [ -f "${MAP_DIR}/$1/rfwadmin_map_level-seed" ]; then
 	LEVEL_SEED=`cat "${MAP_DIR}/$1/rfwadmin_map_level-seed"|head -n 1`
-	echo $PATH_RUN;
 	cat "${PATH_RUN}/server.properties" |grep -v "^level-seed=" > "${PATH_RUN}/server.properties.tmp"
 	echo -e "\\n" >> "${PATH_RUN}/server.properties.tmp"
 	echo "level-seed=$LEVEL_SEED" >> "${PATH_RUN}/server.properties.tmp"
