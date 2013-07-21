@@ -485,7 +485,8 @@ function is_map_dir() {
 }
 
 function delete_map() {
-    rm -f "${PATH_RUN}"/rfwadmin_map_*
+    rm -f "${PATH_RUN}"/rfwadmin_*
+
     for file in ${PATH_RUN}/*; do
       if is_map_dir "$file"; then
 	rm -rf "$file"
@@ -515,8 +516,7 @@ function change_map() {
     else
       cp -rp "${MAP_DIR}"/"$1"/* "${PATH_RUN}"
     fi
-    rm -f "${PATH_RUN}/rfwadmin_map_name"
-    echo -n "$1" > "${PATH_RUN}/rfwadmin_map_name"
+    echo -n "$1" > "${PATH_RUN}"/rfwadmin_map_full_name
 
     #set level seed if possible
     if [ -f "${MAP_DIR}/$1/rfwadmin_map_level-seed" ]; then

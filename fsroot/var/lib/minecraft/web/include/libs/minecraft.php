@@ -42,7 +42,7 @@ class minecraft {
   function __construct($server_dir) {
     $this->server_dir = $server_dir;
     $this->msh = sprintf("%s/minecraft.sh", $this->server_dir);
-    $this->map_name_file = sprintf("%s/server/rfwadmin_map_name", $this->server_dir);
+    $this->map_name_file = sprintf("%s/server/rfwadmin_map_full_name", $this->server_dir);
 
     $this->properties = $this->get_properties();
   }
