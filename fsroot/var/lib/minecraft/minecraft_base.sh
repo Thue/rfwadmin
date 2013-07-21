@@ -379,10 +379,10 @@ function server_reload() {
 	    return 1
         fi
 
-        if screen_cmd "reload" 30 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] (.\[32;1m)?Reload complete\.(.\[m)?'; then
+        if screen_cmd "reload" 10 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] CONSOLE: (.\[0;32;1m)?Reload complete\.(\[m)?'; then
 	    return 0
 	else
-	    echo "Failed to reload within 30 seconds, got tired of waiting."
+	    echo "Failed to reload within 10 seconds, got tired of waiting."
 	    return 1
 	fi
 }
