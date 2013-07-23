@@ -66,6 +66,12 @@ foreach ($jars as $jar) {
     <td><input type="submit" name="download_serverjar[bukkit_beta]" value="Download"></td>
   </tr>
 
+  <tr>
+    <td>Sportbukkit latest build</td>
+    <td><select name="serverjar_list_sportbukkit" id="serverjar_list_sportbukkit"></select></td>
+    <td><input type="submit" name="download_serverjar[sportbukkit]" value="Download"></td>
+  </tr>
+
 </table>
 <input type="hidden" name="input_complete" value="1">
 </form>
@@ -73,7 +79,7 @@ foreach ($jars as $jar) {
 
 <!-- Download jar lists from 3rd-party sources -->
 <script>
-  var types = ["vanilla_release", "vanilla_snapshot", "bukkit_recommended", "bukkit_beta"];
+  var types = ["vanilla_release", "vanilla_snapshot", "bukkit_recommended", "bukkit_beta", "sportbukkit"];
 
   for (var i=0;i<types.length; i++) {
     var type = types[i];
