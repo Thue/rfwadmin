@@ -29,7 +29,7 @@ foreach ($ps as $p) {
 
     if ($installed_version === null) {
       $version_lines[] = sprintf('<td>%s'.
-				 '<input type="submit" name="install_plugin" value="install version %s">'.
+				 '<input type="submit" name="install_plugin" value="Enable version %s">'.
 				 '<input type="hidden" name="name" value="%s">'.
 				 '<input type="hidden" name="version" value="%s">'.
 				 '%s</td>'.
@@ -43,7 +43,7 @@ foreach ($ps as $p) {
 				);      
     } else if ($installed_version === $version) {
       $version_lines[] = sprintf('<td></td><td>%s'.
-				 '<input type="submit" name="uninstall_plugin" value="Uninstall version %s">'.
+				 '<input type="submit" name="uninstall_plugin" value="Disable version %s">'.
 				 '<input type="hidden" name="name" value="%s">'.
 				 '<input type="hidden" name="version" value="%s">'.
 				 '%s</td>'.
@@ -56,8 +56,8 @@ foreach ($ps as $p) {
 				);      
     } else {
       $version_lines[] = sprintf('<td colspan="2">'.
-				 '<input type="submit" name="install_plugin" value="install version %s" disabled>'.
-				 '(Other version already installed)</td>'.
+				 '<input type="submit" name="install_plugin" value="Enable version %s" disabled>'.
+				 '(Other version already enabled)</td>'.
 				 $delete,
 				 e($version));
     }

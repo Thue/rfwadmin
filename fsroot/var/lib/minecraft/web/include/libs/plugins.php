@@ -21,7 +21,7 @@ class plugin {
 
     //Check that no version of the plugin is already installed
     if ($this->get_installed_version() !== null) {
-      printf("There is already an installed version of the '%s' version.", $this->name);
+      printf("There is already an enabled version of the '%s' version.", $this->name);
       return false;
     }
 
@@ -38,7 +38,7 @@ class plugin {
       return false;
     }
 
-    printf("Plugin '%s' version '%s' has been installed.", e($this->name), e($version));
+    printf("Plugin '%s' version '%s' has been enabled.", e($this->name), e($version));
     return true;
   }
 
@@ -67,19 +67,19 @@ class plugin {
     $installed = $this->get_installed_version($path);
     if ($installed !== null) {
       if ($version !== null && $version !== $installed) {
-	printf("Asked to uninstall '%s' version '%s', but version '%s' was installed!",
+	printf("Asked to disable '%s' version '%s', but version '%s' was enabled!",
 	       e($this->name), e($version), e($installed)
 	       );
       } else if (!unlink($path)) {
-	printf("Failed to uninstalled plugin '%s'.", e($this->name));
+	printf("Failed to disable plugin '%s'.", e($this->name));
 	exit(1);
       }
     } else {
-      printf("The plugin '%s' is not installed.", e($this->name));
+      printf("The plugin '%s' is not enabled.", e($this->name));
       exit(1);
     }
 
-    printf("Plugin '%s' has been uninstalled.", e($this->name));
+    printf("Plugin '%s' has been disabled.", e($this->name));
   }
 
   public function delete($version) {
@@ -89,7 +89,7 @@ class plugin {
     }
 
     if ($this->get_installed_version() === $version) {
-      printf("Can't delete currently installed version.");
+      printf("Can't delete currently enabled version.");
       exit(1);
     }
 
