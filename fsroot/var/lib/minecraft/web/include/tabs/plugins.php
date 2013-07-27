@@ -16,7 +16,7 @@ foreach ($ps as $p) {
   $version_lines = Array();
   $installed_version = $p->get_installed_version();
   foreach ($p->versions as $version => $path) {
-
+    $version = (string) $version; //May have been implicitly converted to int when used as array key
     $delete = sprintf('<td>%s'.
 		      '<input type="hidden" name="name" value="%s">'.
 		      '<input type="hidden" name="version" value="%s">'.
