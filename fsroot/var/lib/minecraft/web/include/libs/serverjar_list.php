@@ -131,13 +131,13 @@ class serverjar_list_sportbukkit extends serverjar_list {
 
     $result = $json->artifacts[0];
     $versions = Array();
-    if (preg_match('/sportbukkit-(1.6.1-R0.1-SNAPSHOT).jar/', $result->fileName, $matches)) {
+    if (preg_match('/sportbukkit-([\d\.]+-R[\d\.]+(?:-SNAPSHOT)?).jar/', $result->fileName, $matches)) {
       $vstring = $matches[1];
     } else {
       $vstring = "(Couldn't parse version)";
     }
     $git_version = $json->actions[2]->lastBuiltRevision->SHA1;
-    $vstring .= "(" . substr($git_version, 0, 8). "...)";
+    $vstring .= " (" . substr($git_version, 0, 8). "...)";
     $versions[] = Array("id" => $vstring,
 			"releaseTime" => date("Y-m-d", $json->timestamp/1000),
 			"url" => "http://jenkins.musclecraft.net:8080/job/SportBukkit/lastSuccessfulBuild/artifact/".$result->relativePath,
