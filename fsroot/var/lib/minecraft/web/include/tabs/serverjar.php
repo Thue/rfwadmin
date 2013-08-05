@@ -99,9 +99,10 @@ foreach ($jars as $jar) {
   }
 </script>
 
-<!-- For debugging fetching jar lists.
+<!-- For debugging fetching jar lists.-->
+<!--
 <form method="post" action="index.php?page=action_ajax" target="_blank">
-<input type="submit" name="get_serverjars" value="vanilla_snapshot">
+<input type="submit" name="get_serverjars" value="sportbukkit">
 <input type="hidden" name="input_complete" value="1">
 </form>
 -->
