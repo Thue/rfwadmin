@@ -76,13 +76,3 @@ function add_access_line(table_id) {
     );
     $('textarea[name='+table_id+'\\['+id+'\\]\\[reason\\]]').autosize();
 }
-
-//Escape html special characters
-function e(str) {
-    str = str.replace("&", "&amp;");
-    str = str.replace("\"", "&quot;");
-    str = str.replace("'", "&#039;");
-    str = str.replace("<", "&lt;");
-    str = str.replace(">", "&gt;");
-    return str;
-}

@@ -8,6 +8,7 @@
     <link rel="shortcut icon" href="rfwadmin_files/favicon.ico">
     <script type="text/javascript" src="rfwadmin_files/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="rfwadmin_files/jquery.autosize.js"></script>
+    <script type="text/javascript" src="rfwadmin_files/jquery.escape.js"></script>
     <script type="text/javascript" src="rfwadmin_files/main.js"></script>
     <script type="text/javascript" src="rfwadmin_files/log.js"></script>
 <?php if ($mc->armory_enabled) { ?>
