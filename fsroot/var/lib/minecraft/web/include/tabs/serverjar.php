@@ -91,7 +91,7 @@ foreach ($jars as $jar) {
 	       var versions = eval(data);
 	       $.each(versions, function(key, value) {
 		   var text = value.id + " (" + value.releaseTime + ")";
-	         $("#serverjar_list_"+type_).append('<option value="'+value.id+'">'+text+'</option>');
+		   $("#serverjar_list_"+type_).append('<option value="'+e(value.id)+'">'+e(text)+'</option>');
 	       });
 	     };
 	   }(type),
