@@ -57,10 +57,10 @@ fi
 
 #Configure a default server if no previous configuration exists
 if  [ $CONFIGURE_SERVER == "1" ]; then
-  LATEST_SERVER_VERSION=`wget --quiet -O - https://s3.amazonaws.com/Minecraft.Download/versions/versions.json |grep '"release": ' |sed  's/^ \+"release": "\(.\+\)"$/\1/'`
+  LATEST_SERVER_VERSION=`wget --quiet -O - https://s3.amazonaws.com/Minecraft.Download/versions/versions.json |grep '"release": ' |sed  's/^ \+"release": "\(.\+\)".\+$/\1/'`
   PATTERN='^[0-9.]+$'
   if [[ ! $LATEST_SERVER_VERSION =~ $PATTERN ]] ; then
-     exit_error "Failed to parse latest Minecraft server version from https://s3.amazonaws.com/Minecraft.Download/versions/versions.json"
+     error_exit "Failed to parse latest Minecraft server version from https://s3.amazonaws.com/Minecraft.Download/versions/versions.json"
   fi
   LATEST_SERVER_BINARY=minecraft_server.${LATEST_SERVER_VERSION}.jar
   DOWNLOAD_URL="https://s3.amazonaws.com/Minecraft.Download/versions/${LATEST_SERVER_VERSION}/minecraft_server.${LATEST_SERVER_VERSION}.jar"
