@@ -60,7 +60,7 @@ abstract class serverjar_list_vanilla extends serverjar_list {
     if (!is_object($json)) {
       die(1);
     }
-    return array_reverse($json->versions);
+    return $json->versions;
   }
 
   public function get_by_type($type) {
