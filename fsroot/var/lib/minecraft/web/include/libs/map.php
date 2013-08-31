@@ -244,18 +244,8 @@ class minecraft_map {
   }
 
   public static function fetch_and_install($url, $in_window, $installed_name=null, $rfwadmin_vars=Array()) {
-    if ($in_window) echo "fetching file... ";
-    $ch = curl_init($url);
-    $path = tempnam("/tmp", "minecraft_curl_");
-    $fp = fopen($path, "w");
-
-    curl_setopt($ch, CURLOPT_FILE, $fp);
-    curl_setopt($ch, CURLOPT_HEADER, 0);
-    curl_setopt($ch, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS | CURLPROTO_FTP | CURLPROTO_FTPS) || die("failed to limit protocol");
-
-    curl_exec($ch) || die("failed to download '" . $url . "'");
-    curl_close($ch);
-    fclose($fp);
+    if ($in_window) echo "fetching file ";
+    $path = stdlib::curl_get($url);
     if ($in_window) echo "fetched!\n";
 
 

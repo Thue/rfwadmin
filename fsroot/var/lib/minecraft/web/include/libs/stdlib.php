@@ -27,6 +27,42 @@ class stdlib {
     return $first_key;
   }
 
+  public static function curl_get($url) {
+    $ch = curl_init($url);
+    $path = tempnam("/tmp", "minecraft_curl_");
+    $fp = fopen($path, "w");
+
+    curl_setopt($ch, CURLOPT_FILE, $fp);
+    curl_setopt($ch, CURLOPT_HEADER, false);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS | CURLPROTO_FTP | CURLPROTO_FTPS) || die("failed to limit protocol");
+    self::$progress = 0;
+    curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, Array("stdlib", "progress"));
+    curl_setopt($ch, CURLOPT_NOPROGRESS, false); // needed to make progress function work
+
+    curl_exec($ch) || die("failed to download '" . $url . "'");
+    curl_close($ch);
+    fclose($fp);
+
+    return $path;
+  }
+
+  public static $progress = 0;
+  public static function progress($download_size, $downloaded, $upload_size, $uploaded)
+  {
+    $do_flush = false;
+    while ($download_size > 0 && 100*$downloaded/$download_size > self::$progress) {
+      self::$progress++;
+      echo ".";
+      $do_flush = true;
+    }
+    if ($do_flush) {
+      ob_flush();
+      flush();
+    }
+  }
+
+
 }
 
 ?>
