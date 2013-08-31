@@ -104,7 +104,7 @@ class serverjar {
   }
 
   public function install($type, $id) {
-    echo "Checking... ";
+    echo "Various sanity checks... ";
     $list = serverjar_list::get_type($type);
     $version = $list->get_from_id($id);
     if ($version === null) {
@@ -114,16 +114,10 @@ class serverjar {
       die("There already exists a file with the name ".$version["filename"]);
     }
     echo "checked!\n";
-    echo "Downloading... ";
-    $data = file_get_contents($version["url"]);
-    if ($data === null  || $data === false) {
-      die("Failed to download ".$version["url"]);
-    }
+    printf("Downloading %s : ", $version["url"]);
+    $path = stdlib::curl_get($version["url"]);
     echo "downloaded!\n";
-    $res = file_put_contents($this->get_dir()."/".$version["filename"], $data);
-    if ($res === false) {
-      die("Failed to write file to disk");
-    }
+    rename($path, $this->get_dir()."/".$version["filename"]) || die("Failed to write file to disk");
     echo "successfully installed new serverjar ".$version["filename"];
   }
 
