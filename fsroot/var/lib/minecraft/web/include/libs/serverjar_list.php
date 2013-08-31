@@ -126,7 +126,7 @@ class serverjar_list_bukkit_beta extends serverjar_list_bukkit {
 
 class serverjar_list_sportbukkit extends serverjar_list {
   function __construct() {
-    $sbukkit_json_string = file_get_contents("http://jenkins.musclecraft.net:8080/job/SportBukkit/lastSuccessfulBuild/api/json?pretty=true");
+    $sbukkit_json_string = file_get_contents("http://jenkins.musclecraft.net:8080/job/SportBukkit/lastSuccessfulBuild/api/json?pretty=true") || die("Failed to download list");
     $json = json_decode($sbukkit_json_string);
 
     $result = $json->artifacts[0];
