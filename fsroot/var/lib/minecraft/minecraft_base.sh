@@ -144,7 +144,7 @@ function get_screen_id() {
         SCREEN_ID=""
 	return 1
     else
-        SCREEN_ID=$(echo $LINE|sed 's/^[ \t]*\(\([0-9]\+\.\)\+[0-9]\+\.[^\t ]\+\)[ \t]\+.*$/\1/')
+        SCREEN_ID=$(echo $LINE|sed 's/^[ \t]*\(\([0-9]\+\.\)\?\+[0-9]\+\.[^\t ]\+\)[ \t]\+.*$/\1/')
         return 0
     fi
 }
