@@ -139,12 +139,12 @@ function screen_name_ok() {
 
 function get_screen_id() {
     screen_name_ok
-    local LINE=$(screen -ls |grep -P "^\s+(\d+\.${SCREEN})\s+\([^\)]+\)")
+    local LINE=$(screen -ls |grep -P "^\s+((\d+\.)?\d+\.${SCREEN})\s+\([^\)]+\)")
     if [ "$LINE" = "" ]; then
         SCREEN_ID=""
 	return 1
     else
-        SCREEN_ID=$(echo $LINE|sed 's/\([0-9]\+\.[^\t ]\+\) .*/\1/')
+        SCREEN_ID=$(echo $LINE|sed 's/^[ \t]*\(\([0-9]\+\.\)\+[0-9]\+\.[^\t ]\+\)[ \t]\+.*$/\1/')
         return 0
     fi
 }
