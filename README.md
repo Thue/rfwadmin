@@ -71,4 +71,6 @@ placed in the correct subdirectory of /var/lib/minecraft/jars/plugins/
 
 Another useful plugin is WorldEdit ( http://www.sk89q.com/projects/worldedit/ ), for the /butcher command which removes all hostile mobs which spawned while you were waiting at the starting gate.
 
+The automatical downloading of craftbukkit jars is broken until bukkit fixes their website: https://bukkit.atlassian.net/browse/SITE-132
+
 Regards, Thue
