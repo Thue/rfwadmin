@@ -3,6 +3,8 @@ rfwadmin
 
 A web and/or command line interface for controlling a MineCraft server, optimized for quickly restarting with custom maps such as Race For Wool (RFW).
 
+NOTE NOTE NOTE: Will not work with 1.7pre snapshots until I have fixed the log handling.
+
 To install
 ----------
 
