@@ -41,7 +41,8 @@ LOCKFILE="${PATH_SERVER}/minecraft.sh.lock"
 LOCKFILE2="${LOCKFILE}.lock"
 
 SCREEN_LOG="${PATH_SERVER}/screen.log"
-SERVER_LOG="${PATH_RUN}/server.log"
+#Log location changed with 1.7. SERVER_LOG="" means try to guess location
+SERVER_LOG=""
 
 PATH_MINECRAFT_PID="${PATH_SERVER}/minecraft.pid"
 
@@ -51,6 +52,27 @@ SERVER="java -Xms${MEM_LOW} -Xmx${MEM_HIGH} ${SERVER_ARGS} -jar ${FILE_JAR} nogu
 set -e
 #noclobber for race-free locking
 set -o noclobber
+
+function set_server_log() {
+    POST17="${PATH_RUN}/logs/latest.log"
+    PRE17="${PATH_RUN}/server.log"
+    if is_server_online; then
+	#look at which files the serhas has open
+        PID=`cat $PATH_MINECRAFT_PID`
+	if [ "`lsof -p$PID |grep -P 'server/server.log$'`" != "" ]; then
+	    SERVER_LOG=$PRE17;
+	else
+	    SERVER_LOG=$POST17;
+	fi
+    elif [ ! -f $PRE17 ]; then
+	SERVER_LOG="$POST17"
+    elif [ ! -f $POST17 ]; then
+	SERVER_LOG="$PRE17"
+    else
+	#get the file which was modified last
+	SERVER_LOG="`echo -e "${POST17}\n${PRE17}" | sort -n -t _ -k 2 | tail -1`"
+    fi
+}
 
 function send_command() {
     if ! is_server_online; then
@@ -69,8 +91,7 @@ function list() {
     local OFFSET=`cat "$SERVER_LOG" |wc -l`
     local OFFSET=`expr $OFFSET + 1`
     #local PREG='^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] Connected players: .*(.\[m)?'
-    local PREG='^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] (Connected players: |There are \d+/\d+ players online:)'
-    local PREG_13='^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] There are \d+/\d+ players online:'
+    local PREG='^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) (Connected players: |There are \d+/\d+ players online:)'
     if ! screen_cmd "list" 1 "$PREG" "$SERVER_LOG"; then
 	echo "Failed to find list output!";
 	return 1;
@@ -78,6 +99,7 @@ function list() {
 
     LIST_LINE=`tail -n +$OFFSET "$SERVER_LOG" | grep -P "$PREG" | sed 's/.*: \([^\[]*\)\(.\[m\)\?/\1/'| head -n 1`
 
+    local PREG_13='There are \d+/\d+ players online:$'
     if [ "`echo "$LIST_LINE"|grep -P "$PREG_13"`" != "" ]; then
         #Horrible 1.3 format 2-line format
 	local FIRST_LINE_FOUND="searching"
@@ -86,7 +108,7 @@ function list() {
 	    if [ "$FIRST_LINE_FOUND" == "done" ]; then
 	        true #nothing
 	    elif [ "$FIRST_LINE_FOUND" == "next" ]; then
-		LIST_LINE=`echo "$line" | sed 's/.*] \?\(.*\)/\1/'`
+		LIST_LINE=`echo "$line" | sed 's/.*]:\? \?\(.*\)/\1/'`
 		LIST_LINE=`echo "$LIST_LINE" | sed 's/,//g'`
 		LIST_LINE=`echo "$LIST_LINE" | sed 's/\x1B\[m//g'` #craftbukkit add this one
 		FIRST_LINE_FOUND="done"
@@ -216,7 +238,12 @@ function screen_cmd() {
     fi
 
     get_screen_id
-    local START_LINE=`cat "$LOGFILE" |wc -l`
+    if [ -z $5 ]; then
+	#starting a new server resets log, so start from line 0
+	local START_LINE=`cat "$LOGFILE" |wc -l`
+    else
+	local START_LINE=0
+    fi
     screen -S $SCREEN_ID -p 0 -X stuff "`printf "$1\r"`"
     if [ ! -z "$2" ]; then
 	if [ ! -z "$3" ]; then
@@ -299,8 +326,9 @@ function server_start() {
     echo -n "Starting Minecraft server... "
 
     screen_cmd "cd ${PATH_RUN}"
+    #note arg 5 - starting a new server will reset the log, so tell screen_cmd to always start from line 0
     #If I don't put the extra Ms on "Minecraft is stopped", then the first "M" goes missing in the output. WTF?
-    screen_cmd "${SERVER} & echo \$! > ${PATH_MINECRAFT_PID} && fg; echo \"MMMMinecraft is stopped\"; exit" 30 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] Done \(\d+.\d+s\)! For help, type "help" or "\?"'
+    screen_cmd "${SERVER} & echo \$! > ${PATH_MINECRAFT_PID} && fg; echo \"MMMMinecraft is stopped\"; exit" 30 '^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) Done \(\d+.\d+s\)! For help, type "help" or "\?"' $SERVER_LOG 1
 
     #Screen now securely initialized! Rename to real name
     screen -S $SCREEN_ID -X sessionname $SCREEN_ID_ORIG
@@ -379,7 +407,7 @@ function server_reload() {
 	    return 1
         fi
 
-        if screen_cmd "reload" 10 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] CONSOLE: (.\[0;32;1m)?Reload complete\.(\[m)?'; then
+        if screen_cmd "reload" 10 '^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) CONSOLE: (.\[0;32;1m)?Reload complete\.(\[m)?'; then
 	    return 0
 	else
 	    echo "Failed to reload within 10 seconds, got tired of waiting."
@@ -543,23 +571,25 @@ function server_save() {
 
     echo -n "Saving world... "
     if $USE_SAVEOFF; then
-	screen_cmd "save-on"   10 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] CONSOLE: Enabling level saving..'
+	screen_cmd "save-on"   10 '^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) CONSOLE: Enabling level saving..'
     fi
 
-    if ! screen_cmd "save-all" 30 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] (CONSOLE: Save complete.|Saved the world)'; then
+    if ! screen_cmd "save-all" 30 '^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) (CONSOLE: Save complete.|Saved the world)'; then
 	echo "Save failed!";
 	return 1
     fi
 
-    echo -n "(Running save-all 2 more times and sleeping 10 seconds because of Minecraft bug MC-2527)... "
-    sleep 3
-    screen_cmd "save-all" 30 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] (CONSOLE: Save complete.|Saved the world)'
-    sleep 3
-    screen_cmd "save-all" 30 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] (CONSOLE: Save complete.|Saved the world)'
-    sleep 4
+    if [ "`echo "$SERVER_LOG" | grep -P 'logs/latest.log$'`" == "" ]; then
+	echo -n "(Running save-all 2 more times and sleeping 10 seconds because of Minecraft bug MC-2527)... "
+	sleep 3
+	screen_cmd "save-all" 30 '^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) (CONSOLE: Save complete.|Saved the world)'
+	sleep 3
+	screen_cmd "save-all" 30 '^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) (CONSOLE: Save complete.|Saved the world)'
+	sleep 4
+    fi
 
     if $USE_SAVEOFF; then
-	screen_cmd "save-off"  10 '^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] CONSOLE: Disabling level saving..'
+	screen_cmd "save-off"  10 '^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) CONSOLE: Disabling level saving..'
     fi
     echo "Saved!"
     return 0;
@@ -774,6 +804,15 @@ if [ "$1" == "status" ]; then
 	unlock
     fi
     exit 0
+fi
+
+if [ "$SERVER_LOG" == "" ]; then
+    set_server_log
+fi
+
+if [ "$1" == "logfile_path" ]; then
+    echo $SERVER_LOG;
+    exit 0;
 fi
 
 #Make a big lock around everything. You must call unlock before exiting.

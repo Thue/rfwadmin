@@ -390,7 +390,10 @@ class minecraft {
   }
 
   public function get_server_log_path() {
-    $path = sprintf("%s/server/server.log", $this->server_dir);
+    $cmd = $this->cmd(Array("logfile_path"));
+    $output = Array();
+    exec($cmd, $output, $res);
+    $path = $output[0];
     return $path;
   }
 
@@ -406,7 +409,8 @@ class minecraft {
 
   public function stream_server_log() {
     $path = $this->get_server_log_path();
-    $this->stream_log($path, true);
+    $do_time_limit = !preg_match('/logs\\/latest.log$/', $path);
+    $this->stream_log($path, $do_time_limit);
   }
 
   public function stream_log($path, $do_time_limit) {
