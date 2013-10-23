@@ -39,6 +39,8 @@ foreach ($jars as $jar) {
 <hr>
 <h1>Download new server version</h1>
 
+<p>As of the time I am writing this, the bukkit downloads are currently broken because of <a href="https://bukkit.atlassian.net/browse/SITE-132">bug SITE-132</a>.</p>
+
 <p>
 <form action="index.php?page=action" method="post" target="_blank">
 <table>
