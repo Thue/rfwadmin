@@ -97,11 +97,12 @@ function list() {
 	return 1;
     fi
 
-    LIST_LINE=`tail -n +$OFFSET "$SERVER_LOG" | grep -P "$PREG" | sed 's/.*: \([^\[]*\)\(.\[m\)\?/\1/'| head -n 1`
+    LIST_LINE=`tail -n +$OFFSET "$SERVER_LOG" | grep -P "$PREG" | head -n 1`
 
-    local PREG_13='There are \d+/\d+ players online:$'
+    local PREG_13='^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) There are \d+/\d+ players online:$'
+
     if [ "`echo "$LIST_LINE"|grep -P "$PREG_13"`" != "" ]; then
-        #Horrible 1.3 format 2-line format
+        #Horrible 1.3+ format 2-line format
 	local FIRST_LINE_FOUND="searching"
 	local LINES=`tail -n +$OFFSET "$SERVER_LOG"`
 	 while read -r line; do
@@ -122,7 +123,7 @@ function list() {
 	    return 1;
 	fi
     else
-	LIST_LINE=`echo "$LIST_LINE" | sed 's/,//g'`
+	LIST_LINE=`echo "$LIST_LINE" | sed 's/.*: \([^\[]*\)\(.\[m\)\?/\1/' | sed 's/,//g'`
     fi
 
     return 0
