@@ -126,7 +126,7 @@ class serverjar_list_bukkit_beta extends serverjar_list_bukkit {
 
 class serverjar_list_sportbukkit extends serverjar_list {
   function __construct() {
-    $sbukkit_json_string = file_get_contents("http://jenkins.musclecraft.net:8080/job/SportBukkit/lastSuccessfulBuild/api/json?pretty=true") || die("Failed to download list");
+    ($sbukkit_json_string = file_get_contents("http://jenkins.musclecraft.net:8080/job/SportBukkit/lastSuccessfulBuild/api/json?pretty=true")) || die("Failed to download list");;
     $json = json_decode($sbukkit_json_string);
 
     $result = $json->artifacts[0];
@@ -136,7 +136,7 @@ class serverjar_list_sportbukkit extends serverjar_list {
     } else {
       $vstring = "(Couldn't parse version)";
     }
-    $git_version = $json->actions[2]->lastBuiltRevision->SHA1;
+    $git_version = $json->actions[1]->lastBuiltRevision->SHA1;
     $vstring .= " (" . substr($git_version, 0, 8). "...)";
     $versions[] = Array("id" => $vstring,
 			"releaseTime" => date("Y-m-d", $json->timestamp/1000),
