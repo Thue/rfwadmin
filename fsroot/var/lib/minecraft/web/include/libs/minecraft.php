@@ -9,7 +9,7 @@ require_once(dirname(__FILE__) . "/serverjar_list.php");
 require_once(dirname(__FILE__) . "/stdlib.php");
 
 function e($text) {
-  return htmlspecialchars($text);
+  return htmlspecialchars($text, ENT_QUOTES);
 }
 
 //Work around PHP's ridiculous(?) refusal to use the system timezone
