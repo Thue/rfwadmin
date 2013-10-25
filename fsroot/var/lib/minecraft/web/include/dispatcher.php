@@ -1,5 +1,6 @@
 <?php
 $include_root = dirname(__FILE__);
+header('X-Frame-Options: DENY');
 
 function dispatch(minecraft $mc, $page) {
   //POST same origin check
