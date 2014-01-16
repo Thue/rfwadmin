@@ -10,7 +10,7 @@ Essential steps:
 
 - Install supporting programs (screen, java, apache, php, zip).
     - On Ubuntu/Debian/Mint: "sudo apt-get install screen openjdk-6-jre libapache2-mod-php5 php5-curl wget zip unzip".
-    - On Redhat/RHEL/CentOS the command should be "sudo yum -y install screen java-1.7.0-openjdk php httpd php-curl wget zip unzip lsof". You also need to set "SELINUX=permissive" in /etc/sysconfig/selinux , or the web server will not be able to run the minecraft.sh shell script (any help on avoiding this is appreciated). Before running install.sh below, you also need to start the httpd daemon ("service httpd start").
+    - On Redhat/RHEL/CentOS the command should be "sudo yum -y install screen java-1.7.0-openjdk php httpd php-curl wget zip unzip lsof". You also need to set "SELINUX=permissive" in /etc/sysconfig/selinux , or the web server will not be able to run the minecraft.sh shell script (any help on avoiding this is appreciated). Before running install.sh below, you also need to start the httpd daemon ("chkconfig httpd on && service httpd start").
 - Run ./install.sh from inside the unpacked rfwadmin directory. Tested on Ubuntu and CentOS, but should work on any Linux/Unix.
 - If your server has the address http://example.com , then the web interface should now be available at http://example.com/rfwadmin
 
