@@ -40,6 +40,37 @@ abstract class serverjar_list {
 
     return null;
   }
+
+  public static function fetch_cached($url, $name) {
+    global $mc;
+    $serverjar = $mc->get_serverjar();
+    $cache_dir = $serverjar->path_base . "/jars/cache";
+    if (!file_exists($cache_dir)) {
+      mkdir($cache_dir);
+    }
+
+    if (!is_dir($cache_dir) || !is_writable($cache_dir)) {
+      printf("Cache dir '%s' not writable\n", e($cache_dir));
+    }
+
+    $filename = $cache_dir . "/" . $name;
+
+    if (file_exists($filename) && time()-filemtime($filename) < 1800) {
+      $raw = file_get_contents($filename);
+    } else {
+      $raw = file_get_contents($url);
+      if ($raw !== false) {
+	$res = file_put_contents($filename, $raw);
+	if ($res === false) {
+	  printf("Failed to write cache file '%s'.", e($filename));
+	}
+      } else {
+	printf("Failed to download %s from %s", e($name), e($url));
+      }
+    }
+
+    return $raw;
+  }
 }
 
 
@@ -49,7 +80,8 @@ abstract class serverjar_list_vanilla extends serverjar_list {
 
   public static function fetch_json() {
     if (self::$json_fetched === null) {
-      self::$json_fetched = json_decode(file_get_contents(self::$json_link));
+      $raw = self::fetch_cached(self::$json_link, "vanilla");
+      self::$json_fetched = json_decode($raw);
     }
 
     return self::$json_fetched;
@@ -95,7 +127,7 @@ class serverjar_list_vanilla_snapshot extends serverjar_list_vanilla {
 
 abstract class serverjar_list_bukkit extends serverjar_list {
   public function get_files($type) {
-    $bukkit_json_string = file_get_contents("https://dl.bukkit.org/api/1.0/downloads/projects/craftbukkit/artifacts/$type/?_accept=application/json");
+    $bukkit_json_string = self::fetch_cached("https://dl.bukkit.org/api/1.0/downloads/projects/craftbukkit/artifacts/$type/?_accept=application/json", "bukkit_".$type);
     $json = json_decode($bukkit_json_string);
     $versions = Array();
     foreach ($json->results as $result) {
@@ -126,7 +158,7 @@ class serverjar_list_bukkit_beta extends serverjar_list_bukkit {
 
 class serverjar_list_sportbukkit extends serverjar_list {
   function __construct() {
-    ($sbukkit_json_string = file_get_contents("http://jenkins.musclecraft.net:8080/job/SportBukkit/lastSuccessfulBuild/api/json?pretty=true")) || die("Failed to download list");;
+    $sbukkit_json_string = self::fetch_cached("http://jenkins.musclecraft.net:8080/job/SportBukkit/lastSuccessfulBuild/api/json?pretty=true", "sportbukkit");
     $json = json_decode($sbukkit_json_string);
 
     $result = $json->artifacts[0];
