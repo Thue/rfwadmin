@@ -62,14 +62,27 @@ function get_cookie(c_name) {
 }
 
 var add_access_line_unique_id = 1000000;
-function add_access_line(table_id) {
+function add_access_line_positive(table_id, json) {
     id = add_access_line_unique_id++;
     $('#'+table_id+' tr:last').after(
 	'<tr>'+
-	    '<td><input type="text" name="'+table_id+'['+id+'][victim_name]" value="" /></td>'+
-	    '<td><input type="text" name="'+table_id+'['+id+'][ban_date]" value="Now" /></td>'+
-	    '<td><input type="text" name="'+table_id+'['+id+'][banned_by]" value="Control panel" /></td>'+
-	    '<td><input type="text" name="'+table_id+'['+id+'][banned_until]" value="Forever" /></td>'+
+	    '<td><input type="text" name="'+table_id+'['+id+'][name]" value="" /></td>'+
+	    (json ? '<td>(Will be looked up)</td>' : '')+
+	    '<td><input type="submit" onclick="$(this.parentNode.parentNode).remove();return false" value="Delete" /></td>'+
+	    '</tr>'
+    );
+    $('textarea[name='+table_id+'\\['+id+'\\]\\[reason\\]]').autosize();
+}
+
+function add_access_line_ban(table_id, json) {
+    id = add_access_line_unique_id++;
+    $('#'+table_id+' tr:last').after(
+	'<tr>'+
+	    '<td><input type="text" name="'+table_id+'['+id+']['+(table_id==="bannedslaships" ? 'ip' : 'name')+']" value="" /></td>'+
+	    (table_id==="bannedslashplayers" && json ? ('<td>(Will be looked up)</td>') : '')+
+	    '<td><input type="text" name="'+table_id+'['+id+'][created]" value="Now" /></td>'+
+	    '<td><input type="text" name="'+table_id+'['+id+'][source]" value="Control panel" /></td>'+
+	    '<td><input type="text" name="'+table_id+'['+id+'][expires]" value="Forever" /></td>'+
 	    '<td><textarea name="'+table_id+'['+id+'][reason]">Your mother is a hamster and your father smells of elderberries</textarea></td>'+
 	    '<td><input type="submit" onclick="$(this.parentNode.parentNode).remove();return false" value="Delete" /></td>'+
 	    '</tr>'

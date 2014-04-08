@@ -1,12 +1,32 @@
 <?php
 
 abstract class access_list {
+  public $fname;
   public $file;
   public $path;
+  public $use_json;
 
   function __construct() {
     global $mc;
-    $this->path = sprintf("%s/server/%s", $mc->server_dir, $this->file);
+    $path_txt = sprintf("%s/server/%s.txt", $mc->server_dir,
+			$this->fname==="whitelist" ? "white-list" : $this->fname
+			);
+    if (file_exists($path_txt)) {
+      /* Running a version of the minecraft server which supports json
+       * will automatically delete the .txt file. So if the text file
+       * exists, then it is supported (or will be converted to a
+       * supported format on the next run).
+       */
+      $this->file = $this->fname . ".txt";
+      $this->path = $path_txt;
+      $this->use_json = false;
+    } else {
+      $path_json = sprintf("%s/server/%s.json", $mc->server_dir, $this->fname);
+      $this->file = $this->fname . ".json";
+      $this->path = $path_json;
+      $this->use_json = true;
+    }
+    
   }
 
   public static function get_all() {
@@ -18,15 +38,15 @@ abstract class access_list {
     return $list;
   }
 
-  public static function from_filename($file) {
+  public static function from_fname($fname) {
     $classes = self::get_all();
     foreach ($classes as $class) {
-      if ($class->file === $file) {
+      if ($class->fname === $fname) {
 	return $class;
       }
     }
 
-    die("didn't find file $file");
+    die("didn't find file $fname");
   }
 
   public function file_to_name($file) {
@@ -63,6 +83,44 @@ abstract class access_list {
   abstract public function save_from_post();
 
   abstract public function get_html();
+
+  public static function name_to_uuid() {
+    $postData = array(
+		      'name' => 'thuejk',
+		      'agent' => 'minecraft',
+		      );
+
+    // Setup cURL
+    $ch = curl_init('https://api.mojang.com/profiles/page/1');
+    curl_setopt_array($ch, array(
+				 CURLOPT_POST => true,
+				 CURLOPT_RETURNTRANSFER => true,
+				 CURLOPT_HTTPHEADER => array('Content-Type: application/json'),
+				 CURLOPT_POSTFIELDS => json_encode($postData)
+				 ));
+
+    // Send the request
+    $response = curl_exec($ch);
+    if ($response === false) {
+      return null;
+    }
+
+    $responseData = json_decode($response, true);
+    if (isset($responseData) && $responseData["size"] === 1) {
+      $uuid_raw = $responseData["profiles"][0]["id"];
+      //example:       8f7b3387-e959-4b3b-84c8-0a27a2991b7d
+      $uuid = sprintf("%s-%s-%s-%s-%s",
+		      substr($uuid_raw, 0, 8),
+		      substr($uuid_raw, 8, 4),
+		      substr($uuid_raw, 12, 4),
+		      substr($uuid_raw, 16, 4),
+		      substr($uuid_raw, 20)
+		      );
+      return $uuid;
+    } else {
+      return null;
+    }
+  }
 }
 
 abstract class access_list_simple extends access_list {
@@ -75,13 +133,13 @@ abstract class access_list_simple extends access_list {
     $text = $this->list_to_text($this->text_to_list($text));
     printf('<textarea name="%1$s">%2$s</textarea>'."\n".
 	   '<script type="text/javascript">$(\'textarea[name=%1$s]\').autosize();</script>',
-	   e($this->file_to_name($this->file)),
+	   e($this->file_to_name($this->fname)),
 	   e($text)
 	   );
   }
 
   public function save_from_post() {
-    $name = $this->file_to_name($this->file);
+    $name = $this->file_to_name($this->fname);
     $new_list = $this->text_to_list($_POST[$name]);
     $old_list = $this->text_to_list(file_get_contents($this->path));
 
@@ -120,19 +178,134 @@ abstract class access_list_simple extends access_list {
   }
 }
 
-abstract class access_list_table extends access_list {
-  public $header = "# Updated 7/19/13 10:45 AM by Minecraft 1.5.2\n# victim name | ban date | banned by | banned until | reason\n";
+abstract class access_list_positive extends access_list {
   function __construct() {
     parent::__construct();
   }
 
-  public function get_html() {
+  public $header = "";
+
+  private function parse_json() {
+    $text = file_get_contents($this->path);
+    return json_decode($text);
+  }
+
+  private function parse_old() {
     $text = file_get_contents($this->path);
     $lines = explode("\n", $text);
-    $table_id = e($this->file_to_name($this->file));
+    $list = Array();
+    foreach ($lines as $line) {
+      $line = trim($line);
+      if ($line === "" || $line[0] === "#") {
+	continue;
+      }
+      $list[] = (object) Array("name" => $line,
+			       "uuid" => null);
+    }
+    return $list;
+  }
+
+  private function parse() {
+    return $this->use_json ? $this->parse_json() : $this->parse_old();
+  }
+
+  public function get_html() {
+    $table_id = e($this->file_to_name($this->fname));
+    $items = $this->parse();
     printf('<table id="%s" border>'."\n", $table_id);
-    echo "<tr><th>Victim name</th><th>Ban date</th><th>Banned by</th><th>Banned until</th><th>Reason</th><th>Delete row</th></tr>";
-    foreach ($lines as $i => $line) {
+    echo "<tr><th>Name</th>";
+    if ($this->use_json) {
+      echo "<th>uuid</th>";
+    }
+      echo "<th>Delete row</th>";
+    echo "</tr>";
+    foreach ($items as $i => $item) {
+      echo "<tr>\n";
+      printf('<td><input type="text" name="%1$s[%2$s][name]" value="%3$s" autocomplete="off" /></td>'."\n",
+	     e($table_id), $i, e($item->name));
+      if ($this->use_json) {
+	printf('<td><input type="text" name="%1$s[%2$s][uuid]" value="%3$s" autocomplete="off" class="text-uuid" /></td>'."\n",
+	       e($table_id), $i, e($item->uuid));
+      }
+      echo '<td><input type="submit" onclick="$(this.parentNode.parentNode).remove();return false" value="Delete" /></td>'."\n";
+
+      echo "</tr>\n";
+    }
+    echo "</table>\n";
+    printf('<p><input type="submit" onclick="add_access_line_positive(\'%s\', %s); return false" value="Add new line" /></p>',
+	   e($this->file_to_name($this->fname)),
+	   $this->use_json ? "true" : "false");
+    printf('<script type="text/javascript">$(\'#%s textarea\').autosize()</script>', $table_id);
+  }
+
+  public function save_from_post() {
+    $table_id = $this->file_to_name($this->fname);
+    $items = Array();
+    if (isset($_POST[$table_id])) {
+      foreach ($_POST[$table_id] as $row) {
+	$name = trim($row["name"]);
+	if (!preg_match('/^[a-zA-Z0-9_\\.\\:]+$/', $name)) {
+	  printf("Name is invalid: %s\n", e($name));
+	  continue;
+	}
+	$uuid = isset($row["uuid"]) ? $row["uuid"] : null;
+
+	if ($uuid === null) {
+	  $uuid = self::name_to_uuid($name);
+	  if ($uuid === null) {
+	    printf("Couldn't look up UUID of player '%s' - Mojang's servers are down, or the player doesn't exist.\n",
+		    e($name));
+	    continue;
+	  }
+	}
+
+	$item = new stdClass();
+	$item->name = $name;
+	$item->uuid = $uuid;
+	if ($this->fname === "ops") {
+	  $item->level = 4;
+	}
+	$items[] = $item;
+      }
+    }
+
+    if ($this->use_json) {
+      $new = json_encode($items);
+    } else {
+      $new = $this->header;
+      foreach ($items as $item) {
+	$new .= $item->name . "\n";
+      }
+    }
+
+    if (file_get_contents($this->path) !== $new) {
+      file_put_contents($this->path, $new);
+      printf("%s updated!\n", $this->file);
+    } else {
+      printf("%s: nothing changed\n", $this->file);
+    }
+  }
+}
+
+
+abstract class access_list_ban extends access_list {
+  public $header = "# victim name | ban date | banned by | banned until | reason\n";
+  function __construct() {
+    parent::__construct();
+  }
+
+  private function parse_json() {
+    $text = file_get_contents($this->path);
+    $items = json_decode($text);
+
+    return $items;
+  }
+
+  private function parse_old() {
+    $text = file_get_contents($this->path);
+    $lines = explode("\n", $text);
+    $items = Array();
+    foreach ($lines as $line) {
       $line = trim($line);
       if ($line === "" || $line[0] === "#") {
 	continue;
@@ -144,77 +317,136 @@ abstract class access_list_table extends access_list {
 	       e($line));
       }
 
-      $victim_name = trim($fields[0]);
-      $ban_date = strtotime($fields[1]);
-      $banned_by = trim($fields[2]);
-      $banned_until = trim(strtolower($fields[3])) === "forever" ? trim($fields[3]) : strtotime($fields[3]);
-      $reason = trim($fields[4]);
 
+      $item = Array();
+      if ($this->fname === "banned-ips") {
+	$item["ip"] = trim($fields[0]);
+      } else {
+	$item["name"] = trim($fields[0]);
+      }
+      $item["uuid"] = null;
+      $item["created"] = trim($fields[1]);
+      $item["source"] = trim($fields[2]);
+      $item["expires"] = trim($fields[3]);
+      $item["reason"] = trim($fields[4]);
+
+
+      $items[] = (object) $item;
+    }
+    return $items;
+  }
+
+  private function parse() {
+    return $this->use_json ? $this->parse_json() : $this->parse_old();
+  }
+
+  public function get_html() {
+    $table_id = e($this->file_to_name($this->fname));
+    $items = $this->parse();
+    printf('<table id="%s" border>'."\n", $table_id);
+    echo "<tr><th>Name</th>".
+      ($this->use_json && $this->fname!=="banned-ips" ? "<th>uuid</th>" : "").
+      "<th>Created</th><th>Source</th><th>Expires</th><th>Reason</th><th>Delete row</th></tr>";
+    foreach ($items as $i => $item) {
       printf('<tr>'."\n".
-	     '<td><input type="text" name="%1$s[%2$s][victim_name]" value="%3$s" autocomplete="off" /></td>'."\n".
-	     '<td><input type="text" name="%1$s[%2$s][ban_date]" value="%4$s" autocomplete="off" /></td>'."\n".
-	     '<td><input type="text" name="%1$s[%2$s][banned_by]" value="%5$s" autocomplete="off" /></td>'."\n".
-	     '<td><input type="text" name="%1$s[%2$s][banned_until]" value="%6$s" autocomplete="off" /></td>'."\n".
+	     '<td><input type="text" name="%1$s[%2$s]['.($this->fname === "banned-ips" ? "ip" :"name").']" value="%3$s" autocomplete="off" /></td>'."\n".
+	     ($this->use_json && $this->fname!=="banned-ips" ? '<td><input type="text" name="%1$s[%2$s][uuid]" value="%8$s" autocomplete="off" class="text-uuid" /></td>'."\n" : "").	     
+	     '<td><input type="text" name="%1$s[%2$s][created]" value="%4$s" autocomplete="off" /></td>'."\n".
+	     '<td><input type="text" name="%1$s[%2$s][source]" value="%5$s" autocomplete="off" /></td>'."\n".
+	     '<td><input type="text" name="%1$s[%2$s][expires]" value="%6$s" autocomplete="off" /></td>'."\n".
 	     '<td><textarea name="%1$s[%2$s][reason]" autocomplete="off">%7$s</textarea></td>'."\n".
 	     '<td><input type="submit" onclick="$(this.parentNode.parentNode).remove();return false" value="Delete" /></td>'."\n".
 	     '</tr>'."\n",
 	     e($table_id),
 	     $i,
-	     e($victim_name),
-	     e(date("Y-m-d H:i", $ban_date)),
-	     e($banned_by),
-	     e(strtolower($banned_until) === "forever" ? $banned_until : date("Y-m-d H:i", $banned_until)),
-	     e($reason)
+	     e($this->fname==="banned-ips" ? $item->ip : $item->name),
+	     e($item->created),
+	     e($item->source),
+	     e($item->expires),
+	     e($item->reason),
+	     e($this->fname==="banned-ips" ? null : $item->uuid)
 	     );
     }
     echo "</table>\n";
-    printf('<p><input type="submit" onclick="add_access_line(\'%s\'); return false" value="Add new line" /></p>',
-	   e($this->file_to_name($this->file)));
+    printf('<p><input type="submit" onclick="add_access_line_ban(\'%s\', %s); return false" value="Add new line" /></p>',
+	   e($this->file_to_name($this->fname)),
+	   $this->use_json ? "true" : "false");
     printf('<script type="text/javascript">$(\'#%s textarea\').autosize()</script>', $table_id);
   }
 
   public function save_from_post() {
-    $new = $this->header;
-    $table_id = $this->file_to_name($this->file);
+    $items = Array();
+
+    $table_id = $this->file_to_name($this->fname);
     if (isset($_POST[$table_id])) {
       foreach ($_POST[$table_id] as $row) {
-	$victim_name = trim($row["victim_name"]);
-	if (!preg_match('/^[a-zA-Z0-9_\\.\\:]+$/', $victim_name)) {
-	  printf("Victim name is invalid: %s\n", e($victim_name));
-	  continue;
-	}
-	$ban_date = strtotime($row["ban_date"]);
-	if (!is_int($ban_date)) {
-	  printf("Failed to parse ban_date: %s\n", $row["ban_date"]);
-	  continue;
-	}
-	$banned_by = trim($row["banned_by"]);
-	if (!preg_match('/^[a-zA-Z0-9_ \\-\\(\\)]+$/', $banned_by)) {
-	  printf("banned_by name is invalid: %s\n", e($banned_by));
-	  continue;	  
-	}
-	if (strtolower(trim($row["banned_until"])) === "forever") {
-	  $banned_until = "Forever";
+	if ($this->fname === "banned-ips") {
+	  $ip = trim($row["ip"]);
+	  $valid = filter_var($ip, FILTER_VALIDATE_IP);
+	  if (!$valid) {
+	    printf("%s is not a valid ip address.", e($ip));
+	    continue;
+	  }
 	} else {
-	  $banned_until = strtotime($row["banned_until"]);
-	  if (!is_int($banned_until)) {
-	    printf("Failed to parse banned_until: %s\n", $row["banned_until"]);
+	  $name = trim($row["name"]);
+	  if (!preg_match('/^[a-zA-Z0-9_\\.\\:]+$/', $name)) {
+	    printf("Victim name is invalid: %s\n", e($name));
 	    continue;
 	  }
 	}
+	$created = trim($row["created"]);
+	if (strtolower($created) === "now") {
+	  $created = date("Y-m-d H:i");
+	}
+	$source = trim($row["source"]);
+	if (!preg_match('/^[a-zA-Z0-9_ \\-\\(\\)]+$/', $source)) {
+	  printf("source name is invalid: %s\n", e($source));
+	  continue;	  
+	}
+	$expires = trim($row["expires"]);
 	$reason = trim($row["reason"]);
 	if (preg_match('/\\|/', $reason)) {
 	  printf("Reason can't contain |: %s", e($row["reason"]));
 	  continue;
 	}
 
+	$item_array = Array();
+
+	if ($this->fname === "banned-players") {
+	  $item_array["name"] = $name;
+	  $uuid = self::name_to_uuid($name);
+	  if ($uuid === null) {
+	    printf("Couldn't look up UUID of player '%s' - Mojang's servers are down, or the player doesn't exist.\n",
+		    e($name));
+	    continue;
+	  }
+	  $item_array["uuid"] = $uuid;
+	} else {
+	  $item_array["ip"] = $ip;
+	}
+
+	//Make sure the field sequence is the same as created by minecraft_server.ja
+	//                             2012-10-12 22:48:53 +0200
+	$item_array["created"] = $created;
+	$item_array["source"] = $source;
+	$item_array["expires"] = $expires;
+	$item_array["reason"] = $reason;
+
+	$items[] = (object) $item_array;
+      }
+    }
+
+    if ($this->use_json) {
+      $new = json_encode($items);
+    } else {
+      $new = $this->header;
+      foreach ($items as $item) {
 	$new .= sprintf("%s|%s|%s|%s|%s\n",
-			$victim_name,
-			//2012-10-12 22:48:53 +0200
-			date("Y-m-d H:i:s O", $ban_date),
-			$banned_by,
-			$banned_until === "Forever" ? "Forever" : date("Y-m-d H:i:s O", $banned_until),
-			$reason
+			isset($item->ip) ? $item->ip : $item->name,
+			$item->created,
+			$item->source,
+			$item->expires,
+			$item->reason
 			);
       }
     }
@@ -228,33 +460,33 @@ abstract class access_list_table extends access_list {
   }
 }
 
-class access_list_ops extends access_list_simple {
+class access_list_ops extends access_list_positive {
   function __construct() {
-    $this->file = "ops.txt";
+    $this->fname = "ops";
     parent::__construct();
   }
   
 }
 
-class access_list_whitelist extends access_list_simple {
+class access_list_whitelist extends access_list_positive {
   function __construct() {
-    $this->file = "white-list.txt";
+    $this->fname = "whitelist";
     parent::__construct();
   }
   
 }
 
-class access_list_bannedplayers extends access_list_table {
+class access_list_bannedplayers extends access_list_ban {
   function __construct() {
-    $this->file = "banned-players.txt";
+    $this->fname = "banned-players";
     parent::__construct();
   }
   
 }
 
-class access_list_bannedips extends access_list_table {
+class access_list_bannedips extends access_list_ban {
   function __construct() {
-    $this->file = "banned-ips.txt";
+    $this->fname = "banned-ips";
     parent::__construct();
   }
   

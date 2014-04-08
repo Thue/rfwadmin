@@ -43,3 +43,8 @@ table.plugins {
 .color2 {
     background-color: #EEEEEE;
 }
+
+input.text-uuid {
+    width: 23em;
+    font-family: monospace;
+}
