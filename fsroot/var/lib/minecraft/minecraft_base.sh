@@ -326,6 +326,9 @@ function server_start() {
 
     echo -n "Starting Minecraft server... "
 
+    #use timestamp for saving server start time.
+    TMP_TIMESTAMP_FILE=`mktemp`
+
     screen_cmd "cd ${PATH_RUN}"
     #note arg 5 - starting a new server will reset the log, so tell screen_cmd to always start from line 0
     #If I don't put the extra Ms on "Minecraft is stopped", then the first "M" goes missing in the output. WTF?
@@ -340,6 +343,18 @@ function server_start() {
 	if $USE_SAVEOFF; then
             screen_cmd "save-off"
 	fi
+
+	#wait for the new log file to actually be written to.
+	#This seems to happen with some delay, which can confuse this script
+	#If nothing happens within 10 seconds, then continue anyway
+        for SUBSLEEP in {1..100}; do
+	    if [ "$SERVER_LOG" -nt "$TMP_TIMESTAMP_FILE" ]; then
+		break;
+	    fi
+	    sleep 0.1
+	done
+
+	rm $TMP_TIMESTAMP_FILE
         return 0
     else
         echo "Failed!"
@@ -347,6 +362,7 @@ function server_start() {
         #remove hanging java processes
 	screen_stop
 	echo "Failed to start server after ${MAX_ATTEMPTS} attempts"
+	rm $TMP_TIMESTAMP_FILE
 	return 1
     fi
 }
