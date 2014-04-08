@@ -17,7 +17,6 @@ Essential steps:
 Optional steps:
 
 - On fx a default Ubuntu or CentOS install, upload_max_filesize in /etc/php5/apache2/php.ini is set too low for the map upload feature to work.
-- The PHP script uses curl for fetching maps from a link, so you should install the ubuntu package php5-curl if you want to use that feature.
 - Running multiple servers: Right now fsroot is set up to run one server - to run more than one server, 1) add a /etc/init.d/minecraft2.sh file, 2) add a copy of the /var/www/rfwadmin/index.php file, and edit it, and 3) a /var/lib/minecraft/servers/2 dir. To make it start and stop with an Ubuntu server on boot, run the Ubuntu command "update-rc.d minecraft2.sh defaults". For Redhat based distributions, do "chkconfig --add minecraft2.sh".
 
 Configuration files
