@@ -25,7 +25,7 @@ Configuration files
 Most users should not need to adjust any settings from the default.
 
 - You can tweak where the files are installed at the top of install.sh .
-- /var/lib/minecraft/servers/default/minecraft.sh contains the actual configuration of the script. When upgrading to a new Minecraft server version, adjust $FILE_JAR here (Or use the "server version" tab in the web interface).
+- /var/lib/minecraft/servers/default/minecraft.sh contains the actual configuration of the script.
 - The files below /var/lib/minecraft/servers/default/server , such as /var/lib/minecraft/servers/default/server/server.properties , is the normal minecraft configuration for a single Minecraft server.
 - If you are running multiple servers, or don't use the default /var/lib/minecraft location, you need to tweak the settings inside /var/www/rfwadmin/index.php
 - /var/www/rfwadmin/index.php also contains a few other settings.
@@ -34,7 +34,7 @@ Some directories and files explained
 ------------------------------------
 
 - /var/lib/minecraft/maps : The web interface will save uploaded maps here
-- /var/lib/minecraft/jars : server jars and bukkit plugins jars.
+- /var/lib/minecraft/jars : server jars and bukkit plugins jars. (the server jars should be managed from the web interface)
 - /var/lib/minecraft/minecraft_base.sh : The shell backend, used by init.d and the web interface
 - /var/lib/minecraft/servers/default/server : A normal minecraft server dir for the server I called "default" (The name "default" is not displayed to end-users).
 
@@ -60,11 +60,10 @@ Craftbukkit
 -----------
 
 You might want to install the custom server from bukkit if you want to
-use plugins: http://dl.bukkit.org/ . Place the jar in
-/var/lib/minecraft/jars/serverjars, and adjust $FILE_JAR in
-/var/lib/minecraft/servers/default/minecraft.sh . The web interface
-has a simple enable/disable plugin functionality, if the plugins are
-placed in the correct subdirectory of /var/lib/minecraft/jars/plugins/
+use plugins; It can be downloaded via the "server version" tab in the
+web interface. The web interface also has a simple enable/disable
+plugin functionality, if the plugins are placed in the correct
+subdirectory of /var/lib/minecraft/jars/plugins/ .
 
 Another useful plugin is WorldEdit ( http://www.sk89q.com/projects/worldedit/ ), for the /butcher command which removes all hostile mobs which spawned while you were waiting at the starting gate.
 
