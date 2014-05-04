@@ -22,6 +22,7 @@ class properties {
 
 		       "server-port" => "property_int",
 		       "online-mode" => "property_bool",
+		       "verify-names" => "property_bool",
 		       "snooper-enabled" => "property_bool",
 		       "enable-query" => "property_bool",
 
