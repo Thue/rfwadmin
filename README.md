@@ -18,6 +18,7 @@ Optional steps:
 
 - On fx a default Ubuntu or CentOS install, upload_max_filesize in /etc/php5/apache2/php.ini is set too low for the map upload feature to work.
 - Running multiple servers: Right now fsroot is set up to run one server - to run more than one server, 1) add a /etc/init.d/minecraft2.sh file, 2) add a copy of the /var/www/rfwadmin/index.php file, and edit it, and 3) a /var/lib/minecraft/servers/2 dir. To make it start and stop with an Ubuntu server on boot, run the Ubuntu command "update-rc.d minecraft2.sh defaults". For Redhat based distributions, do "chkconfig --add minecraft2.sh".
+- You might want to set up a cron job to logrotate /var/lib/minecraft/servers/default/screen.log . The web interface will automatically check and truncate this if it gets too big, but if the web interface is not loaded for months, this file can get 100s of MB big.
 
 Configuration files
 -------------------
