@@ -6,6 +6,7 @@ class properties {
 		       "difficulty" => "property_select",
 
 		       "gamemode" => "property_select",
+		       "force-gamemode" => "property_bool",
 		       "hardcore" => "property_bool",
 		       "level-seed" => "property_string",
 		       "level-type" => "property_select",
@@ -13,8 +14,11 @@ class properties {
 		       "generate-structures" => "property_bool",
 		       "max-build-height" => "property_int",
 		       "spawn-protection" => "property_int",
+		       "op-permission-level" => "property_int",
 		       "enable-command-block" => "property_bool",
-		       "texture-pack" => "property_string",
+		       "resource-pack" => "property_string",
+		       "announce-player-achievements" => "property_bool",
+		       "player-idle-timeout" => "property_int",
 
 		       "server-port" => "property_int",
 		       "online-mode" => "property_bool",
@@ -24,13 +28,13 @@ class properties {
 		       "max-players" => "property_int",
 		       "view-distance" => "property_int",
 		       "white-list" => "property_bool",
-		       "texture-pack" => "property_string",
 
 		       "allow-flight" => "property_bool",
 		       "pvp" => "property_bool",
 		       "spawn-animals" => "property_bool",
 		       "spawn-monsters" => "property_bool",
 		       "spawn-npcs" => "property_bool",
+		       "allow-nether" => "property_bool",
 		       );
 
   function __construct($path) {
