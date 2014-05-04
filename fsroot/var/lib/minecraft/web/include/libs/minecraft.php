@@ -404,6 +404,15 @@ class minecraft {
 
   public function stream_screen_log() {
     $path = $this->get_screen_log_path();
+
+    //If bigger than 2MB, then truncate to empty file
+    if (file_exists($path) && filesize($path) > 2000000) {
+      //overwrite, so people already having it open will keep the old file for now
+      $f = tempnam("/tmp", "rfwadmin_log_truncate");
+      file_put_contents($f, "Truncating log\n");
+      rename($f, $path);
+    }
+
     $this->stream_log($path, false);;
   }
 
