@@ -59,7 +59,7 @@ function set_server_log() {
     if is_server_online; then
 	#Determine logging method: look at which files the server has open
         PID=`cat $PATH_MINECRAFT_PID`
-	if [ "`lsof -p$PID |grep -P 'server/server.log$'`" != "" ]; then
+	if [ "`lsof -n -w -p$PID |grep -P 'server/server.log$'`" != "" ]; then
 	    SERVER_LOG=$PRE17;
 	else
 	    SERVER_LOG=$POST17;
