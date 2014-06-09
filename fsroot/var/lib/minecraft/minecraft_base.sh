@@ -242,9 +242,9 @@ function screen_cmd() {
     screen -S $SCREEN_ID -p 0 -X stuff "`printf "$1\r"`"
     if [ ! -z "$2" ]; then
 	if [[ ! -f $LOGFILE ]]; then
-	    local START_LINE=`cat "$LOGFILE" |wc -l`
-	else
 	    local START_LINE=0
+	else
+	    local START_LINE=`cat "$LOGFILE" |wc -l`
 	fi
 
 	if [ ! -z "$3" ]; then
