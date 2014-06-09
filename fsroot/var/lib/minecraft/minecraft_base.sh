@@ -332,7 +332,7 @@ function server_start() {
     screen_cmd "cd ${PATH_RUN}"
     #note arg 5 - starting a new server will reset the log, so tell screen_cmd to always start from line 0
     #If I don't put the extra Ms on "Minecraft is stopped", then the first "M" goes missing in the output. WTF?
-    screen_cmd "${SERVER} & echo \$! > ${PATH_MINECRAFT_PID} && fg; echo \"MMMMinecraft is stopped\"; exit" 30 '^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) Done \(\d+.\d+s\)! For help, type "help" or "\?"' $SERVER_LOG 1
+    screen_cmd "${SERVER} & echo \$! > ${PATH_MINECRAFT_PID} && fg; echo \"MMMMinecraft is stopped\"; exit" 30 '^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) Done \(\d+.\d+s\)! For help, type "help" or "\?"' $SCREEN_LOG 1
 
     #Screen now securely initialized! Rename to real name
     screen -S $SCREEN_ID -X sessionname $SCREEN_ID_ORIG
