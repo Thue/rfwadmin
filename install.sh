@@ -110,6 +110,7 @@ fi
 #If no server config exists from previous install, then configure a server
 if  [ $CONFIGURE_SERVER == "1" ]; then
   cp -r fsroot/var/lib/minecraft/servers/default $PATH_BASE/servers
+  echo "Marking Minecraft EULA as accepted in $PATH_BASE/servers/default/server/eula.txt (otherwise the server won't start)"
   mkdir $PATH_BASE/servers/default/backups
   mv $PATH_BASE/servers/default/minecraft.sh.customized $PATH_BASE/servers/default/minecraft.sh
   chmod +x $PATH_BASE/servers/default/minecraft.sh
