@@ -57,7 +57,7 @@ function set_server_log() {
     POST17="${PATH_RUN}/logs/latest.log"
     PRE17="${PATH_RUN}/server.log"
     if is_server_online; then
-	#look at which files the serhas has open
+	#Determine logging method: look at which files the server has open
         PID=`cat $PATH_MINECRAFT_PID`
 	if [ "`lsof -p$PID |grep -P 'server/server.log$'`" != "" ]; then
 	    SERVER_LOG=$PRE17;
