@@ -19,7 +19,11 @@ RUN  chkconfig httpd on \
   && rm -Rf /etc/httpd/conf.d/welcome.conf \
   && echo "date.timezone = GMT" > /etc/php.d/timezone.ini
 
-# Install RFW Admin
+# Setup screen
+RUN  chmod 777 /var/run/screen \
+  && chown root:root /var/run/screen
+
+# Get RFW Admin
 RUN  cd /root/ \
   && git clone https://github.com/Thue/rfwadmin.git
 
