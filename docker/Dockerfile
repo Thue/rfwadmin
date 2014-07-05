@@ -1,8 +1,8 @@
-FROM centos:latest
+FROM centos:centos6
 MAINTAINER Paulson McIntyre, <paul+docker.rfwadmin@gpmidi.net>
 
 # Sane umask
-RUN umask 0755
+RUN umask 0022
 #ONBUILD RUN umask 0022
 
 # Do an initial update
