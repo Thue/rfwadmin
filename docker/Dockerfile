@@ -2,8 +2,8 @@ FROM centos:latest
 MAINTAINER Paulson McIntyre, <paul+docker.rfwadmin@gpmidi.net>
 
 # Sane umask
-#RUN umask 0022
-#ONBUILD RUN umask 0022
+RUN umask 0022
+ONBUILD RUN umask 0022
 
 # Do an initial update
 RUN yum -y update
