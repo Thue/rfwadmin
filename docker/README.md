@@ -58,6 +58,7 @@ Image
   * MC mgmt console
   * Plugin based ports/web interfaces/etc
  * Add optional automatic overviewer generation
+ * Choice between openjdk and Oracle's JRE
 
 Docs
 ----
