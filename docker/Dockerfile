@@ -8,15 +8,15 @@ RUN umask 022
 ONBUILD RUN umask 022
 
 # Set default env vars
-ENV http_proxy=""
-ENV UI_HTML_TITLE="Minecraft Map Management"
-ENV UI_ARMORY_ENABLED=0
-ENV UI_PHP_TIMEZONE="UTC"
-ENV MC_MEM_LOW="1024M"
-ENV MC_MEM_HIGH="1024M"
-ENV MC_WORLD="world"
-ENV MC_SERVER_ARGS="-server"
-ENV MC_USE_SAFEOFF=0
+ENV http_proxy ""
+ENV UI_HTML_TITLE "Minecraft Map Management"
+ENV UI_ARMORY_ENABLED 0
+ENV UI_PHP_TIMEZONE "UTC"
+ENV MC_MEM_LOW "1024M"
+ENV MC_MEM_HIGH "1024M"
+ENV MC_WORLD "world"
+ENV MC_SERVER_ARGS "-server"
+ENV MC_USE_SAFEOFF 0
 
 
 ##### Actual Work #####
