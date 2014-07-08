@@ -15,15 +15,19 @@ How To Run
 
 Ports To Export
 ---------------
-TCP/80          Web UI
-TCP/25565       Minecraft Server
+Internal Port | Use
+--------------|-----------------
+TCP/80        | Web UI
+TCP/25565     | Minecraft Server
 
 Volumes To Persist
 ------------------
-/var/lib/minecraft/maps
-/var/lib/minecraft/servers/default/server
-/var/log
-/var/log/httpd
+Directory Path                            | Required | Size       | Performance | Use
+------------------------------------------|----------|------------|-------------|---------------------------
+/var/lib/minecraft/maps                   | Yes      | Large      | Slow        | Saved map files
+/var/lib/minecraft/servers/default/server | Yes      | Small      | Fast        | Minecraft server directory
+/var/log                                  | No       | Medium     | Slow        | System log files
+/var/log/httpd                            | No       | Small      | Slow        | Web interface log files
 
 Interactive
 -----------
