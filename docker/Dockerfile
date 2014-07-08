@@ -1,4 +1,4 @@
-FROM centos:centos6
+FROM centos:latest
 MAINTAINER Paulson McIntyre, <paul+docker.rfwadmin@gpmidi.net>
 
 # Sane umask
