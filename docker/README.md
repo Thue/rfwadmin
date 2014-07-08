@@ -4,7 +4,7 @@ A Minecraft Server With Built-in Web Interface
 
 Intro
 =====
-This Docker image provides an easy and conveanant way to run one or more
+This Docker image provides an easy and convenient way to run one or more
 instances of Minecraft managed by Thue's RFWAdmin web interface. It also
 provides a highly secure way to isolate the Minecraft servers from each other
 and limit their resources.
