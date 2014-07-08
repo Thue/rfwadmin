@@ -132,7 +132,5 @@ Image
 
 Docs
 ----
- * Add cross-launch persistance to volume
- * How to put behind reverse proxy such as nginx, httpd, etc
  * How to set CPU and/or memory limits
  * Test nginx config
