@@ -1,6 +1,6 @@
 RFW Admin + Minecraft + Docker
 ==============================
-Minecraft Managment UI
+A Minecraft Server With Built-in Web Interface
 
 Intro
 =====
@@ -46,13 +46,13 @@ Image
  * Add a way to shutdown the instance gracefully
  * Multi-user perms
  * Define settings via env variables such as
- ** Memory settings for MC server
- ** Auth info for web UI
+  * Memory settings for MC server
+  * Auth info for web UI
  * Consider adding one or more ways for server owners to access the raw MC files
  without going through the web UI. ex: SFTP, SCP, FTP(S), etc
  * Add support for other port export for things like
- ** MC mgmt console
- ** Plugin based ports/web interfaces/etc
+  * MC mgmt console
+  * Plugin based ports/web interfaces/etc
  * Add optional automatic overviewer generation
 
 Docs
