@@ -8,7 +8,7 @@ RUN umask 022
 ONBUILD RUN umask 022
 
 # Set default env vars
-ENV http_proxy ""
+#ENV http_proxy ""
 ENV UI_HTML_TITLE "Minecraft Map Management"
 ENV UI_ARMORY_ENABLED 0
 ENV UI_PHP_TIMEZONE "UTC"
