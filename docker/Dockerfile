@@ -1,15 +1,23 @@
 FROM centos:latest
 MAINTAINER Paulson McIntyre, <paul+docker.rfwadmin@gpmidi.net>
 
+RUN ls -alh /
+
 # Sane umask
 RUN umask 022
 #ONBUILD RUN umask 022
 
+RUN ls -alh /
+
 # Do an initial update
 RUN yum -y update
 
+RUN ls -alh /
+
 # Fix local errors when logging in
 RUN yum -y reinstall glibc-common
+
+RUN ls -alh /
 
 RUN yum -y install vim-enhanced wget zip unzip lsof \
   git python-devel screen java-1.7.0-openjdk php httpd php-curl
