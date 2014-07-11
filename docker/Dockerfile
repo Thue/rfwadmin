@@ -40,7 +40,7 @@ RUN  chmod 777 /var/run/screen \
 
 # Get RFW Admin
 RUN  cd /root/ \
-  && git clone https://github.com/Thue/rfwadmin.git
+  && git clone https://github.com/gpmidi/rfwadmin.git
 
 RUN  service httpd start \
   && su - -c "cd /root/rfwadmin/ && /bin/bash /root/rfwadmin/install.sh && /etc/init.d/minecraft_default.sh stop" \
