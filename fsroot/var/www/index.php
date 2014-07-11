@@ -11,15 +11,15 @@ require_once($include_base . "/web/include/libs/minecraft.php");
 $mc = new minecraft($include_base . "/servers/default" /* server dir */);
 
 if (getenv("UI_HTML_TITLE")!=FALSE) {
-  $mc->html_title = getenv("UI_HTML_TITLE");
+  $mc->html_title = trim(getenv("UI_HTML_TITLE"),'"');
 }
 
-if (getenv("UI_ARMORY_ENABLED")=="1") {
+if (getenv("UI_ARMORY_ENABLED")=="1" || getenv("UI_ARMORY_ENABLED")=='"1"') {
   $mc->armory_enabled = true; //auto-download rfw maps from AuthorBlues autoref. Default false.
 }
 
 if (getenv("UI_PHP_TIMEZONE")!=FALSE) {
-  date_default_timezone_set(getenv("UI_PHP_TIMEZONE")); //various times displayed in files. Default `date +"%Z"`
+  date_default_timezone_set(trim(getenv("UI_PHP_TIMEZONE"),'"');); //various times displayed in files. Default `date +"%Z"`
 }
 
 minecraft_map::$map_dir = $include_base . "/maps";
