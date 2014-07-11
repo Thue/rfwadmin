@@ -19,7 +19,7 @@ if (getenv("UI_ARMORY_ENABLED")=="1" || getenv("UI_ARMORY_ENABLED")=='"1"') {
 }
 
 if (getenv("UI_PHP_TIMEZONE")!=FALSE) {
-  date_default_timezone_set(trim(getenv("UI_PHP_TIMEZONE"),'"');); //various times displayed in files. Default `date +"%Z"`
+  date_default_timezone_set(trim(getenv("UI_PHP_TIMEZONE"),'"')); //various times displayed in files. Default `date +"%Z"`
 }
 
 minecraft_map::$map_dir = $include_base . "/maps";
