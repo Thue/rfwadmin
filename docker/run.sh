@@ -1,6 +1,5 @@
 #!/bin/bash
 set -x
-RFW
 
 echo "Starting at "`/bin/date`
 
