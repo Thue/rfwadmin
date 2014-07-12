@@ -11,7 +11,7 @@ cd /var/lib/minecraft/
 
 
 # Ensure the standard files exist
-/bin/cp -a /var/lib/minecraft/servers/default/server.stock/* \
+/bin/cp -a /var/lib/minecraft/servers/default/server.stock/server/ \
     /var/lib/minecraft/servers/default/server/
 /bin/mkdir -p /var/log/httpd /var/lib/minecraft/maps \
     /var/lib/minecraft/servers /var/lib/minecraft/jars
