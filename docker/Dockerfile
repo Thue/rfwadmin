@@ -43,7 +43,7 @@ RUN  cd /root/ \
   && git clone https://github.com/gpmidi/rfwadmin.git
 
 RUN  service httpd start \
-  && su - -c "cd /root/rfwadmin/ && /bin/bash /root/rfwadmin/install.sh && /etc/init.d/minecraft_default.sh stop" \
+  && bash --login -c "cd /root/rfwadmin/ && /bin/bash /root/rfwadmin/install.sh && /etc/init.d/minecraft_default.sh stop" \
   && service httpd stop
 
 # Save as it'll be mounted over
