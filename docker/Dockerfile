@@ -55,7 +55,7 @@ RUN  mkdir -p /var/lib/minecraft/servers/default/server.stock/ \
   && chown -R apache:apache /var/lib/minecraft/servers/default/server/ \
   && chmod -R 644 /var/lib/minecraft/servers/default/server \
   && chmod 755 /var/lib/minecraft/servers/default/server/ /var/lib/minecraft/servers/default/server/{logs,world} \
-  && cp -a /var/lib/minecraft/servers/default/server /var/lib/minecraft/servers/default/server.stock
+  && cp -a /var/lib/minecraft/servers/default/server/ /var/lib/minecraft/servers/default/server.stock
 
 # Add startup script
 ADD run.sh /run.sh
