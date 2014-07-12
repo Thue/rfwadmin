@@ -67,7 +67,7 @@ RUN yum -y clean all
 RUN rm -Rf /tmp/* /var/tmp/* /root/.bash_history /var/lib/minecraft/jars/{cache,converter,plugins,serverjars}/*
 
 # Directories to share out
-VOLUME [ "/var/log", "/var/log/httpd", "/var/lib/minecraft/servers", "/var/lib/minecraft/maps" ]
+VOLUME [ "/var/log", "/var/lib/minecraft/servers/default/server", "/var/lib/minecraft/maps" ]
 
 EXPOSE 80 25565
 
