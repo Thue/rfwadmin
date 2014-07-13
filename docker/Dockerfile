@@ -32,7 +32,8 @@ RUN yum -y install vim-enhanced wget zip unzip lsof \
 # Setup apache
 RUN  chkconfig httpd on \
   && rm -Rf /etc/httpd/conf.d/welcome.conf \
-  && echo "date.timezone = GMT" > /etc/php.d/timezone.ini
+  && echo "date.timezone = GMT" > /etc/php.d/timezone.ini \
+  && sed -i 's/upload_max_filesize = [0-9]\{1,8\}M/upload_max_filesize = 512M/' /etc/php.ini
 
 # Setup screen
 RUN  chmod 777 /var/run/screen \
