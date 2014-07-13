@@ -14,7 +14,8 @@ cd /var/lib/minecraft/
 /bin/cp -an /var/lib/minecraft/servers/default/server.stock/* \
     /var/lib/minecraft/servers/default/server/
 /bin/mkdir -p /var/log/httpd /var/lib/minecraft/maps \
-    /var/lib/minecraft/servers /var/lib/minecraft/jars
+    /var/lib/minecraft/servers /var/lib/minecraft/jars \
+    /var/lib/minecraft/jars/{cache,converter,plugins,serverjars}/
 /bin/chown -R apache:apache /var/log/httpd /var/lib/minecraft/maps \
     /var/lib/minecraft/servers /var/lib/minecraft/jars
 
