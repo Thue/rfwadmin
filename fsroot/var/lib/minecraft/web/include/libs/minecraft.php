@@ -47,11 +47,11 @@ class minecraft {
     $this->properties = $this->get_properties();
 
     if (getenv("UI_HTML_TITLE")!=FALSE) {
-      $mc->html_title = trim(getenv("UI_HTML_TITLE"),'"');
+      $this->html_title = trim(getenv("UI_HTML_TITLE"),'"');
     }
 
     if (getenv("UI_ARMORY_ENABLED")=="1" || getenv("UI_ARMORY_ENABLED")=='"1"') {
-      $mc->armory_enabled = true; //auto-download rfw maps from AuthorBlues autoref. Default false.
+      $this->armory_enabled = true; //auto-download rfw maps from AuthorBlues autoref. Default false.
     }
 
     if (getenv("UI_PHP_TIMEZONE")!=FALSE) {
