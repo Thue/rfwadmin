@@ -44,6 +44,7 @@ RUN  cd /root/ \
   && git clone https://github.com/gpmidi/rfwadmin.git
 
 RUN  service httpd start \
+  && sleep 5 \
   && bash --login -c "cd /root/rfwadmin/ && /bin/bash /root/rfwadmin/install.sh && /etc/init.d/minecraft_default.sh stop" \
   && service httpd stop
 
@@ -73,4 +74,4 @@ VOLUME [ "/var/log/httpd", "/var/lib/minecraft/servers/default/server", "/var/li
 
 EXPOSE 80 25565
 
-CMD [ "/bin/bash", "/run.sh" ]
+CMD [ "/run.sh" ]
