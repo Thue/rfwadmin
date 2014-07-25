@@ -10,6 +10,10 @@ cd /var/lib/minecraft/
 /bin/chown root:root /var/run/screen
 
 
+# FIXME: Pre-download latest MC server and anvilconverter
+# AVC in /var/lib/minecraft/jars/converter/Minecraft.AnvilConverter.zip
+
+
 # Ensure the standard files exist
 /bin/cp -an /var/lib/minecraft/servers/default/server.stock/* \
     /var/lib/minecraft/servers/default/server/
