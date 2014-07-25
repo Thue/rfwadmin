@@ -45,6 +45,18 @@ class minecraft {
     $this->map_name_file = sprintf("%s/server/rfwadmin_map_full_name", $this->server_dir);
 
     $this->properties = $this->get_properties();
+
+    if (getenv("UI_HTML_TITLE")!=FALSE) {
+      $mc->html_title = trim(getenv("UI_HTML_TITLE"),'"');
+    }
+
+    if (getenv("UI_ARMORY_ENABLED")=="1" || getenv("UI_ARMORY_ENABLED")=='"1"') {
+      $mc->armory_enabled = true; //auto-download rfw maps from AuthorBlues autoref. Default false.
+    }
+
+    if (getenv("UI_PHP_TIMEZONE")!=FALSE) {
+      date_default_timezone_set(trim(getenv("UI_PHP_TIMEZONE"),'"')); //various times displayed in files. Default `date +"%Z"`
+    }
   }
 
   function cmd(Array $args) {
@@ -202,8 +214,8 @@ class minecraft {
   }
 
   /* A version of the built-in passthru() without buffering.
-   * 
-   * Will not work on Chrome because of a bug in Chrome, unless you manually do a 
+   *
+   * Will not work on Chrome because of a bug in Chrome, unless you manually do a
    *  header('Content-type: application/octet-stream');
    *  ob_flush();
    *  flush();
@@ -344,7 +356,7 @@ class minecraft {
     echo htmlspecialchars("Copying to '$target'... ");
     $target_full_path = minecraft_map::validate($target);
     mkdir($target_full_path);
-    
+
     $open_server_dir = opendir($this->server_dir . "/server");
     while ($entryName = readdir($open_server_dir)) {
       if (!in_array($entryName, Array(".", ".."))) {
