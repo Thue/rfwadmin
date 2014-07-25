@@ -74,4 +74,4 @@ VOLUME [ "/var/log/httpd", "/var/lib/minecraft/servers/default/server", "/var/li
 
 EXPOSE 80 25565
 
-CMD [ "/run.sh" ]
+ENTRYPOINT [ "/run.sh" ]
