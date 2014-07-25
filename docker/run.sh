@@ -10,8 +10,32 @@ cd /var/lib/minecraft/
 /bin/chown root:root /var/run/screen
 
 
-# FIXME: Pre-download latest MC server and anvilconverter
-# AVC in /var/lib/minecraft/jars/converter/Minecraft.AnvilConverter.zip
+# Pre-download latest MC server
+if [ ! -d /var/lib/minecraft/jars/serverjars ]; then
+  LATEST_SERVER_VERSION=`wget --quiet -O - https://s3.amazonaws.com/Minecraft.Download/versions/versions.json |grep '"release": ' |sed  's/^ \+"release": "\(.\+\)".\+$/\1/'`
+  PATTERN='^[0-9.]+$'
+  if [[ ! $LATEST_SERVER_VERSION =~ $PATTERN ]] ; then
+     error_exit "Failed to parse latest Minecraft server version from https://s3.amazonaws.com/Minecraft.Download/versions/versions.json"
+  fi
+  LATEST_SERVER_BINARY=minecraft_server.${LATEST_SERVER_VERSION}.jar
+  DOWNLOAD_URL="https://s3.amazonaws.com/Minecraft.Download/versions/${LATEST_SERVER_VERSION}/minecraft_server.${LATEST_SERVER_VERSION}.jar"
+  echo $DOWNLOAD_URL
+  #If we are re-running the install script on the same day, no need to re-download the server
+  if [ ! -f "/var/lib/minecraft/jars/serverjars/$LATEST_SERVER_BINARY" ]; then
+    echo "Downloading latest minecraft server jar from Mojang."
+    wget -O "/var/lib/minecraft/jars/serverjars/${LATEST_SERVER_BINARY}.tmp"  $DOWNLOAD_URL || error_exit "Failed to download minecraft server"
+    mv "/var/lib/minecraft/jars/serverjars/${LATEST_SERVER_BINARY}.tmp" "/var/lib/minecraft/jars/serverjars/${LATEST_SERVER_BINARY}"
+  fi
+fi
+
+
+# Download the AnvilConverter if needed
+if [ ! -f /var/lib/minecraft/jars/converter/AnvilConverter.jar ]; then
+  echo "Downloading Anvil converter used to convert old maps."
+  mkdir -p /var/lib/minecraft/jars/converter
+  wget -O "/var/lib/minecraft/jars/converter/Minecraft.AnvilConverter.zip" "http://assets.minecraft.net/12w07a/Minecraft.AnvilConverter.zip"
+  unzip -q -d "/var/lib/minecraft/jars/converter" "/var/lib/minecraft/jars/converter/Minecraft.AnvilConverter.zip" || echo "Failed to extract anvil converter because 'unzip' is not installed. You probably don't need that anyway."
+fi
 
 
 # Ensure the standard files exist
