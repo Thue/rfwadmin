@@ -133,7 +133,7 @@ abstract class serverjar_list_bukkit extends serverjar_list {
     foreach ($json->results as $result) {
       $versions[] = Array("id" => $result->version,
 			  "releaseTime" => date("Y-m-d", strtotime($result->created)),
-			  "url" => "https://dl.bukkit.org".$result->file->url,
+			  "url" => preg_replace('/^http:/', 'https:', $result->file->url),
 			  "filename" => "craftbukkit_".$result->version.".jar",
 			  );
     }
