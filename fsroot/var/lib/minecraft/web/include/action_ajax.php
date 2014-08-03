@@ -54,12 +54,12 @@ if (isset($_POST["save_properties"])) {
   $mc->stream_screen_log();
 } else if (isset($_POST["submit_commandline"])) {
   $mc->submit_commandline($_POST["commandline"]);
-} else if (isset($_POST["install_plugin"])) {
+} else if (isset($_POST["activate_plugin"])) {
   $plugins = $mc->get_plugins();
-  $plugins->install_plugin($_POST["name"], $_POST["version"]);
-} else if (isset($_POST["uninstall_plugin"])) {
+  $plugins->activate_plugin($_POST["name"], $_POST["version"]);
+} else if (isset($_POST["deactivate_plugin"])) {
   $plugins = $mc->get_plugins();
-  $plugins->uninstall_plugin($_POST["name"], $_POST["version"]);
+  $plugins->deactivate_plugin($_POST["name"], $_POST["version"]);
 } else if (isset($_POST["delete_plugin"])) {
   $plugins = $mc->get_plugins();
   $plugins->delete_plugin($_POST["name"], $_POST["version"]);

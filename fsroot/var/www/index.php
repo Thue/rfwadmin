@@ -10,6 +10,7 @@ $server_dir = $include_base . "/servers/default";
 require_once($include_base . "/web/include/libs/minecraft.php");
 $mc = new minecraft($include_base . "/servers/default" /* server dir */);
 //$mc->html_title = "Custom title here";
+//$mc->allow_plugin_upload = true; //allow web interface users to install and run arbitrary code!
 //$mc->armory_enabled = true; //auto-download rfw maps from AuthorBlues autoref. Default false.
 //date_default_timezone_set("Asia/Pyongyang"); //various times displayed in files. Default `date +"%Z"`
 
