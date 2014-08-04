@@ -31,6 +31,10 @@ class minecraft {
   public $map_name_file; //Name of the currently loaded map
   public $html_title = "rfwadmin"; //Shown in title of all HTML pages
 
+  /* Allow Web interface users to upload (and run!) plugins with
+   * arbitrary code! Possibly set =true from /var/www/rfwadmin/index.php */
+  public $allow_plugin_upload = false;
+
   /* ARMoRy is the collection of Race for Wool (rfw) maps which
    * Authorblues keeps up to date for the autoref plugin. If enabled,
    * rfwadmin will automatically download all maps on the list, and
@@ -112,8 +116,8 @@ class minecraft {
     $ps = $plugins->get_all();
     $list = Array();
     foreach ($ps as $p) {
-      if ($v = $p->get_installed_version()) {
-	$list[] = "<b>".htmlentities($p->name) . "</b>-" . htmlentities($p->get_installed_version());
+      if ($v = $p->get_activated_version()) {
+	$list[] = "<b>".htmlentities($p->name) . "</b>-" . htmlentities($p->get_activated_version());
       }
     }
 

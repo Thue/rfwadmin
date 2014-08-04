@@ -8,13 +8,15 @@ $ps = $plugins->get_all($unexpected);
 $fs = "<form method=\"post\" action=\"index.php?page=action\" target=\"_blank\">\n";
 $fe = "<input type=\"hidden\" name=\"input_complete\" value=\"1\" /></form>";
 
+echo "<h1>Locally available plugins</h1>";
+
 echo "<table class='plugins'>\n";
 $color = "color2";
 foreach ($ps as $p) {
   $color = $color === "color2" ? "color1" : "color2";
   echo "<tr class='$color'>\n";
   $version_lines = Array();
-  $installed_version = $p->get_installed_version();
+  $activated_version = $p->get_activated_version();
   foreach ($p->versions as $version => $path) {
     $version = (string) $version; //May have been implicitly converted to int when used as array key
     $delete = sprintf('<td>%s'.
@@ -27,9 +29,9 @@ foreach ($ps as $p) {
 		      e($version),
 		      $fe);
 
-    if ($installed_version === null) {
+    if ($activated_version === null) {
       $version_lines[] = sprintf('<td>%s'.
-				 '<input type="submit" name="install_plugin" value="Enable version %s">'.
+				 '<input type="submit" name="activate_plugin" value="Enable version %s">'.
 				 '<input type="hidden" name="name" value="%s">'.
 				 '<input type="hidden" name="version" value="%s">'.
 				 '%s</td>'.
@@ -41,9 +43,9 @@ foreach ($ps as $p) {
 				 e($version),
 				 $fe
 				);      
-    } else if ($installed_version === $version) {
+    } else if ($activated_version === $version) {
       $version_lines[] = sprintf('<td></td><td>%s'.
-				 '<input type="submit" name="uninstall_plugin" value="Disable version %s">'.
+				 '<input type="submit" name="deactivate_plugin" value="Disable version %s">'.
 				 '<input type="hidden" name="name" value="%s">'.
 				 '<input type="hidden" name="version" value="%s">'.
 				 '%s</td>'.
@@ -56,7 +58,7 @@ foreach ($ps as $p) {
 				);      
     } else {
       $version_lines[] = sprintf('<td colspan="2">'.
-				 '<input type="submit" name="install_plugin" value="Enable version %s" disabled>'.
+				 '<input type="submit" name="activate_plugin" value="Enable version %s" disabled>'.
 				 '(Other version already enabled)</td>'.
 				 $delete,
 				 e($version));
@@ -81,4 +83,26 @@ foreach ($unexpected as $path) {
   printf("Unexpected file '%s'<br>\n", e($path));
 }
 
+?>
+
+<hr />
+<h1>Upload new plugin</h1>
+
+<?php
+if (!$mc->allow_plugin_upload) {
+  echo '<p>Plugin upload disabled. Set "$mc->allow_plugin_upload=true;", probably in /var/www/rfwadmin/index.php .</p>';
+} else {
+?>
+
+<form action="index.php?page=upload_plugin" method="post" enctype="multipart/form-data" target="_blank">
+  <label for="file">Upload plugin jar:</label>
+  <input type="file" name="file" id="file" /><br />
+  Plugin name: <input type="text" name="plugin_name" /><br />
+  Plugin version: <input type="text" name="plugin_version" /><br />
+  <input type="submit" name="upload_plugin" value="Upload" />
+  <input type="hidden" name="input_complete" value="1" />
+</form>
+
+<?php
+}
 ?>

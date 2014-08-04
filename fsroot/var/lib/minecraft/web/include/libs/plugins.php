@@ -16,11 +16,11 @@ class plugin {
     $this->versions[$version] = $path;
   }
 
-  public function install($version, $use_configuration) {
+  public function activate($version, $use_configuration) {
     $plugins_dir = $this->plugins->get_plugins_dir();
 
-    //Check that no version of the plugin is already installed
-    if ($this->get_installed_version() !== null) {
+    //Check that no version of the plugin is already activated
+    if ($this->get_activated_version() !== null) {
       printf("There is already an enabled version of the '%s' version.", $this->name);
       return false;
     }
@@ -42,7 +42,7 @@ class plugin {
     return true;
   }
 
-  public function get_installed_version(&$path=null) {
+  public function get_activated_version(&$path=null) {
     $plugins_dir = $this->plugins->get_plugins_dir();
 
     $links = scandir($plugins_dir);
@@ -62,13 +62,13 @@ class plugin {
     return null;
   }
 
-  public function uninstall($version=null) {
+  public function deactivate($version=null) {
     $path = null;
-    $installed = $this->get_installed_version($path);
-    if ($installed !== null) {
-      if ($version !== null && $version !== $installed) {
+    $activated = $this->get_activated_version($path);
+    if ($activated !== null) {
+      if ($version !== null && $version !== $activated) {
 	printf("Asked to disable '%s' version '%s', but version '%s' was enabled!",
-	       e($this->name), e($version), e($installed)
+	       e($this->name), e($version), e($activated)
 	       );
       } else if (!unlink($path)) {
 	printf("Failed to disable plugin '%s'.", e($this->name));
@@ -88,7 +88,7 @@ class plugin {
       exit(1);
     }
 
-    if ($this->get_installed_version() === $version) {
+    if ($this->get_activated_version() === $version) {
       printf("Can't delete currently enabled version.");
       exit(1);
     }
@@ -135,7 +135,7 @@ class plugins {
 
       $path = self::$plugins_dir . "/" . $plugin_name;
       if (!is_dir($path)) {
-	  $unexpected[] = $path;
+	$unexpected[] = $path;
       } else {
 	$plugin = $this->get_all_one_plugin_all_versions($plugin_name, $unexpected);
 	if ($plugin !== null) {
@@ -159,23 +159,23 @@ class plugins {
     return null;
   }
 
-  public function install_plugin($name, $version) {
+  public function activate_plugin($name, $version) {
     $plugin = $this->get_from_name($name);
     if ($plugin === null) {
       printf("There is no plugin with the name '%s'.", e($name));
       exit(1);
     } else {
-      $plugin->install($version, false);
+      $plugin->activate($version, false);
     }
   }
 
-  public function uninstall_plugin($name, $version) {
+  public function deactivate_plugin($name, $version) {
     $plugin = $this->get_from_name($name);
     if ($plugin === null) {
       printf("There is no plugin with the name '%s'.", e($name));
       exit(1);
     } else {
-      $plugin->uninstall($version);
+      $plugin->deactivate($version);
     }
   }
 
@@ -187,6 +187,44 @@ class plugins {
     } else {
       $plugin->delete($version);
     }
+  }
+
+  public function is_version_free($name, $version) {
+    $plugin = $this->get_from_name($name);
+    if ($plugin !== null) {
+      if (isset($plugin->versions[$version])) {
+	return false;
+      }
+    }
+
+    return true;
+  }
+
+  public function install_plugin($file, $name, $version) {
+    preg_match('/\A[a-zA-Z0-9\\.\\-_ ]+\z/', $name) || die("Name must match [a-zA-Z0-9\\.\\-_ ]+");
+    preg_match('/\A[a-zA-Z0-9\\.\\-_ ]+\z/', $version) || die("Version must match [a-zA-Z0-9\\.\\-_ ]+");
+    preg_match('/\A\\.*\z/', $name) && die("Name must not be .*");
+    preg_match('/\A\\.*\z/', $version) && die("Version must not be .*");
+
+    if (!$this->is_version_free($name, $version)) {
+      printf("The plugin '%s' version '%s' already exists", e($name), e($version));
+      exit(1);
+    }
+
+    $plugins_dir = self::$plugins_dir;
+    $dir = sprintf("%s/%s/%s", $plugins_dir, $name, $version);
+    if (!file_exists($dir) || !is_dir($dir)) {
+      mkdir($dir, 0755, true) || die("Failed to create directory ".e($dir));
+    }
+    if (preg_match('/\A[a-zA-Z0-9\\.\\-_]+\z/', $file["name"]) && !preg_match('/\A\\.*\z/', $file["name"])) {
+      $file_name = $file["name"];
+    } else {
+      $file_name = "plugin.jar";
+    }
+
+    rename($file["tmp_name"], sprintf($dir . "/".$file_name)) || die("failed to install plugin");
+
+    return true;
   }
 
   //may return null if no versions found

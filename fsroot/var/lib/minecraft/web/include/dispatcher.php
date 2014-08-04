@@ -25,6 +25,9 @@ function dispatch(minecraft $mc, $page) {
   case "upload_file":
     require_once("upload_file.php");
     break;
+  case "upload_plugin":
+    require_once("upload_plugin.php");
+    break;
   default:
     die("No recognizable dispatch target given!");
   }

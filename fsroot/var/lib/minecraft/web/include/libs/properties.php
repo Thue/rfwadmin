@@ -2,44 +2,46 @@
 class properties {
   public $property_lines = Array();
 
-  public $vars = Array("motd" => "property_string",
-		       "difficulty" => "property_select",
-
-		       "gamemode" => "property_select",
-		       "force-gamemode" => "property_bool",
-		       "hardcore" => "property_bool",
-		       "level-seed" => "property_string",
-		       "level-type" => "property_select",
-		       "generator-settings" => "property_string",
-		       "generate-structures" => "property_bool",
-		       "max-build-height" => "property_int",
-		       "spawn-protection" => "property_int",
-		       "op-permission-level" => "property_int",
-		       "enable-command-block" => "property_bool",
-		       "resource-pack" => "property_string",
-		       "announce-player-achievements" => "property_bool",
-		       "player-idle-timeout" => "property_int",
-
-		       "server-port" => "property_int",
-		       "online-mode" => "property_bool",
-		       "verify-names" => "property_bool",
-		       "snooper-enabled" => "property_bool",
-		       "enable-query" => "property_bool",
-
-		       "max-players" => "property_int",
-		       "view-distance" => "property_int",
-		       "white-list" => "property_bool",
-
-		       "allow-flight" => "property_bool",
-		       "pvp" => "property_bool",
-		       "spawn-animals" => "property_bool",
-		       "spawn-monsters" => "property_bool",
-		       "spawn-npcs" => "property_bool",
-		       "allow-nether" => "property_bool",
-		       );
+  public $vars = null; //Set in __construct
 
   function __construct($path) {
     $this->path = $path;
+
+    $this->vars = Array("motd" => new property_meta("property_string", ""),
+			"difficulty" => new property_meta("property_select", 2),
+
+			"gamemode" => new property_meta("property_select", 0),
+			"force-gamemode" => new property_meta("property_bool", false),
+			"hardcore" => new property_meta("property_bool", false),
+			"level-seed" => new property_meta("property_string", ""),
+			"level-type" => new property_meta("property_select", "DEFAULT"),
+			"generator-settings" => new property_meta("property_string", ""),
+			"generate-structures" => new property_meta("property_bool", true),
+			"max-build-height" => new property_meta("property_int", 256),
+			"spawn-protection" => new property_meta("property_int", 16),
+			"op-permission-level" => new property_meta("property_int", 4),
+			"enable-command-block" => new property_meta("property_bool", false),
+			"resource-pack" => new property_meta("property_string", ""  ),
+			"announce-player-achievements" => new property_meta("property_bool", true),
+			"player-idle-timeout" => new property_meta("property_int", 0),
+
+			"server-port" => new property_meta("property_int", 25565),
+			"online-mode" => new property_meta("property_bool", true),
+			"verify-names" => new property_meta("property_bool", true),
+			"snooper-enabled" => new property_meta("property_bool", false),
+			"enable-query" => new property_meta("property_bool", false),
+
+			"max-players" => new property_meta("property_int", 20),
+			"view-distance" => new property_meta("property_int", 10),
+			"white-list" => new property_meta("property_bool", false),
+
+			"allow-flight" => new property_meta("property_bool", false),
+			"pvp" => new property_meta("property_bool", true),
+			"spawn-animals" => new property_meta("property_bool", true),
+			"spawn-monsters" => new property_meta("property_bool", true),
+			"spawn-npcs" => new property_meta("property_bool", true),
+			"allow-nether" => new property_meta("property_bool", true),
+			);
 
     $lines = file($path, FILE_IGNORE_NEW_LINES);
     if ($lines === false) {
@@ -47,6 +49,7 @@ class properties {
       exit(1);
     }
 
+    $seen_properties = Array();
     foreach ($lines as $line) {
       if (preg_match('/^#.*$/', $line, $matches)) {
 	$p = new property_comment($line);
@@ -57,8 +60,9 @@ class properties {
 	$value = $matches[2];
 	if (isset($this->vars[$key])) {
 	  try {
-	    $property_class = $this->vars[$key];
+	    $property_class = $this->vars[$key]->type;
 	    $p = new $property_class($key, $value);
+	    $seen_properties[$key] = true;
 	  } catch (exception $e) {
 	    $p = new property_parseerror($line, $key);
 	  }
@@ -70,6 +74,17 @@ class properties {
       }
 
       $this->property_lines[] = $p;
+    }
+
+    
+    foreach ($this->vars as $key => $property_meta) {
+      if (!isset($seen_properties[$key])) {
+	$property_meta = $this->vars[$key];
+	if ($property_meta->default !== null) {
+	  $property_class = $property_meta->type;
+	  $this->property_lines[] = new $property_class($key, $property_meta->default);
+	}
+      }
     }
   }
 
@@ -153,6 +168,16 @@ class properties {
 
 }
 
+class property_meta {
+  function __construct($type, $default=null) {
+    $this->type = $type;
+    $this->default = $default;
+  }
+
+  public $key;
+  public $default = null;
+}
+
 abstract class property_line {
   abstract public function get_line();
 }
@@ -177,14 +202,20 @@ abstract class property_changeable extends property_line {
 class property_bool extends property_changeable {
   function __construct($key, $value) {
     $this->key = $key;
-    if ($value !== "true" && $value !== "false") {
+    if ($value === "true") {
+      $value = true;
+    } else if ($value === "false") {
+      $value = false;
+    }
+
+    if ($value !== true && $value !== false) {
       throw new exception(sprintf("Value of '%s' was '%s', must be 'true' or 'false'",
 				  e($key),
 				  e($value)
 				  )
 			  );
     }
-    $this->value = $value === "true";
+    $this->value = $value;
   }
 
   public function get_value_html() {
