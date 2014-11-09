@@ -9,9 +9,9 @@ To install
 Essential steps:
 
 - Install supporting programs (screen, java, apache, php, zip).
-    - On Ubuntu/Debian/Mint: "sudo apt-get install screen openjdk-6-jre libapache2-mod-php5 php5-curl wget zip unzip && /etc/init.d/apache2 restart". (The apache restart should be unnecessary, but is due to Debian bug 705350)
+    - On Ubuntu/Debian/Mint: "sudo apt-get install screen openjdk-7-jre libapache2-mod-php5 php5-curl wget zip unzip && /etc/init.d/apache2 restart". (The apache restart should be unnecessary, but is due to Debian bug 705350)
     - On Redhat/RHEL/CentOS the command should be "sudo yum -y install screen java-1.7.0-openjdk php httpd php-curl wget zip unzip lsof". You also need to set "SELINUX=permissive" in /etc/sysconfig/selinux , or the web server will not be able to run the minecraft.sh shell script (any help on avoiding this is appreciated). Before running install.sh below, you also need to start the httpd daemon ("chkconfig httpd on && service httpd start").
-- Run ./install.sh from inside the unpacked rfwadmin directory. Tested on Ubuntu and CentOS, but should work on any Linux/Unix.
+- Run ./install.sh from inside the unpacked rfwadmin directory. Tested on Debian, Ubuntu, and CentOS, but should work on any Linux/Unix.
 - If your server has the address http://example.com , then the web interface should now be available at http://example.com/rfwadmin
 
 Optional steps:
@@ -56,18 +56,5 @@ About quality
 
 - The PHP code should be mostly ok.
 - I make no claims to be an expert shell programmer.
-
-Craftbukkit
------------
-
-You might want to install the custom server from bukkit if you want to
-use plugins; It can be downloaded via the "server version" tab in the
-web interface. The web interface also has a simple enable/disable
-plugin functionality, if the plugins are placed in the correct
-subdirectory of /var/lib/minecraft/jars/plugins/ .
-
-Another useful plugin is WorldEdit ( http://www.sk89q.com/projects/worldedit/ ), for the /butcher command which removes all hostile mobs which spawned while you were waiting at the starting gate.
-
-The automatical downloading of craftbukkit jars is broken until bukkit fixes their website: https://bukkit.atlassian.net/browse/SITE-132
 
 Regards, Thue
