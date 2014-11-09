@@ -54,24 +54,6 @@ foreach ($jars as $jar) {
     <td><input type="submit" name="download_serverjar[vanilla_snapshot]" value="Download"></td>
   </tr>
 
-  <tr>
-    <td>Bukkit recommendeds</td>
-    <td><select name="serverjar_list_bukkit_recommended" id="serverjar_list_bukkit_recommended"></select></td>
-    <td><input type="submit" name="download_serverjar[bukkit_recommended]" value="Download"></td>
-  </tr>
-
-  <tr>
-    <td>Bukkit betas</td>
-    <td><select name="serverjar_list_bukkit_beta" id="serverjar_list_bukkit_beta"></select></td>
-    <td><input type="submit" name="download_serverjar[bukkit_beta]" value="Download"></td>
-  </tr>
-
-  <tr>
-    <td>Sportbukkit latest build</td>
-    <td><select name="serverjar_list_sportbukkit" id="serverjar_list_sportbukkit"></select></td>
-    <td><input type="submit" name="download_serverjar[sportbukkit]" value="Download"></td>
-  </tr>
-
 </table>
 <input type="hidden" name="input_complete" value="1">
 </form>
@@ -79,7 +61,7 @@ foreach ($jars as $jar) {
 
 <!-- Download jar lists from 3rd-party sources -->
 <script>
-  var types = ["vanilla_release", "vanilla_snapshot", "bukkit_recommended", "bukkit_beta", "sportbukkit"];
+  var types = ["vanilla_release", "vanilla_snapshot"];
 
   for (var i=0;i<types.length; i++) {
     var type = types[i];
@@ -102,7 +84,7 @@ foreach ($jars as $jar) {
 <!-- For debugging fetching jar lists.-->
 <!--
 <form method="post" action="index.php?page=action_ajax" target="_blank">
-<input type="submit" name="get_serverjars" value="sportbukkit">
+<input type="submit" name="get_serverjars" value="vanilla_snapshot">
 <input type="hidden" name="input_complete" value="1">
 </form>
 -->
