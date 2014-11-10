@@ -8,9 +8,9 @@ To install
 
 Essential steps:
 
-- Install supporting programs (screen, java, apache, php, zip).
-    - On Ubuntu/Debian/Mint: "sudo apt-get install screen openjdk-7-jre libapache2-mod-php5 php5-curl wget zip unzip && /etc/init.d/apache2 restart". (The apache restart should be unnecessary, but is due to Debian bug 705350)
-    - On Redhat/RHEL/CentOS the command should be "sudo yum -y install screen java-1.7.0-openjdk php httpd php-curl wget zip unzip lsof". You also need to set "SELINUX=permissive" in /etc/sysconfig/selinux , or the web server will not be able to run the minecraft.sh shell script (any help on avoiding this is appreciated). Before running install.sh below, you also need to start the httpd daemon ("chkconfig httpd on && service httpd start").
+- Install supporting programs (tmux, java, apache, php, zip).
+    - On Ubuntu/Debian/Mint: "sudo apt-get install tmux openjdk-7-jre libapache2-mod-php5 php5-curl wget zip unzip && /etc/init.d/apache2 restart". (The apache restart should be unnecessary, but is due to Debian bug 705350)
+    - On Redhat/RHEL/CentOS the command should be "sudo yum -y install tmux java-1.7.0-openjdk php httpd php-curl wget zip unzip lsof". You also need to set "SELINUX=permissive" in /etc/sysconfig/selinux , or the web server will not be able to run the minecraft.sh shell script (any help on avoiding this is appreciated). Before running install.sh below, you also need to start the httpd daemon ("chkconfig httpd on && service httpd start").
 - Run ./install.sh from inside the unpacked rfwadmin directory. Tested on Debian, Ubuntu, and CentOS, but should work on any Linux/Unix.
 - If your server has the address http://example.com , then the web interface should now be available at http://example.com/rfwadmin
 
@@ -18,7 +18,7 @@ Optional steps:
 
 - On fx a default Ubuntu or CentOS install, upload_max_filesize in /etc/php5/apache2/php.ini is set too low for the map upload feature to work.
 - Running multiple servers: Right now fsroot is set up to run one server - to run more than one server, 1) add a /etc/init.d/minecraft2.sh file, 2) add a copy of the /var/www/rfwadmin/index.php file, and edit it, and 3) a /var/lib/minecraft/servers/2 dir. To make it start and stop with an Ubuntu server on boot, run the Ubuntu command "update-rc.d minecraft2.sh defaults". For Redhat based distributions, do "chkconfig --add minecraft2.sh".
-- You might want to set up a cron job to logrotate /var/lib/minecraft/servers/default/screen.log . The web interface will automatically check and truncate this if it gets too big, but if the web interface is not loaded for months, this file can get 100s of MB big.
+- You might want to set up a cron job to logrotate /var/lib/minecraft/servers/default/tmux.log . The web interface will automatically check and truncate this if it gets too big, but if the web interface is not loaded for months, this file can get 100s of MB big.
 
 Configuration files
 -------------------

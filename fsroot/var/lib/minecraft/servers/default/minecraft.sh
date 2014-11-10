@@ -7,7 +7,7 @@ FILE_JAR="$PATH_BASE/jars/serverjars/craftbukkit-beta_1.3.2-R0.1.jar"
 
 #If running multiple servers, $SCREEN and $SERVER_SUBDIR must be unique
 #The SCREEN=... is inserted into a regexp, so may only contain [a-zA-Z0-9]
-SCREEN=mcsrv
+TMUX=mcsrv
 SERVER_SUBDIR="default"
 
 #save-off makes the server not write map changes to disk, but if the

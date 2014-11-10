@@ -413,13 +413,13 @@ class minecraft {
     return $path;
   }
 
-  public function get_screen_log_path() {
-    $path = sprintf("%s/screen.log", $this->server_dir);
+  public function get_tmux_log_path() {
+    $path = sprintf("%s/tmux.log", $this->server_dir);
     return $path;
   }
 
-  public function stream_screen_log() {
-    $path = $this->get_screen_log_path();
+  public function stream_tmux_log() {
+    $path = $this->get_tmux_log_path();
 
     //If bigger than 2MB, then truncate to empty file
     if (file_exists($path) && filesize($path) > 2000000) {

@@ -2,8 +2,8 @@
 require_once("include.php");
 
 switch($_GET["log"]) {
-case "screen.log":
-  $file = sprintf("%s/screen.log", $mc->server_dir);
+case "tmux.log":
+  $file = sprintf("%s/tmux.log", $mc->server_dir);
   break;
 case "server.log":
   $file = sprintf("%s/server/server.log", $mc->server_dir);

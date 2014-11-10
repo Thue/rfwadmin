@@ -40,7 +40,7 @@ LOCK_FILE_TIMEOUT=30
 LOCKFILE="${PATH_SERVER}/minecraft.sh.lock"
 LOCKFILE2="${LOCKFILE}.lock"
 
-SCREEN_LOG="${PATH_SERVER}/screen.log"
+TMUX_LOG="${PATH_SERVER}/tmux.log"
 #Log location changed with 1.7. SERVER_LOG="" means try to guess location
 SERVER_LOG=""
 
@@ -79,7 +79,7 @@ function send_command() {
 	echo "server is offline"
 	exit 1;
     fi
-    screen_cmd "$1"
+    tmux_cmd "$1"
 }
 
 function list() {
@@ -92,7 +92,7 @@ function list() {
     local OFFSET=`expr $OFFSET + 1`
     #local PREG='^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\] Connected players: .*(.\[m)?'
     local PREG='^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) (Connected players: |There are \d+/\d+ players online:)'
-    if ! screen_cmd "list" 1 "$PREG" "$SERVER_LOG"; then
+    if ! tmux_cmd "list" 1 "$PREG" "$SERVER_LOG"; then
 	echo "Failed to find list output!";
 	return 1;
     fi
@@ -152,94 +152,72 @@ function is_server_online() {
     fi
 }
 
-function screen_name_ok() {
-    if [ "`echo $SCREEN | sed 's/^[a-zA-Z0-9]\+$//'`" != "" ]; then
-        echo "'SCREEN=${SCREEN}' configuration is invalid. SCREEN can only contains [a-zA-Z0-9], as it is used in a regular expression"
+function tmux_name_ok() {
+    if [ "`echo $TMUX | sed 's/^[a-zA-Z0-9]\+$//'`" != "" ]; then
+        echo "'TMUX=${TMUX}' configuration is invalid. TMUX can only contains [a-zA-Z0-9], as it is used in a regular expression"
 	unlock
 	exit 1
     fi
 }
 
-function get_screen_id() {
-    screen_name_ok
-    local LINE=$(screen -ls |grep -P "^\s+((\d+\.)?\d+\.${SCREEN})\s+\([^\)]+\)")
+function tmux_running() {
+    tmux_name_ok
+
+    #In theory I should be able to run "tmux start"
+    local LINE=$(tmux ls 2>&1 |grep -P "^${TMUX}:")
     if [ "$LINE" = "" ]; then
-        SCREEN_ID=""
 	return 1
     else
-        SCREEN_ID=$(echo $LINE|sed 's/^[ \t]*\(\([0-9]\+\.\)\?\+[0-9]\+\.[^\t ]\+\)[ \t]\+.*$/\1/')
         return 0
     fi
 }
 
-function get_screen_pid() {
-    if ! get_screen_id; then
-	echo "Can't find screen id, so can't find screen pid";
+function get_tmux_pid() {
+    if ! tmux_running; then
+	echo "tmux doesn't seem to be running, so can't find tmux pid";
 	return 1
     fi
-    SCREEN_PID=$(echo $SCREEN_ID|sed 's/^\([0-9]\+\)\..*/\1/')
+    TMUX_PID=$(tmux list-panes -F '#{pane_pid}' -t $TMUX)
 
     return 0;
 }
 
-function screen_start() {
-    if get_screen_id; then
+function tmux_start() {
+    if tmux_running; then
         return 0
     fi
 
-    #If running as normal user, the user might have a screen config
+    #If running as normal user, the user might have a tmux config
     #for normal interactive work. We don't want to use that, so create
-    #a tempoprary empty file to use as screen config instead.
-    SCREEN_CONF=`mktemp`
-    echo "logfile ${SCREEN_LOG}" >> "$SCREEN_CONF"
+    #a temporary empty file to use as tmux config instead.
+    TMUX_CONF=`mktemp`
+    echo -n "Starting tmux session... "
+    tmux -f "$TMUX_CONF" new-session -d -s "${TMUX}uninitialized"
+    rm "$TMUX_CONF"
 
-    echo -n "Starting Screen session... "
-    #sometimes screen fails to start in the first try. Haven't checked why. Just be lazy and retry
-    for ATTEMPT in {1..5}; do
-	if [ $ATTEMPT -gt 1 ]; then
-	    extend_lock
-	    sleep 1
-	fi
-	screen -c "$SCREEN_CONF" -LdmS $SCREEN
-	if get_screen_id; then
-	    break
-	fi
-    done
-    rm "$SCREEN_CONF"
-
-    if get_screen_id; then
-	if [ $ATTEMPT -gt 1 ]; then
-	    echo "Started! (in " $ATTEMPT "tries)"
-	else 
-            echo "Started!"
-	fi
-        return 0
-    else
+    local LINE=$(tmux ls |grep -P "^${TMUX}uninitialized:")
+    if [ "$LINE" = "" ]; then
         echo "Failed!"
 	return 1
+    else
+        echo "Started!"
+        return 0
     fi
 }
-function screen_stop() {
-    get_screen_id
-    if [ "$SCREEN_ID" != "" ]; then  
-       screen -S $SCREEN_ID -X quit
+function tmux_stop() {
+    if tmux_running; then  
+       tmux kill-session -t $TMUX
     fi
-}
-# Reset the screen. Use if a command fails to ensure the screen is clear of cruft
-function screen_reset() {
-    get_screen_id
-    screen -S $SCREEN_ID -p 0 -X reset
 }
 # Send a string to STDIN, for sending commands to the server.
-function screen_cmd() {
+function tmux_cmd() {
     if [ -z $4 ]; then
 	local LOGFILE="$SERVER_LOG"
     else
 	local LOGFILE="$4"
     fi
 
-    get_screen_id
-    screen -S $SCREEN_ID -p 0 -X stuff "`printf "$1\r"`"
+    tmux send-keys -t $TMUX "`printf "$1\r"`"
     if [ ! -z "$2" ]; then
 	if [[ ! -f $LOGFILE ]]; then
 	    local START_LINE=0
@@ -257,7 +235,7 @@ function screen_cmd() {
 		fi
 
 		for SUBSLEEP in {1..5}; do
-		    if screen_log_find_regexp "$3" "$LOGFILE" $START_LINE; then
+		    if tmux_log_find_regexp "$3" "$LOGFILE" $START_LINE; then
 			return 0
 		    fi
 		    sleep 0.2
@@ -275,7 +253,7 @@ function screen_cmd() {
     return 0
 }
 
-function screen_log_find_regexp() {
+function tmux_log_find_regexp() {
     local OFFSET=`expr "$3" + 1`
     local FOUND=`tail -n +$OFFSET "$LOGFILE" | grep -P "$1"`
     #local AAA=`tail -n +$OFFSET "$LOGFILE"|wc -l`
@@ -298,29 +276,30 @@ function server_start() {
         echo -e "Minecraft server is already \033[1;32monline\033[0m"
         return 0
     fi
-    if get_screen_id; then
+    if tmux_running; then
 	#There is no such thing as a valid leftover shell session,
 	#since the main command end with ...;exit
-	screen_stop
+	tmux_stop
     fi
 
-    #Until we have stuffed the "...;exit" into the screen session,
-    #there is a teoretical race security hole, where the screen
+    #Until we have stuffed the "...;exit" into the tmux session,
+    #there is a teoretical race security hole, where the tmux
     #session is a full-featured shell. If someone can inject the
     #correct command via fx a minecraft talk command in that small
     #time window, they can execute shell commands.
     #
-    #Hence we give the uninitialized screen session a special name
+    #Hence we give the uninitialized tmux session a special name
     #until it is initialized and made safe with the "...; exit"
     #command
-    SCREEN_ID_ORIG="$SCREEN_ID"
-    SCREEN_ID="${SCREEN_ID}_uninitialized"
-    if get_screen_id; then
-	#remove any leftover ..._uninitialized session
-	screen_stop
+    TMUX_TMP=$TMUX
+    TMUX="${TMUX}uninitialized"
+    if tmux_running; then
+	#remove any leftover ...uninitialized session
+	tmux_stop
     fi
-    if ! screen_start; then
-	SCREEN_ID="$SCREEN_ID_ORIG"
+
+    if ! tmux_start; then
+	$TMUX=$TMUX_TMP
         return 1
     fi
 
@@ -329,19 +308,20 @@ function server_start() {
     #use timestamp for saving server start time.
     TMP_TIMESTAMP_FILE=`mktemp`
 
-    screen_cmd "cd ${PATH_RUN}"
-    #note arg 5 - starting a new server will reset the log, so tell screen_cmd to always start from line 0
+    tmux_cmd "script -f -a $TMUX_LOG; exit"
+    tmux_cmd "cd ${PATH_RUN}"
+    #note arg 5 - starting a new server will reset the log, so tell tmux_cmd to always start from line 0
     #If I don't put the extra Ms on "Minecraft is stopped", then the first "M" goes missing in the output. WTF?
-    screen_cmd "${SERVER} & echo \$! > ${PATH_MINECRAFT_PID} && fg; echo \"MMMMinecraft is stopped\"; exit" 30 '^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) Done \(\d+.\d+s\)! For help, type "help" or "\?"' $SCREEN_LOG
+    tmux_cmd "${SERVER} & echo \$! > ${PATH_MINECRAFT_PID} && fg; echo \"MMMMinecraft is stopped\"; exit" 30 '^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) Done \(\d+.\d+s\)! For help, type "help" or "\?"' $TMUX_LOG
 
-    #Screen now securely initialized! Rename to real name
-    screen -S $SCREEN_ID -X sessionname $SCREEN_ID_ORIG
-    SCREEN_ID="$SCREEN_ID_ORIG"
+    #tmux now securely initialized! Rename to real name
+    tmux rename-session -t $TMUX $TMUX_TMP
+    TMUX="$TMUX_TMP"
 
     if is_server_online; then
 	echo "Started!"
 	if $USE_SAVEOFF; then
-            screen_cmd "save-off"
+            tmux_cmd "save-off"
 	fi
 
 	#wait for the new log file to actually be written to.
@@ -358,9 +338,8 @@ function server_start() {
         return 0
     else
         echo "Failed!"
-	screen_reset
         #remove hanging java processes
-	screen_stop
+	tmux_stop
 	echo "Failed to start server after ${MAX_ATTEMPTS} attempts"
 	rm $TMP_TIMESTAMP_FILE
 	return 1
@@ -372,14 +351,14 @@ function server_stop() {
         return 0
     fi
 
-    screen_cmd "say Server going down! Saving world..."
+    tmux_cmd "say Server going down! Saving world..."
     if ! server_save; then
 	echo "Save failed, so refusing to stop server"
 	return 1
     fi
 
     echo -n "Stopping Minecraft server ... "
-    if ! screen_cmd "stop" 60 '^(\>\s*)*M+inecraft is stopped' "$SCREEN_LOG"; then
+    if ! tmux_cmd "stop" 60 '^(\>\s*)*M+inecraft is stopped' "$TMUX_LOG"; then
 	echo "Failed to stop server"
 	return 1	
     fi
@@ -387,7 +366,7 @@ function server_stop() {
     if ! is_server_online; then
         echo "Stopped!"
         server_pid_remove
-	screen_stop
+	tmux_stop
         return 0
     else
 	echo "Failed to stop server"
@@ -402,13 +381,13 @@ function server_stop_nosave() {
 
     echo -n "Stopping Minecraft server... "
 
-    screen_cmd "stop" 60 '^(\>\s*)*M+inecraft is stopped' "$SCREEN_LOG"
+    tmux_cmd "stop" 60 '^(\>\s*)*M+inecraft is stopped' "$TMUX_LOG"
 
     if ! is_server_online; then
         echo "Stopped!"
         server_pid_remove
-        if get_screen_id; then
-	    screen -S $SCREEN_ID -X quit
+        if tmux_running; then
+	    tmux_stop
 	fi
         return 0
     else
@@ -424,7 +403,7 @@ function server_reload() {
 	    return 1
         fi
 
-        if screen_cmd "reload" 10 '^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) CONSOLE: (.\[0;32;1m)?Reload complete\.(\[m)?'; then
+        if tmux_cmd "reload" 10 '^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) CONSOLE: (.\[0;32;1m)?Reload complete\.(\[m)?'; then
 	    return 0
 	else
 	    echo "Failed to reload within 10 seconds, got tired of waiting."
@@ -432,32 +411,51 @@ function server_reload() {
 	fi
 }
 
+#helper for get_java_pid
+function get_first_java_pid() {
+    local PIDS=$(ps --ppid $1 -o pid h |awk '{print $1}')
+    while read -r line; do
+	echo "checking -->$line<--"
+	if [ "$line" == "" ]; then
+	    continue
+	fi
+
+	#is this pid the java command?
+	local CHECK_PID_COMMAND=$(ps --pid $line -o command h)
+        #sanity check that the process is indeed java
+        #spaces are collapsed in the proc command line
+	local SERVER2=$(echo "$SERVER"|sed 's/  / /g')
+	if [ "$SERVER2" == "$CHECK_PID_COMMAND" ]; then
+	    FIRST_JAVA_PID="$line"
+	    return 0;
+	fi
+
+	#is a child the java command?
+	if get_first_java_pid $line; then
+	    return 0
+	fi
+    done <<< "$PIDS"
+
+    return 1;
+}
+
 function get_java_pid() {
-    if ! get_screen_pid; then
-	echo "Couldn't find screen, so java presumably not running.";
+    if ! tmux_running; then
+	echo "Couldn't find tmux, so java presumably not running.";
 	return 1;
     fi
 
-    SH_ID=$(ps --ppid $SCREEN_PID -o pid h |awk '{print $1}')
-
-    if [ "$SH_ID" == "" ]; then
-	echo "Failed to find the pid of the screen shell; this shouldn't happen.";
+    if ! get_tmux_pid; then
+	echo "failed to find tmux pid.";
 	return 1;
     fi
 
-    JAVA_ID=$(ps --ppid $SH_ID -o pid h |awk '{print $1}')
-    if [ "$JAVA_ID" == "" ]; then
+    if get_first_java_pid $TMUX_PID; then
+        #FIRST_JAVA_PID is now set ()
+	JAVA_PID="$FIRST_JAVA_PID"
+    else
 	echo "Failed to find the pid of java, so minecraft is presumably not running.";
-	return 1;
-    fi
-
-    #sanity check that the process is indeed java
-    JAVA_ID_COMMAND=$(ps --pid $JAVA_ID -o command h)
-    #spaces are collapsed in the proc command line
-    local SERVER2=$(echo "$SERVER"|sed 's/  / /g')
-    if [ "$SERVER2" != "$JAVA_ID_COMMAND" ]; then
-	echo "The process which should have been the java minecraft server doesn't seem to be! (\"$JAVA_ID_COMMAND\"!=\"$SERVER2\")";
-	JAVA_ID=-1
+	JAVA_PID=-1
 	return 1;
     fi
 
@@ -474,12 +472,12 @@ function kill_minecraft() {
     local ATTEMPTS=10
     local ITER=1
     while [ $ITER -le $ATTEMPTS ]; do
-	kill $JAVA_ID
+	kill $JAVA_PID
         sleep 1
 	if ! get_java_pid; then
 	    echo "Minecraft process seems to have been killed!"
-	    if get_screen_id; then
-		screen_stop
+	    if tmux_running; then
+		tmux_stop
 	    fi
 	    return 0;
 	else
@@ -493,22 +491,22 @@ function kill_minecraft() {
 }
 
 function nuke() {
-    if ! get_java_pid; then
+    if ! get_tmux_pid; then
 	return 1
     fi
-
+    #TMUX_PID is now set
 
     local ATTEMPTS=10
     local ITER=1
     while [ $ITER -le $ATTEMPTS ]; do
-	echo "Sending kill -9 to minecraft process..."
-	kill -9 $JAVA_ID
+	echo "Sending kill -9 to minecraft parent process..."
+	kill -9 $TMUX_PID
 	echo "Kill command sent!"
         sleep 1
-	if ! get_java_pid; then
-	    echo "Minecraft process seems to have been nuked!"
-	    if get_screen_id; then
-		screen_stop
+	if ! get_tmux_pid; then
+	    echo "Minecraft parent process seems to have been nuked!"
+	    if tmux_running; then
+		tmux_stop
 	    fi
 	    return 0;
 	else
@@ -517,7 +515,7 @@ function nuke() {
 	fi
     done
 
-    echo "Failed to nuke minecraft process. This really shouldn't happen. Ask Thue for help."
+    echo "Failed to nuke minecraft parent process. This really shouldn't happen. Ask Thue for help."
     return 1
 }
 
@@ -588,10 +586,10 @@ function server_save() {
 
     echo -n "Saving world... "
     if $USE_SAVEOFF; then
-	screen_cmd "save-on"   10 '^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) CONSOLE: Enabling level saving..'
+	tmux_cmd "save-on"   10 '^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) CONSOLE: Enabling level saving..'
     fi
 
-    if ! screen_cmd "save-all" 30 '^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) (CONSOLE: Save complete.|Saved the world)'; then
+    if ! tmux_cmd "save-all" 30 '^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) (CONSOLE: Save complete.|Saved the world)'; then
 	echo "Save failed!";
 	return 1
     fi
@@ -599,21 +597,21 @@ function server_save() {
     if [ "`echo "$SERVER_LOG" | grep -P 'logs/latest.log$'`" == "" ]; then
 	echo -n "(Running save-all 2 more times and sleeping 10 seconds because of Minecraft bug MC-2527)... "
 	sleep 3
-	screen_cmd "save-all" 30 '^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) (CONSOLE: Save complete.|Saved the world)'
+	tmux_cmd "save-all" 30 '^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) (CONSOLE: Save complete.|Saved the world)'
 	sleep 3
-	screen_cmd "save-all" 30 '^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) (CONSOLE: Save complete.|Saved the world)'
+	tmux_cmd "save-all" 30 '^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) (CONSOLE: Save complete.|Saved the world)'
 	sleep 4
     fi
 
     if $USE_SAVEOFF; then
-	screen_cmd "save-off"  10 '^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) CONSOLE: Disabling level saving..'
+	tmux_cmd "save-off"  10 '^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) CONSOLE: Disabling level saving..'
     fi
     echo "Saved!"
     return 0;
 }
 function server_backup() {
     if is_server_online; then
-        screen_cmd "say Saving new backup..."
+        tmux_cmd "say Saving new backup..."
         server_save
     fi
 
@@ -625,13 +623,13 @@ function server_backup() {
     popd > /dev/null
 
     if is_server_online; then
-        screen_cmd "say Backup completed!"
+        tmux_cmd "say Backup completed!"
     fi
     return 0
 }
 function server_backup_safe() {
     if is_server_online; then
-        screen_cmd "say Serving going down for safe backup..."
+        tmux_cmd "say Serving going down for safe backup..."
         if ! server_stop; then
 	    unlock
             exit 1
@@ -847,7 +845,7 @@ case $1 in
         ;;
     stop)
         if is_server_online; then
-            screen_cmd "say Server shutting down..."
+            tmux_cmd "say Server shutting down..."
             if ! server_stop; then
 		unlock
                 exit 1
@@ -858,7 +856,7 @@ case $1 in
         ;;
     stop_nosave)
         if is_server_online; then
-            screen_cmd "say Server shutting down..."
+            tmux_cmd "say Server shutting down..."
             if ! server_stop_nosave; then
 		unlock
                 exit 1
@@ -869,7 +867,7 @@ case $1 in
 	;;
     restart)
         if is_server_online; then
-            screen_cmd "say Server restarting..."
+            tmux_cmd "say Server restarting..."
             if server_stop; then
 		server_start
 	    else
@@ -889,7 +887,13 @@ case $1 in
 	fi
 	;;
     nuke)
-	nuke
+	if nuke; then
+	    unlock;
+	    exit 0
+	else
+	    unlock
+	    exit 1
+	fi
 	;;
     delete_map)
         if is_server_online; then

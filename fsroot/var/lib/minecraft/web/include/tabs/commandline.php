@@ -1,6 +1,6 @@
-<div id="screenlog_container"></div>
+<div id="tmuxlog_container"></div>
 <script type="text/javascript">
-   $(document).ready(function() {document.screenlog = new log("commandline", "screenlog", "screen.log");});
+   $(document).ready(function() {document.tmuxlog = new log("commandline", "tmuxlog", "tmux.log");});
 </script>
 
 <form method="post" action="index.php?page=action" target="_blank">
