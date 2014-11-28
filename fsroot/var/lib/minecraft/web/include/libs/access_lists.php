@@ -84,9 +84,9 @@ abstract class access_list {
 
   abstract public function get_html();
 
-  public static function name_to_uuid() {
+  public static function name_to_uuid($name) {
     $postData = array(
-		      'name' => 'thuejk',
+		      'name' => $name,
 		      'agent' => 'minecraft',
 		      );
 
