@@ -38,6 +38,7 @@ if [ -z "$WEBSERVER_USER" ]; then
   WEBSERVER_USER=$(ps axho user,comm|grep -E "httpd|apache"|uniq|grep -v "root"|awk 'END {if ($1) print $1}')
   echo "Using '$WEBSERVER_USER' as the HTTP server user, which will also run the Minecraft server."
 fi
+#See if what we got looks remotely like a unix username
 if ! [[ "$WEBSERVER_USER" =~ ^[a-zA-Z_][0-9a-zA-Z_-]+$ ]] ; then
     error_exit "error: HTTP server user ($WEBSERVER_USER) looks wrong"
 fi
@@ -74,6 +75,10 @@ if  [ $CONFIGURE_SERVER == "1" ]; then
   cat fsroot/var/lib/minecraft/servers/default/minecraft.sh | sed "s|^FILE_JAR=.*\$|FILE_JAR=\"$PATH_BASE/jars/serverjars/$LATEST_SERVER_BINARY\"|" | sed "s|^PATH_BASE=.*\$|PATH_BASE=\"$PATH_BASE\"|" > fsroot/var/lib/minecraft/servers/default/minecraft.sh.customized
 fi
 
+#Maps from before Minecraft 1.2 is not in the "anvil" format. Mojang's
+#server will autoconvert them, but if you are repeatably reloading a
+#map that is slow. So minecraft_base.sh has a "convert" command to
+#convert them once and for all (not available from web interface).
 if [ ! -f fsroot/var/lib/minecraft/jars/converter/AnvilConverter.jar -a ! -f $PATH_BASE/jars/converter/AnvilConverter.jar ]; then
   echo "Downloading Anvil converter used to convert old maps."
   wget -O "fsroot/var/lib/minecraft/jars/converter/Minecraft.AnvilConverter.zip" "http://assets.minecraft.net/12w07a/Minecraft.AnvilConverter.zip"
