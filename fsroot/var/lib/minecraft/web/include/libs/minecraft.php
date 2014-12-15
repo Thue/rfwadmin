@@ -243,7 +243,8 @@ class minecraft {
       $stream_array = Array($stream);
       $res = stream_select($stream_array, $dummy_array, $dummy_array, 30);
       if ($res === false) {
-	//seems to happen sometimes, so do nothing special
+	//received signal, for example that the browser went away
+	break;
       }
 
       if (time() - $time_of_last_output > 10) {
@@ -473,7 +474,7 @@ class minecraft {
       $num_lines_skipped = sizeof($lines) - 1000;
     }
 
-    $cmd = sprintf("tail -f -n +%d %s",
+    $cmd = sprintf("tail --follow=name -n +%d %s",
 		   $num_lines_skipped,
 		   escapeshellarg($path)
 		   );
