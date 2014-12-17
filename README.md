@@ -1,7 +1,7 @@
 rfwadmin
 ========
 
-A web and/or command line interface for controlling a MineCraft server, optimized for quickly restarting with custom maps such as Race For Wool (RFW).
+A web and/or command line interface for controlling a MineCraft server, optimized for quickly restarting with custom maps such as Race For Wool (RFW). It requires a Linux server.
 
 To install
 ----------
@@ -26,11 +26,11 @@ Configuration files
 
 Most users should not need to adjust any settings from the default.
 
-- You can tweak where the files are installed at the top of install.sh .
-- /var/lib/minecraft/servers/default/minecraft.sh contains the actual configuration of the script.
+- You can tweak where the files will be installed at the top of install.sh .
+- /var/lib/minecraft/servers/default/minecraft.sh configures how the minecraft server is run, e.g. memory usage.
 - The files below /var/lib/minecraft/servers/default/server , such as /var/lib/minecraft/servers/default/server/server.properties , is the normal minecraft configuration for a single Minecraft server.
 - If you are running multiple servers, or don't use the default /var/lib/minecraft location, you need to tweak the settings inside /var/www/rfwadmin/index.php
-- /var/www/rfwadmin/index.php also contains a few other settings.
+- /var/www/rfwadmin/index.php also contains settings for the web interface.
 
 Some directories and files explained
 ------------------------------------
