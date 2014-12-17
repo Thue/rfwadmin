@@ -65,7 +65,6 @@ if  [ $CONFIGURE_SERVER == "1" ]; then
   fi
   LATEST_SERVER_BINARY=minecraft_server.${LATEST_SERVER_VERSION}.jar
   DOWNLOAD_URL="https://s3.amazonaws.com/Minecraft.Download/versions/${LATEST_SERVER_VERSION}/minecraft_server.${LATEST_SERVER_VERSION}.jar"
-  echo $DOWNLOAD_URL
   #If we are re-running the install script on the same day, no need to re-download the server
   if [ ! -f "fsroot/var/lib/minecraft/jars/serverjars/$LATEST_SERVER_BINARY" ]; then
     echo "Downloading latest minecraft server jar from Mojang."
