@@ -31,6 +31,11 @@ if [ "$USE_SAVEOFF" == "" ]; then
     USE_SAVEOFF=false
 fi
 
+if [ "$TMUX" == "" ]; then
+   echo 'ERROR: name of TMUX session must be set in the $TMUX variable! Add a server-unique "TMUX=unique_session_name" line to your minecraft.sh (usually in /var/lib/minecraft/servers/default/minecraft.sh )'
+   exit 1;
+fi
+
 PATH_SERVER="$PATH_BASE/servers/$SERVER_SUBDIR"
 PATH_RUN="$PATH_BASE/servers/$SERVER_SUBDIR/server"
 PATH_BACKUP="$PATH_BASE/servers/$SERVER_SUBDIR/backups"
