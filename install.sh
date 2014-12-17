@@ -39,7 +39,7 @@ if [ -z "$WEBSERVER_USER" ]; then
   echo "Using '$WEBSERVER_USER' as the HTTP server user, which will also run the Minecraft server."
 fi
 #See if what we got looks remotely like a unix username
-if ! [[ "$WEBSERVER_USER" =~ ^[a-zA-Z_][0-9a-zA-Z_-]+$ ]] ; then
+if ! [[ "$WEBSERVER_USER" =~ ^[a-zA-Z_][0-9a-zA-Z_-]*$ ]] ; then
     error_exit "error: HTTP server user ($WEBSERVER_USER) looks wrong"
 fi
 
