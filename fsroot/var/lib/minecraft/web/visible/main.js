@@ -8,7 +8,7 @@ $(document).ready(function() {
     if (tabid) {
 	tab = $('a[rel="'+tabid+'"]');
     }
-    if (!tab) {
+    if (tab.length === 0) {
 	var tab = $('.defaulttab');
     }
 
