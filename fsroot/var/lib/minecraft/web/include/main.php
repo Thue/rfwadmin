@@ -18,6 +18,7 @@
 
 <body>
 
+<!-- Tab selection is done in main.js, active tab after reload is remembered in a cookie -->
 <div id="wrapper">
   <ul class="tabs">
     <li><a href="#" class="defaulttab" rel="control">Control</a></li>
