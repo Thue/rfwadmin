@@ -42,7 +42,7 @@ sync_armory.prototype.onreadystatechange = function() {
 		} else if (line.match(/^error:/)) {
 		    this.add_line(line);
 		} else if (line.match(/^debug:/)) {
-		    console.log(line);
+		    //console.log(line);
 		} else if (line.match(/^done/)) {
 		    this.sync_done();
 		} else if (line == "") {
