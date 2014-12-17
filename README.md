@@ -13,6 +13,7 @@ Essential steps:
     - On Redhat/RHEL/CentOS the command should be "sudo yum -y install tmux java-1.7.0-openjdk php httpd php-curl wget zip unzip lsof". You also need to set "SELINUX=permissive" in /etc/sysconfig/selinux , or the web server will not be able to run the minecraft.sh shell script (any help on avoiding this is appreciated). Before running install.sh below, you also need to start the httpd daemon ("chkconfig httpd on && service httpd start").
 - Run ./install.sh from inside the unpacked rfwadmin directory. Tested on Debian, Ubuntu, and CentOS, but should work on any Linux/Unix.
 - If your server has the address http://example.com , then the web interface should now be available at http://example.com/rfwadmin
+- The install script will generate a random 10-character password for the web interface; you can change it by editing /var/www/rfwadmin/index.php (or /var/www/html/rfwadmin/index.php for redhat)
 
 Optional steps:
 
@@ -48,8 +49,8 @@ About security
 --------------
 
 - I *think* it is safe.
-- The only possibly fishy thing is the "Or fetch from a direct link to a zip file:" feature, which will happily fetch a file from the internal network (fx 192.168.1.x), thereby bypassing any firewall. Though I don't see how it would benefit them to get this file fetched into the maps folder. Could be a Cross-site scripting problems if you have any web interfaces on the local net making changes using GET (which is why everybody says you should always use POST for such interfaces).
-- There is currently no built-in access controls to the www-interface - set up fx apache's built in auth support instead.
+- The web interface password is stored in unhashed plaintext in index.php, so if somebody can get shell access to your server, he can read it.
+- One possibly fishy thing is the "Or fetch from a direct link to a zip file:" feature, which will happily fetch a file from the internal network (fx 192.168.1.x), thereby bypassing any firewall. Though I don't see how it would benefit them to get this file fetched into the maps folder. Could be a Cross-site scripting problems if you have any web interfaces on the local net making changes using GET (which is why everybody says you should always use POST for such interfaces).
 
 About quality
 -------------

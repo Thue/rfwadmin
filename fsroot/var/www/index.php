@@ -18,6 +18,10 @@ $mc = new minecraft($include_base . "/servers/default" /* server dir */);
 minecraft_map::$map_dir = $include_base . "/maps";
 plugins::$plugins_dir = $include_base . "/jars/plugins";
 
+//If "$passwords=null" then no password protection.
+//If "$passwords=Array('password1', 'password2', ...)", then any of the passwords will grant entry
+$passwords = null; //grepped from install.sh
+
 /*** Changable settings end here ***/
 
 require_once($include_base . "/web/include/dispatcher.php");

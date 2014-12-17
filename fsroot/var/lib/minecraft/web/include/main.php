@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <title><?php echo htmlspecialchars($mc->html_title); ?></title>
+    <title><?php echo e($mc->html_title); ?></title>
 
     <link rel="stylesheet" type="text/css" href="rfwadmin_files/main.css" />
     <link rel="shortcut icon" href="rfwadmin_files/favicon.ico">
@@ -27,6 +27,9 @@
     <li><a href="#" rel="log">Server log</a></li>
     <li><a href="#" rel="serverjar">Server version</a></li>
     <li><a href="#" rel="plugins">Bukkit plugins</a></li>
+<?php  global $passwords; if (true || isset($passwords)) { ?>
+    <li><a href="#" rel="logout">Log out</a></li>
+<?php } ?>
   </ul>
  
   <div class="tab-content" id="control"><?php require(dirname(__FILE__) . "/tabs/control.php");?></div>
@@ -36,6 +39,9 @@
   <div class="tab-content" id="log"><?php require(dirname(__FILE__) . "/tabs/log.php");?></div>
   <div class="tab-content" id="serverjar"><?php require(dirname(__FILE__) . "/tabs/serverjar.php");?></div>
   <div class="tab-content" id="plugins"><?php require(dirname(__FILE__) . "/tabs/plugins.php");?></div>
+<?php global $passwords; if (true || isset($passwords)) { ?>
+  <div class="tab-content" id="logout"><?php require(dirname(__FILE__) . "/tabs/logout.php");?></div>
+<?php } ?>
 </div>
 </body>
 </html>

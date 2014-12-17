@@ -85,8 +85,13 @@ if [ ! -f fsroot/var/lib/minecraft/jars/converter/AnvilConverter.jar -a ! -f $PA
   unzip -q -d "fsroot/var/lib/minecraft/jars/converter" "fsroot/var/lib/minecraft/jars/converter/Minecraft.AnvilConverter.zip" || echo "Failed to extract anvil converter because 'unzip' is not installed. You probably don't need that anyway."
 fi
 
-#configure index.php to use correct PATH_BASE
-cat fsroot/var/www/index.php | sed "s|^.include_base = .*\$|\$include_base = \"$PATH_BASE\";|" > fsroot/var/www/index.php.customized
+#Configure index.php to use correct PATH_BASE
+cat fsroot/var/www/index.php | sed "s|^\\\$include_base = .*\$|\$include_base = \"$PATH_BASE\";|" > fsroot/var/www/index.php.customized
+
+#Create a default password
+PASSWORD=`cat /dev/urandom | tr -dc _A-Z-a-z-0-9 | head -c${1:-10};`
+cat  fsroot/var/www/index.php.customized | sed "s|^\\\$passwords = null;.*\$|\$passwords = Array('${PASSWORD}');|" > fsroot/var/www/index.php.customized2
+mv fsroot/var/www/index.php.customized2  fsroot/var/www/index.php.customized
 
 #Configure init script to use correct userid and PATH_BASE
 cat fsroot/etc/init.d/minecraft_default.sh | sed "s/^SU_TO_USER=.*$/SU_TO_USER=\"$WEBSERVER_USER\"/" | sed "s|^PATH_BASE=.*\$|PATH_BASE=\"$PATH_BASE\"|" > fsroot/etc/init.d/minecraft_default.sh.customized
@@ -147,6 +152,7 @@ if [ ! -d "$WEBINTERFACE_DIR" ]; then
 fi
 if [ ! -e "$WEBINTERFACE_DIR"/index.php ]; then
   cp -v fsroot/var/www/index.php.customized "$WEBINTERFACE_DIR/index.php"
+  echo -e "NOTE: The \033[1mpassword\033[m for the web interface is '\033[1m$PASSWORD\033[m'; it can be changed by editing $WEBINTERFACE_DIR/index.php"
 else
   if [ ! -e "$WEBINTERFACE_DIR"/rfwadmin_files ]; then
      echo "Refusing to overwrite existing $WEBINTERFACE_DIR/index.php file, but I don't think it belongs to rfwadmin. Do a manual 'cp fsroot/var/www/index.php $WEBINTERFACE_DIR/index.php' if you really want to."
@@ -157,3 +163,4 @@ if [ ! -e "$WEBINTERFACE_DIR"/rfwadmin_files ]; then
 fi
 
 /etc/init.d/minecraft_default.sh start
+
