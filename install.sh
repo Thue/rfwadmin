@@ -86,12 +86,12 @@ if [ ! -f fsroot/var/lib/minecraft/jars/converter/AnvilConverter.jar -a ! -f $PA
 fi
 
 #Configure index.php to use correct PATH_BASE
-cat fsroot/var/www/index.php | sed "s|^\\\$include_base = .*\$|\$include_base = \"$PATH_BASE\";|" > fsroot/var/www/index.php.customized
+cat fsroot/var/www/rfwadmin/index.php | sed "s|^\\\$include_base = .*\$|\$include_base = \"$PATH_BASE\";|" > fsroot/var/www/rfwadmin/index.php.customized
 
 #Create a default password
 PASSWORD=`cat /dev/urandom | tr -dc _A-Z-a-z-0-9 | head -c${1:-10};`
-cat  fsroot/var/www/index.php.customized | sed "s|^\\\$passwords = null;.*\$|\$passwords = Array('${PASSWORD}');|" > fsroot/var/www/index.php.customized2
-mv fsroot/var/www/index.php.customized2  fsroot/var/www/index.php.customized
+cat  fsroot/var/www/rfwadmin/index.php.customized | sed "s|^\\\$passwords = null;.*\$|\$passwords = Array('${PASSWORD}');|" > fsroot/var/www/rfwadmin/index.php.customized2
+mv fsroot/var/www/rfwadmin/index.php.customized2  fsroot/var/www/rfwadmin/index.php.customized
 
 #Configure init script to use correct userid and PATH_BASE
 cat fsroot/etc/init.d/minecraft_default.sh | sed "s/^SU_TO_USER=.*$/SU_TO_USER=\"$WEBSERVER_USER\"/" | sed "s|^PATH_BASE=.*\$|PATH_BASE=\"$PATH_BASE\"|" > fsroot/etc/init.d/minecraft_default.sh.customized
@@ -151,7 +151,7 @@ if [ ! -d "$WEBINTERFACE_DIR" ]; then
   mkdir -v --parents "$WEBINTERFACE_DIR"
 fi
 if [ ! -e "$WEBINTERFACE_DIR"/index.php ]; then
-  cp -v fsroot/var/www/index.php.customized "$WEBINTERFACE_DIR/index.php"
+  cp -v fsroot/var/www/rfwadmin/index.php.customized "$WEBINTERFACE_DIR/index.php"
   echo -e "NOTE: The \033[1mpassword\033[m for the web interface is '\033[1m$PASSWORD\033[m'; it can be changed by editing $WEBINTERFACE_DIR/index.php"
 else
   if [ ! -e "$WEBINTERFACE_DIR"/rfwadmin_files ]; then
