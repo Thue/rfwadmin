@@ -90,7 +90,7 @@ foreach ($unexpected as $path) {
 
 <?php
 if (!$mc->allow_plugin_upload) {
-  echo '<p>Plugin upload disabled. Set "$mc->allow_plugin_upload=true;", probably in /var/www/rfwadmin/index.php .</p>';
+  echo '<p>Plugin upload disabled. Set "$mc->allow_plugin_upload=true;" in <i>'.e($_SERVER["SCRIPT_FILENAME"]).'</i> .</p>';
 } else {
 ?>
 
