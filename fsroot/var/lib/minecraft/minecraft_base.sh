@@ -304,7 +304,7 @@ function server_start() {
     fi
 
     if ! tmux_start; then
-	$TMUX=$TMUX_TMP
+	TMUX=$TMUX_TMP
         return 1
     fi
 
