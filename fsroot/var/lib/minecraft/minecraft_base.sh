@@ -317,7 +317,7 @@ function server_start() {
     tmux_cmd "cd ${PATH_RUN}"
     #note arg 5 - starting a new server will reset the log, so tell tmux_cmd to always start from line 0
     #If I don't put the extra Ms on "Minecraft is stopped", then the first "M" goes missing in the output. WTF?
-    tmux_cmd "${SERVER} & echo \$! > ${PATH_MINECRAFT_PID} && fg; echo \"MMMMinecraft is stopped\"; exit" 30 '^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:) Done \(\d+.\d+s\)! For help, type "help" or "\?"' $TMUX_LOG
+    tmux_cmd "${SERVER} & echo \$! > ${PATH_MINECRAFT_PID} && fg; echo \"MMMMinecraft is stopped\"; exit" 30 '^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:|\>\cM\[\d\d:\d\d:\d\d\ INFO\]:) Done \(\d+.\d+s\)! For help, type "help" or "\?"' $TMUX_LOG
 
     #tmux now securely initialized! Rename to real name
     tmux rename-session -t $TMUX $TMUX_TMP
@@ -363,7 +363,7 @@ function server_stop() {
     fi
 
     echo -n "Stopping Minecraft server ... "
-    if ! tmux_cmd "stop" 60 '^(\>\s*)*M+inecraft is stopped' "$TMUX_LOG"; then
+    if ! tmux_cmd "stop" 60 '^(\>\s*)*(\c[\[m)?M+inecraft is stopped' "$TMUX_LOG"; then
 	echo "Failed to stop server"
 	return 1	
     fi
@@ -386,7 +386,7 @@ function server_stop_nosave() {
 
     echo -n "Stopping Minecraft server... "
 
-    tmux_cmd "stop" 60 '^(\>\s*)*M+inecraft is stopped' "$TMUX_LOG"
+    tmux_cmd "stop" 60 '^(\>\s*)*(\c[\[m)?M+inecraft is stopped' "$TMUX_LOG"
 
     if ! is_server_online; then
         echo "Stopped!"
