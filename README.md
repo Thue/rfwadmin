@@ -45,6 +45,11 @@ Using command line interface
 
 You can use rfwadmin as a command line interface by doing commands such as "sudo /etc/init.d/minecraft_default.sh start". Commands include "start", "stop", "restart", "list", "send_command save-all", "send_command op thuejk"; look it the bottom of /var/lib/minecraft/minecraft_base.sh for a list. The command line interface is a heavily modified version of mc-manager, much improved; I recommend always using the rfwadmin version over mc-manager, even if you don't need the web interface. To only use the command line interface without installing the rfwadmin web interface, simply don't install /var/www/rfwadmin/index.php .
 
+Non-vanilla servers
+-------------------
+
+rfwadmin works with Bukkit and Spigot servers. Other modded servers such as Feed the Beast should also work rfwadmin, but I haven't tested that since running a FtB server in 2013.
+
 About security
 --------------
 
