@@ -48,7 +48,7 @@ You can use rfwadmin as a command line interface by doing commands such as "sudo
 Non-vanilla servers
 -------------------
 
-rfwadmin works with Bukkit and Spigot servers. Other modded servers such as Feed the Beast should also work rfwadmin, but I haven't tested that since running a FtB server in 2013.
+rfwadmin works with Bukkit and Spigot servers. Other modded servers such as Feed the Beast should also work with rfwadmin, but I haven't tested that since running a FtB server in 2013.
 
 About security
 --------------
