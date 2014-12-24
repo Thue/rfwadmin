@@ -26,7 +26,7 @@
 </p>
 
 <p>
-   Passwords can be changed or disabled by editing th source code of <?php echo e($_SERVER["SCRIPT_NAME"]);?> on the server.
+   Passwords can be changed or disabled by editing the source code of <?php echo e($_SERVER["SCRIPT_NAME"]);?> on the server.
 </p>
 
 </body>
