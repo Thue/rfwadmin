@@ -31,23 +31,25 @@ if [ "$USE_SAVEOFF" == "" ]; then
     USE_SAVEOFF=false
 fi
 
-if [ "$TMUX" == "" ]; then
-   echo 'ERROR: name of TMUX session must be set in the $TMUX variable! Add a server-unique "TMUX=unique_session_name" line to your minecraft.sh (usually in /var/lib/minecraft/servers/default/minecraft.sh )'
-   exit 1;
-fi
-
 PATH_SERVER="$PATH_BASE/servers/$SERVER_SUBDIR"
 PATH_RUN="$PATH_BASE/servers/$SERVER_SUBDIR/server"
 PATH_BACKUP="$PATH_BASE/servers/$SERVER_SUBDIR/backups"
+
+#TMUX session name. Used to be server-specific, but now we just
+#specify a per-server tmux socket file instead. This also fixes
+#problem with systemd per-service temp files, with tmux storing
+#sockets per default in /tmp...
+TMUX="rfwadmin"
+TMUX_SOCKET="${PATH_SERVER}/tmux.socket"
+TMUX_LOG="${PATH_SERVER}/tmux.log"
+
+#Log location changed with 1.7. SERVER_LOG="" means try to guess location
+SERVER_LOG=""
 
 #seconds
 LOCK_FILE_TIMEOUT=30
 LOCKFILE="${PATH_SERVER}/minecraft.sh.lock"
 LOCKFILE2="${LOCKFILE}.lock"
-
-TMUX_LOG="${PATH_SERVER}/tmux.log"
-#Log location changed with 1.7. SERVER_LOG="" means try to guess location
-SERVER_LOG=""
 
 PATH_MINECRAFT_PID="${PATH_SERVER}/minecraft.pid"
 
@@ -157,19 +159,9 @@ function is_server_online() {
     fi
 }
 
-function tmux_name_ok() {
-    if [ "`echo $TMUX | sed 's/^[a-zA-Z0-9]\+$//'`" != "" ]; then
-        echo "'TMUX=${TMUX}' configuration is invalid. TMUX can only contains [a-zA-Z0-9], as it is used in a regular expression"
-	unlock
-	exit 1
-    fi
-}
-
 function tmux_running() {
-    tmux_name_ok
-
     #In theory I should be able to run "tmux start"
-    local LINE=$(tmux ls 2>&1 |grep -P "^${TMUX}:")
+    local LINE=$(tmux -S $TMUX_SOCKET ls 2>&1 |grep -P "^${TMUX}:")
     if [ "$LINE" = "" ]; then
 	return 1
     else
@@ -182,7 +174,7 @@ function get_tmux_pid() {
 	echo "tmux doesn't seem to be running, so can't find tmux pid";
 	return 1
     fi
-    TMUX_PID=$(tmux list-panes -F '#{pane_pid}' -t $TMUX)
+    TMUX_PID=$(tmux -S $TMUX_SOCKET list-panes -F '#{pane_pid}' -t $TMUX)
 
     return 0;
 }
@@ -197,10 +189,10 @@ function tmux_start() {
     #a temporary empty file to use as tmux config instead.
     TMUX_CONF=`mktemp`
     echo -n "Starting tmux session... "
-    tmux -f "$TMUX_CONF" new-session -d -s "${TMUX}uninitialized"
+    tmux -S $TMUX_SOCKET -f "$TMUX_CONF" new-session -d -s "${TMUX}uninitialized"
     rm "$TMUX_CONF"
 
-    local LINE=$(tmux ls |grep -P "^${TMUX}uninitialized:")
+    local LINE=$(tmux -S $TMUX_SOCKET ls |grep -P "^${TMUX}uninitialized:")
     if [ "$LINE" = "" ]; then
         echo "Failed!"
 	return 1
@@ -211,7 +203,7 @@ function tmux_start() {
 }
 function tmux_stop() {
     if tmux_running; then  
-       tmux kill-session -t $TMUX
+       tmux -S $TMUX_SOCKET kill-session -t $TMUX
     fi
 }
 # Send a string to STDIN, for sending commands to the server.
@@ -222,7 +214,7 @@ function tmux_cmd() {
 	local LOGFILE="$4"
     fi
 
-    tmux send-keys -t $TMUX "`printf "$1\r"`"
+    tmux -S $TMUX_SOCKET send-keys -t $TMUX "`printf "$1\r"`"
     if [ ! -z "$2" ]; then
 	if [[ ! -f $LOGFILE ]]; then
 	    local START_LINE=0
@@ -320,7 +312,7 @@ function server_start() {
     tmux_cmd "${SERVER} & echo \$! > ${PATH_MINECRAFT_PID} && fg; echo \"MMMMinecraft is stopped\"; exit" 30 '^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d \[INFO\]|\[\d\d:\d\d:\d\d\] \[Server thread/INFO\]:|\>\cM\[\d\d:\d\d:\d\d\ INFO\]:) Done \(\d+.\d+s\)! For help, type "help" or "\?"' $TMUX_LOG
 
     #tmux now securely initialized! Rename to real name
-    tmux rename-session -t $TMUX $TMUX_TMP
+    tmux -S $TMUX_SOCKET rename-session -t $TMUX $TMUX_TMP
     TMUX="$TMUX_TMP"
 
     if is_server_online; then
