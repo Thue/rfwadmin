@@ -89,7 +89,9 @@ function password_check(minecraft $mc) {
     }
 
     if ($login_succeeded) {
-      goto show_main_interface;
+      #Add a redirect, so that reloads of index.php doesn't cause POST browser resend warnings
+      header("Location: //$_SERVER[HTTP_HOST]$_SERVER[SCRIPT_NAME]");
+      exit(0);
     } else {
       $password_message = "Login failed. Bad password?";
       goto show_password_dialog;

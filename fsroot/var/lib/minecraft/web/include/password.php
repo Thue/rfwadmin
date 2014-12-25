@@ -19,7 +19,8 @@
 <p style="height:3em;"></p>
 
 <p>
-   <form method="post">
+   <!--The ?check_password part is remove via a redirect after checking, since the URL needs to be unique to avoid POST resend warnings upon reloads. -->
+   <form method="post" action="index.php?check_password">
    Password: <input style="width:10em;" type="password" name="password" value="">
    <input type="submit" name="login" value="Log in">
    </form>
