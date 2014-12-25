@@ -87,8 +87,8 @@ fi
 #Configure index.php to use correct PATH_BASE
 cat fsroot/var/www/rfwadmin/index.php | sed "s|^\\\$include_base = .*\$|\$include_base = \"$PATH_BASE\";|" > fsroot/var/www/rfwadmin/index.php.customized
 
-#Create a default password
-PASSWORD=`cat /dev/urandom | tr -dc _A-Z-a-z-0-9 | head -c${1:-10};`
+#Create a default password (using only unambiguous chars, no 0O1lI...)
+PASSWORD=`cat /dev/urandom | tr -dc 23456789abcdefghkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ | head -c${1:-10};`
 cat  fsroot/var/www/rfwadmin/index.php.customized | sed "s|^\\\$passwords = null;.*\$|\$passwords = Array('${PASSWORD}');|" > fsroot/var/www/rfwadmin/index.php.customized2
 mv fsroot/var/www/rfwadmin/index.php.customized2  fsroot/var/www/rfwadmin/index.php.customized
 
