@@ -147,7 +147,7 @@ chown -R $WEBSERVER_USER:root $PATH_BASE
 
 #install web interface files
 if [ ! -d "$WEBINTERFACE_DIR" ]; then
-  mkdir -v --parents "$WEBINTERFACE_DIR"
+  mkdir --parents "$WEBINTERFACE_DIR"
 fi
 if [ ! -e "$WEBINTERFACE_DIR"/index.php ]; then
   cp -v fsroot/var/www/rfwadmin/index.php.customized "$WEBINTERFACE_DIR/index.php"
