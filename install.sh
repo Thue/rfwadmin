@@ -17,7 +17,10 @@ WEBSERVER_USER=
 
 PATH_BASE="/var/lib/minecraft"
 
-
+#Symlink /var/lib/minecraft/web and /var/lib/minecraft/minecraft.sh
+#back to fsroot . Useful for rfwadmin development if symlinking to a
+#git checkout
+SYMLINK_CODE=0
 
 ### Checks ###
 
@@ -108,9 +111,15 @@ mkdir -p $PATH_BASE/jars/serverjars
 mkdir -p $PATH_BASE/servers
 
 cp fsroot/var/lib/minecraft/jars/plugins/README $PATH_BASE/jars/plugins
-cp fsroot/var/lib/minecraft/minecraft_base.sh $PATH_BASE
-chmod +x $PATH_BASE/minecraft_base.sh
-cp -r fsroot/var/lib/minecraft/web $PATH_BASE
+if [ $SYMLINK_CODE == 1 ]; then
+    ln -s "`pwd`/fsroot/var/lib/minecraft/minecraft_base.sh" $PATH_BASE
+    chmod +x $PATH_BASE/minecraft_base.sh
+    ln -s "`pwd`/fsroot/var/lib/minecraft/web" $PATH_BASE
+else
+    cp fsroot/var/lib/minecraft/minecraft_base.sh $PATH_BASE
+    chmod +x $PATH_BASE/minecraft_base.sh
+    cp -r fsroot/var/lib/minecraft/web $PATH_BASE
+fi
 if [ -f  fsroot/var/lib/minecraft/jars/converter/AnvilConverter.jar ]; then
   #If downloaded for installation above, then install it
   cp fsroot/var/lib/minecraft/jars/converter/AnvilConverter.jar $PATH_BASE/jars/converter
