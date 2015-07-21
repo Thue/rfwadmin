@@ -48,14 +48,20 @@ class stdlib {
   }
 
   public static $progress = 0;
-  public static function progress($download_size, $downloaded, $upload_size, $uploaded)
-  {
+  public static function progress($curl, $download_size, $downloaded, $upload_size, $uploaded) {
     $do_flush = false;
     while ($download_size > 0 && 100*$downloaded/$download_size > self::$progress) {
       self::$progress++;
       echo ".";
       $do_flush = true;
+
+      //infinite loop sanity check
+      if (self::$progress > 10000) {
+          kassert(false);
+          break;
+      }
     }
+
     if ($do_flush) {
       ob_flush();
       flush();
