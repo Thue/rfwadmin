@@ -66,7 +66,7 @@ abstract class serverjar_list {
 
 
 abstract class serverjar_list_vanilla extends serverjar_list {
-  private static $json_link = 'https://s3.amazonaws.com/Minecraft.Download/versions/versions.json';
+  private static $json_link = 'https://launchermeta.mojang.com/mc/game/version_manifest.json';
   private static $json_fetched = null;
 
   public static function fetch_json() {
