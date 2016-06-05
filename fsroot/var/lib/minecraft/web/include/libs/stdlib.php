@@ -57,8 +57,8 @@ class stdlib {
 
       //infinite loop sanity check
       if (self::$progress > 10000) {
-          kassert(false);
-          break;
+	assert(false);
+	break;
       }
     }
 
