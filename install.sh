@@ -64,7 +64,7 @@ if  [ $CONFIGURE_SERVER == "1" ]; then
   LATEST_SERVER_VERSION=`wget --quiet -O - https://launchermeta.mojang.com/mc/game/version_manifest.json |head -c 100|sed  's/^{"latest":{[^}]*"release":"\([^"]\+\)".\+$/\1/'`
   PATTERN='^[0-9.]+$'
   if [[ ! $LATEST_SERVER_VERSION =~ $PATTERN ]] ; then
-     error_exit "Failed to parse latest Minecraft server version from https://s3.amazonaws.com/Minecraft.Download/versions/versions.json"
+     error_exit "Failed to parse latest Minecraft server version from https://launchermeta.mojang.com/mc/game/version_manifest.json"
   fi
   LATEST_SERVER_BINARY=minecraft_server.${LATEST_SERVER_VERSION}.jar
   DOWNLOAD_URL="https://s3.amazonaws.com/Minecraft.Download/versions/${LATEST_SERVER_VERSION}/minecraft_server.${LATEST_SERVER_VERSION}.jar"
